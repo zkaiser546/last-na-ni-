@@ -24,18 +24,22 @@ import { Head, Link } from '@inertiajs/vue3';
                     >
                         Log in
                     </Link>
+                    <!--
                     <Link
                         :href="route('register')"
                         class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
                     >
                         Register
                     </Link>
+                    -->
                 </template>
             </nav>
         </header>
         <div class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
             <main class="flex w-full max-w-[335px] flex-col-reverse overflow-hidden rounded-lg lg:max-w-4xl lg:flex-row">
-                This page is currently under construction
+                <div class="dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]">
+                    This page is currently under construction
+                </div>
             </main>
         </div>
         <div class="hidden h-14.5 lg:block"></div>
