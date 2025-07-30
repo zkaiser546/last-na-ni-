@@ -3,7 +3,6 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import AppTabs from '@/components/AppTabs.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import AppearanceTabs from '@/components/AppearanceTabs.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -30,8 +29,8 @@ const tabs = [
                 <!-- Tab 1 content with HTML -->
                 <template #tab1>
                     <div class="space-y-4">
-                        <h2 class="text-xl font-bold">Users Management</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <h2 class="font-bold">Users Management</h2>
+                        <div class="text-sm grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="p-4 border rounded-lg">
                                 <h3 class="font-semibold">Active Users</h3>
                                 <p class="text-gray-600">1,234 users</p>
@@ -83,7 +82,6 @@ const tabs = [
                     </div>
                 </template>
             </AppTabs>
-
         </div>
     </AppLayout>
 </template>

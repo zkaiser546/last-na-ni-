@@ -7,3 +7,5 @@ Route::get('/sample', function () {
         'message' => 'This data came from Laravel!',
     ]);
 });
+
+Route::get('/users/list', [\App\Http\Controllers\Auth\RegisteredUserController::class, 'index']);
