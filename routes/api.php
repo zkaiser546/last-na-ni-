@@ -8,4 +8,4 @@ Route::get('/sample', function () {
     ]);
 });
 
-Route::get('/users/list', [\App\Http\Controllers\Auth\RegisteredUserController::class, 'index']);
+Route::get('/users', [\App\Http\Controllers\Auth\RegisteredUserController::class, 'index']);
