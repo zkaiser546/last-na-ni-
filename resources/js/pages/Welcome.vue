@@ -15,6 +15,22 @@ onMounted(() => {
     }
 })
 
+interface Flash {
+    success?: string | null;
+    error?: string | null;
+}
+
+interface Config {
+    registration_enabled?: boolean | null
+}
+
+declare module '@inertiajs/core' {
+    interface PageProps {
+        flash: Flash;
+        config: Config;
+    }
+}
+
 </script>
 
 <template>

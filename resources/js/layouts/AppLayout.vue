@@ -2,12 +2,23 @@
 import AppLayout from '@/layouts/app/AppSidebarLayout.vue';
 import type { BreadcrumbItemType } from '@/types';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { CircleCheckBig, X } from 'lucide-vue-next';
+import { AlertCircle, CircleCheckBig, X } from 'lucide-vue-next';
 import { usePage } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
 
 interface Props {
     breadcrumbs?: BreadcrumbItemType[];
+}
+
+interface Flash {
+    success?: string | null;
+    error?: string | null;
+}
+
+declare module '@inertiajs/core' {
+    interface PageProps {
+        flash: Flash;
+    }
 }
 
 withDefaults(defineProps<Props>(), {
