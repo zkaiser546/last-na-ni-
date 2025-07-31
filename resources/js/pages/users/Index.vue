@@ -34,9 +34,9 @@ const props = defineProps<Props>();
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
 
-            <div>
+            <div class="flex gap-2">
                 <Link :href="route('admins.create')">
-                    <Button>Add Admin</Button>
+                    <Button variant="secondary">Add Admin</Button>
                 </Link>
             </div>
 
