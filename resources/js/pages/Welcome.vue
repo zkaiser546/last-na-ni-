@@ -1,5 +1,19 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { AlertCircle, X } from 'lucide-vue-next'
+import { ref, onMounted } from 'vue'
+
+const page = usePage()
+const showAlert = ref(true)
+
+onMounted(() => {
+    if (page.props.flash.error) {
+        setTimeout(() => {
+            showAlert.value = false
+        }, 5000)
+    }
+})
 </script>
 
 <template>
@@ -8,6 +22,16 @@ import { Head, Link } from '@inertiajs/vue3';
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>
     <div class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
+        <Alert class="absolute top-5 right-5 w-fit pr-8" variant="destructive" v-if="page.props.flash.error && showAlert">
+            <AlertCircle class="w-4 h-4" />
+            <button @click="showAlert = false" class="absolute top-2 right-2 p-1 hover:bg-red-100 rounded-full transition-colors">
+                <X class="w-4 h-4" />
+            </button>
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+                {{ page.props.flash.error }}
+            </AlertDescription>
+        </Alert>
         <header class="mb-6 w-full max-w-[335px] text-sm not-has-[nav]:hidden lg:max-w-4xl">
             <nav class="flex items-center justify-end gap-4">
                 <Link
