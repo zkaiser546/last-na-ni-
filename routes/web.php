@@ -7,20 +7,22 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Routes that require authentication and verification
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
 
-Route::get('/users', function () {
-    return Inertia::render('Users');
-})->name('users');
+    Route::get('/users', function () {
+        return Inertia::render('Users');
+    })->name('users');
 
-Route::get('/records', function () {
-    return Inertia::render('Records');
-})->name('records');
+    Route::get('/records', function () {
+        return Inertia::render('Records');
+    })->name('records');
+});
 
-// test routes
-
+// Test routes (no middleware)
 Route::get('/test', function () {
     return Inertia::render('Test');
 });
