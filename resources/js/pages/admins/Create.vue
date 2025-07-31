@@ -41,7 +41,7 @@ const submit = () => {
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
             <form @submit.prevent="submit" class="flex flex-col gap-6">
-                <div class="grid grid-cols-2 gap-6">
+                <div class="grid grid-cols-4 gap-6">
                     <div class="grid gap-2">
                         <Label for="first_name">First name</Label>
                         <Input id="first_name" type="text" required autofocus :tabindex="1" autocomplete="name" v-model="form.first_name" placeholder="First name" />
