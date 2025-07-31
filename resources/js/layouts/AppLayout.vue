@@ -43,7 +43,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <Alert class="absolute top-5 right-5 w-fit pr-8 z-30" variant="destructive" v-if="page.props.flash.error && showAlert">
+    <Alert class="fixed top-5 right-5 w-fit pr-8 z-30" variant="destructive" v-if="page.props.flash.error && showAlert">
         <AlertCircle class="w-4 h-4" />
         <button @click="showAlert = false" class="absolute top-2 right-2 p-1 hover:bg-red-100 rounded-full transition-colors">
             <X class="w-4 h-4" />
@@ -53,7 +53,7 @@ onMounted(() => {
             {{ page.props.flash.error }}
         </AlertDescription>
     </Alert>
-    <Alert class="absolute border-2 border-green-500 top-5 right-5 w-fit max-w-lg pr-8 z-30" v-if="page.props.flash.success && showAlert">
+    <Alert class="fixed border-2 border-green-500 top-5 right-5 w-fit max-w-lg pr-8 z-30" v-if="page.props.flash.success && showAlert">
         <CircleCheckBig />
         <button @click="showAlert = false" class="absolute top-2 right-2 p-1 hover:bg-red-100 rounded-full transition-colors">
             <X class="w-4 h-4" />
