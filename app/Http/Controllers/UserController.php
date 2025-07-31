@@ -21,8 +21,8 @@ class UserController extends Controller
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'date',
-            'email' => 'required|string|email|max:255|unique:users',
+            'name' => 'required|string|max:50',
+            'email' => 'required|string|email|max:50|unique:users',
             'password' => 'required|string|min:8',
         ]);
 

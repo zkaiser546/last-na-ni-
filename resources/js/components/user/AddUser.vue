@@ -1,6 +1,12 @@
 <script lang="ts">
+import axios from 'axios';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 export default {
+    name: 'AddUser',
+    // eslint-disable-next-line vue/no-reserved-component-names
+    components: { Input, Label },
     data() {
         return {
             form: {
@@ -15,30 +21,27 @@ export default {
     },
     methods: {
         async addUser() {
-            console.log('Form data:', this.form); // Debug
             this.loading = true;
             this.error = null;
             this.success = null;
 
             try {
-                // Fetch CSRF cookie
-                await axios.get('http://localhost:8000/sanctum/csrf-cookie'); // Adjust URL to your backend
-                const response = await axios.post('http://localhost:8000/api/users', this.form, {
+                await axios.post('/api/users', this.form, {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`, // Ensure token is sent
+                        'Content-Type': 'application/json',
                         Accept: 'application/json',
                     },
                 });
+
                 this.success = 'User added successfully!';
-                this.form = { name: '', email: '', password: '' };
-                console.log(response);
+                this.form = { name: '', email: '', password: '' }; // Reset form
+                route('users');
             } catch (error) {
-                console.error('Error:', error.response); // Debug
-                this.error = error.response?.data?.message || 'Failed to add user.';
+                this.error = error.response?.data?.message || 'An error occurred while adding the user.';
             } finally {
                 this.loading = false;
             }
-        }
+        },
     },
 };
 </script>
@@ -47,49 +50,31 @@ export default {
     <div class="add-user-form">
         <form @submit.prevent="addUser" class="space-y-4">
             <div>
-                <label for="name" class="block text-sm font-medium">Name</label>
-                <input
-                    v-model="form.name"
-                    type="text"
-                    id="name"
-                    class="w-full border rounded p-2 text-sm"
-                    placeholder="Enter name"
-                    required
-                />
+                <Label for="name">Name</Label>
+                <Input id="name" type="text" required autofocus :tabindex="1" autocomplete="name" v-model="form.name" placeholder="Full name" />
             </div>
             <div>
-                <label for="email" class="block text-sm font-medium">Email</label>
-                <input
-                    v-model="form.email"
-                    type="email"
-                    id="email"
-                    class="w-full border rounded p-2 text-sm"
-                    placeholder="Enter email"
-                    required
-                />
+                <Label for="name">Email</Label>
+                <input v-model="form.email" type="email" id="email" class="w-full rounded border p-2 text-sm" placeholder="Enter email" required />
             </div>
             <div>
-                <label for="password" class="block text-sm font-medium">Password</label>
+                <Label for="name">Password</Label>
                 <input
                     v-model="form.password"
                     type="password"
                     id="password"
-                    class="w-full border rounded p-2 text-sm"
+                    class="w-full rounded border p-2 text-sm"
                     placeholder="Enter password"
                     required
                 />
             </div>
             <div>
-                <button
-                    type="submit"
-                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    :disabled="loading"
-                >
+                <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600" :disabled="loading">
                     {{ loading ? 'Adding...' : 'Add User' }}
                 </button>
             </div>
-            <div v-if="error" class="text-red-500 text-sm">{{ error }}</div>
-            <div v-if="success" class="text-green-500 text-sm">{{ success }}</div>
+            <div v-if="error" class="text-sm text-red-500">{{ error }}</div>
+            <div v-if="success" class="text-sm text-green-500">{{ success }}</div>
         </form>
     </div>
 </template>
