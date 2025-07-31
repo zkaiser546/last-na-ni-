@@ -1,12 +1,9 @@
-<script setup lang="ts" generic="TData, TValue">
+<script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
-import DataTable from '@/components/user/data-table.vue';
-import { onMounted, ref } from 'vue';
-import type { Payment } from '@/components/user/columns'
-import { columns } from '@/components/user/columns'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,38 +13,18 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface User {
+    id: number
     first_name: string;
+    last_name: string;
     email: string;
-    user_type?: string;
+    user_type: string;
 }
 
-defineProps<{
-    super_admin: User | null;
-}>();
-
-const data = ref<Payment[]>([])
-
-async function getData(): Promise<Payment[]> {
-    // Fetch data from your API here.
-    return [
-        {
-            id: '728ed52f',
-            amount: 100,
-            status: 'pending',
-            email: 'm@example.com',
-        },
-        {
-            id: '728e534d52f',
-            amount: 1300,
-            status: 'pending',
-            email: 'm@example.com',
-        },
-    ]
+interface Props{
+    users: User[];
 }
 
-onMounted(async () => {
-    data.value = await getData()
-})
+const props = defineProps<Props>();
 
 </script>
 
@@ -61,7 +38,23 @@ onMounted(async () => {
                     <Button>Add Admin</Button>
                 </Link>
             </div>
-            <DataTable :columns="columns" :data="data" />
+            <Table>
+                <TableHeader>
+                    <TableRow >
+                        <TableHead > huhu</TableHead>
+                        <TableHead > huhu</TableHead>
+                        <TableHead > huhu</TableHead>
+                        <TableHead > huhu</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    <TableRow v-for="user in props.users" :key="user.id">
+                        <TableCell >
+                            {{ user.first_name }}
+                        </TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
         </div>
     </AppLayout>
 </template>

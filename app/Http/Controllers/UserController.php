@@ -12,31 +12,10 @@ class UserController extends Controller
 {
     public function index(): \Inertia\Response
     {
-        $super_admin = User::where('user_type', 'super-admin')->first();
+        $users = User::latest()->get();
 
         return Inertia::render('users/Index', [
-            'super_admin' => $super_admin
+            'users' => $users
         ]);
-    }
-
-    public function store(Request $request): \Illuminate\Http\JsonResponse
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:50',
-            'email' => 'required|string|email|max:50|unique:users',
-            'password' => 'required|string|min:8',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()->first()], 422);
-        }
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        return response()->json(['message' => 'User created successfully'], 201);
     }
 }
