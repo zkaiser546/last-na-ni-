@@ -41,16 +41,25 @@ const props = defineProps<Props>();
             <Table>
                 <TableHeader>
                     <TableRow >
-                        <TableHead > huhu</TableHead>
-                        <TableHead > huhu</TableHead>
-                        <TableHead > huhu</TableHead>
-                        <TableHead > huhu</TableHead>
+                        <TableHead >First Name</TableHead>
+                        <TableHead >Last Name</TableHead>
+                        <TableHead >Email</TableHead>
+                        <TableHead >User Type</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     <TableRow v-for="user in props.users" :key="user.id">
                         <TableCell >
                             {{ user.first_name }}
+                        </TableCell>
+                        <TableCell >
+                            {{ user.last_name }}
+                        </TableCell>
+                        <TableCell >
+                            {{ user.email }}
+                        </TableCell>
+                        <TableCell >
+                            {{ user.user_type }}
                         </TableCell>
                     </TableRow>
                 </TableBody>
