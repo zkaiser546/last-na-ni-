@@ -12,7 +12,11 @@ class UserController extends Controller
 {
     public function index(): \Inertia\Response
     {
-        return Inertia::render('users/Index');
+        $super_admin = User::where('user_type', 'super-admin')->first();
+
+        return Inertia::render('users/Index', [
+            'super_admin' => $super_admin
+        ]);
     }
 
     public function store(Request $request): \Illuminate\Http\JsonResponse
