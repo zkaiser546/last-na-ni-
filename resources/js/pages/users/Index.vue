@@ -1,8 +1,12 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="TData, TValue">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
+import DataTable from '@/components/user/data-table.vue';
+import { onMounted, ref } from 'vue';
+import type { Payment } from '@/components/user/columns'
+import { columns } from '@/components/user/columns'
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -21,6 +25,30 @@ defineProps<{
     super_admin: User | null;
 }>();
 
+const data = ref<Payment[]>([])
+
+async function getData(): Promise<Payment[]> {
+    // Fetch data from your API here.
+    return [
+        {
+            id: '728ed52f',
+            amount: 100,
+            status: 'pending',
+            email: 'm@example.com',
+        },
+        {
+            id: '728e534d52f',
+            amount: 1300,
+            status: 'pending',
+            email: 'm@example.com',
+        },
+    ]
+}
+
+onMounted(async () => {
+    data.value = await getData()
+})
+
 </script>
 
 <template>
@@ -33,12 +61,7 @@ defineProps<{
                     <Button>Add Admin</Button>
                 </Link>
             </div>
-            <div v-if="super_admin" class="flex gap-4 super-admin-info">
-                <h2>Super Admin</h2>
-                <p><strong>Name:</strong> {{ super_admin.first_name }}</p>
-                <p><strong>Email:</strong> {{ super_admin.email }}</p>
-                <!-- Add other fields you want to display -->
-            </div>
+            <DataTable :columns="columns" :data="data" />
         </div>
     </AppLayout>
 </template>
