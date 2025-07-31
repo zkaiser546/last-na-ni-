@@ -16,7 +16,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Users',
-        href: '/users',
+        href: route('users.index'),
         icon: Users,
     },
     {

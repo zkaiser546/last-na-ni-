@@ -6,16 +6,13 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index(): \Inertia\Response
     {
-        $users = User::select('id', 'name', 'email', 'created_at')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return response()->json($users);
+        return Inertia::render('users/Index');
     }
 
     public function store(Request $request): \Illuminate\Http\JsonResponse
