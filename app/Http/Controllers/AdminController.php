@@ -53,7 +53,8 @@ class AdminController extends Controller
             'role_title' => 'Library Staff',
         ]);
 
-        event(new Registered($user));
+//        event(new Registered($user));
+        // i trigger ana ang mailler
 
         return to_route('users.index')->with('success', 'You successfully created a new Admin');
     }
