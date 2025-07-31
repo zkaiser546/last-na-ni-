@@ -4,9 +4,9 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { AlertCircle, X } from 'lucide-vue-next'
 import { ref, onMounted } from 'vue'
 
+// for alert
 const page = usePage()
 const showAlert = ref(true)
-
 onMounted(() => {
     if (page.props.flash.error) {
         setTimeout(() => {
@@ -14,6 +14,7 @@ onMounted(() => {
         }, 5000)
     }
 })
+
 </script>
 
 <template>
@@ -49,6 +50,7 @@ onMounted(() => {
                         Log in
                     </Link>
                     <Link
+                        v-if="$page.props.config.registration_enabled"
                         :href="route('register')"
                         class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
                     >
