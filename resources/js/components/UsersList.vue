@@ -51,28 +51,42 @@ export default defineComponent({
 
 <template>
     <div class="users-list">
-        <div v-if="loading" class="text-gray-500">Loading users...</div>
+        <div v-if="loading" class="text-gray-500 text-center py-4">
+            Loading users...
+        </div>
 
-        <div v-else-if="error" class="text-red-500">
+        <div v-else-if="error" class="text-red-500 text-center py-4">
             Error loading users: {{ error }}
         </div>
 
-        <div v-else class="space-y-2">
-            <div
-                v-for="user in users"
-                :key="user.id"
-                class="p-3 border rounded bg-white"
-            >
-                <div class="font-medium">{{ user.name }}</div>
-                <div class="text-sm text-gray-600">{{ user.email }}</div>
-                <div class="text-xs text-gray-400">
-                    Joined: {{ formatDate(user.created_at) }}
-                </div>
-            </div>
-
-            <div v-if="users.length === 0" class="text-gray-500 text-center py-4">
-                No users found
-            </div>
+        <div v-else>
+            <table class="w-full border-collapse">
+                <thead>
+                <tr class="bg-gray-100">
+                    <th class="p-3 text-left border-b">Name</th>
+                    <th class="p-3 text-left border-b">Email</th>
+                    <th class="p-3 text-left border-b">Joined</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr
+                    v-for="user in users"
+                    :key="user.id"
+                    class="border-b hover:bg-gray-50"
+                >
+                    <td class="p-3 font-medium">{{ user.name }}</td>
+                    <td class="p-3 text-gray-600">{{ user.email }}</td>
+                    <td class="p-3 text-gray-400 text-sm">
+                        {{ formatDate(user.created_at) }}
+                    </td>
+                </tr>
+                <tr v-if="users.length === 0">
+                    <td colspan="3" class="text-gray-500 text-center py-4">
+                        No users found
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </template>

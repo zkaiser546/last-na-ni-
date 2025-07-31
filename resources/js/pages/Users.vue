@@ -14,7 +14,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const tabs = [
     { id: 'tab1', title: 'Users List' },
-    { id: 'tab2', title: 'User Settings' },
+    { id: 'tab2', title: 'Add User' },
     { id: 'tab3', title: 'User Reports' },
 ];
 
@@ -40,16 +40,10 @@ const tabs = [
                 <!-- Tab 2 content with HTML -->
                 <template #tab2>
                     <form class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Default Role</label>
-                            <select class="w-full p-2 border rounded">
-                                <option>User</option>
-                                <option>Admin</option>
-                            </select>
+                        <h2 class="font-bold">Users Management</h2>
+                        <div class="text-sm grid grid-cols-1 md:grid-cols-2 gap-4">
+                            hi
                         </div>
-                        <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                            Save Settings
-                        </button>
                     </form>
                 </template>
 
