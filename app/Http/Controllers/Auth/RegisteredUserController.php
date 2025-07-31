@@ -45,8 +45,8 @@ class RegisteredUserController extends Controller
             'user_type' => 'super-admin',
         ]);
 
-        $user->superAdminDetails()->create([
-            'permissions' => 'All permissions possible',
+        $user->superAdmin()->create([
+            'permissions' => ['manage_admins', 'manage_records'],
         ]);
 
         event(new Registered($user));

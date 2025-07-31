@@ -45,8 +45,23 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function superAdminDetails(): \Illuminate\Database\Eloquent\Relations\HasOne|User
+    public function superAdmin(): \Illuminate\Database\Eloquent\Relations\HasOne|User
     {
         return $this->hasOne(SuperAdmin::class);
+    }
+
+    public function admin(): \Illuminate\Database\Eloquent\Relations\HasOne|User
+    {
+        return $this->hasOne(Admin::class);
+    }
+
+    public function faculty(): \Illuminate\Database\Eloquent\Relations\HasOne|User
+    {
+        return $this->hasOne(Faculty::class);
+    }
+
+    public function student(): \Illuminate\Database\Eloquent\Relations\HasOne|User
+    {
+        return $this->hasOne(Student::class);
     }
 }

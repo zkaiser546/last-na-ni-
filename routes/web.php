@@ -18,6 +18,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/admins/create', [AdminController::class, 'create'])->name('admins.create');
+    Route::post('/users/admins/', [AdminController::class, 'store'])->name('admins.store');
 
     Route::get('/records', function () {
         return Inertia::render('Records');
