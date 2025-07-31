@@ -3,9 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum'])->group(function () {
-
-    Route::get('/users', [\App\Http\Controllers\Auth\RegisteredUserController::class, 'index']);
-
+    Route::get('/users', [\App\Http\Controllers\UserController::class, 'index']);
+    Route::post('/users', [\App\Http\Controllers\UserController::class, 'store']);
 });
 
 Route::get('/sample', function () {

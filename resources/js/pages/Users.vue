@@ -3,7 +3,8 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import AppTabs from '@/components/AppTabs.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import UsersList from '@/components/UsersList.vue';
+import UsersList from '@/components/user/UsersList.vue';
+import AddUser from '@/components/user/AddUser.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -42,7 +43,7 @@ const tabs = [
                     <form class="space-y-4">
                         <h2 class="font-bold">Users Management</h2>
                         <div class="text-sm grid grid-cols-1 md:grid-cols-2 gap-4">
-                            hi
+                            <AddUser />
                         </div>
                     </form>
                 </template>

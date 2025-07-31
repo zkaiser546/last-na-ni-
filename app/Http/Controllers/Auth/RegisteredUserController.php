@@ -15,15 +15,6 @@ use Inertia\Response;
 
 class RegisteredUserController extends Controller
 {
-    public function index()
-    {
-        $users = User::select('id', 'name', 'email', 'created_at')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return response()->json($users);
-    }
-
     /**
      * Show the registration page.
      */
