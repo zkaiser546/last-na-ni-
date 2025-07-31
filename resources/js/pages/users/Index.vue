@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
+import { Button } from '@/components/ui/button';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Dashboard',
-        href: '/dashboard',
+        title: 'Users',
+        href: '/users',
     },
 ];
 
@@ -27,6 +28,11 @@ defineProps<{
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+            <div>
+                <Link :href="route('admins.create')">
+                    <Button>Add Admin</Button>
+                </Link>
+            </div>
             <div v-if="super_admin" class="flex gap-4 super-admin-info">
                 <h2>Super Admin</h2>
                 <p><strong>Name:</strong> {{ super_admin.first_name }}</p>

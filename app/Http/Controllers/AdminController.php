@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Admin;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class AdminController extends Controller
 {
@@ -20,7 +21,7 @@ class AdminController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('admins/Create');
     }
 
     /**
