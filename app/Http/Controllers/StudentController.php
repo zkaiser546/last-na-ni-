@@ -43,13 +43,14 @@ class StudentController extends Controller
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
+            'user_type' => 'student',
         ]);
 
         $user->student()->create([
             'student_id' => $request->student_id,
         ]);
 
-        return to_route('users.index')->with('success', 'You successfully created a new Admin');
+        return to_route('users.index')->with('success', 'You successfully created a new Student');
 
     }
 
