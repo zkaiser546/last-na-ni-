@@ -204,14 +204,26 @@ class BookController extends Controller
 
                         $physical_location_id = null;
                         if (!empty($row[8])) {
-                            $physical_location_name = ucwords(strtolower($row[8]));
-                            $physical_location = PhysicalLocation::where('name', $physical_location_name)->first();
+                            $physical_location_name = ucwords(strtolower(trim($row[8])));
+                            $physical_location = PhysicalLocation::where('name', 'like', $physical_location_name)->first();
+
                             if ($physical_location) {
                                 $physical_location_id = $physical_location->id;
                             } else {
+                                // Generate base symbol
+                                $base_symbol = strlen($physical_location_name) >= 3 ? substr($physical_location_name, 0, 3) : $physical_location_name;
+
+                                // Check if symbol already exists and generate unique one
+                                $symbol = $base_symbol;
+                                $counter = 1;
+                                while (PhysicalLocation::where('symbol', $symbol)->exists()) {
+                                    $symbol = $base_symbol . $counter;
+                                    $counter++;
+                                }
+
                                 $physical_location_id = PhysicalLocation::create([
                                     'name' => $physical_location_name,
-                                    'symbol' => strlen($physical_location_name) >= 3 ? substr($physical_location_name, 0, 3) : $physical_location_name
+                                    'symbol' => $symbol
                                 ])->id;
                             }
                         }
@@ -238,10 +250,18 @@ class BookController extends Controller
                             }
                         }
 
+                        $source = null;
+                        $donated_by = null;
+                        $purchaseAmount = $row[17] ?? null;
+                        if (!is_numeric($purchaseAmount) || $purchaseAmount < 0) {
+                            $donated_by = $purchaseAmount;
+                            $source = 'Donation';
+                            $purchaseAmount = null;
+                        }
+
                         $source_id = null;
-                        if (!empty($row[15])) {
-                            $source_name = $row[15];
-                            $source_from_db = Source::where('name', ucwords(strtolower($row[15])))->first();
+                        if ($source){
+                            $source_from_db = Source::where('name', ucwords($source))->first();
                             if ($source_from_db) {
                                 $source_id = $source_from_db->id;
                             } else {
@@ -250,15 +270,20 @@ class BookController extends Controller
                                     'name' => $source_name
                                 ])->id;
                             }
-                        }
+                        } else {
 
-                        $source = null;
-                        $donated_by = null;
-                        $purchaseAmount = $row[17] ?? null;
-                        if (!is_numeric($purchaseAmount) || $purchaseAmount < 0) {
-                            $donated_by = $purchaseAmount;
-                            $source = 'Donation';
-                            $purchaseAmount = null;
+                            if (!empty($row[15])) {
+                                $source_name = $row[15];
+                                $source_from_db = Source::where('name', ucwords(strtolower($row[15])))->first();
+                                if ($source_from_db) {
+                                    $source_id = $source_from_db->id;
+                                } else {
+                                    $source_id = Source::create([
+                                        'key' => strtolower($source_name),
+                                        'name' => $source_name
+                                    ])->id;
+                                }
+                            }
                         }
 
                         $supplier = null;
@@ -299,7 +324,7 @@ class BookController extends Controller
                             'cover_type_id' => $cover_type_id,
                             'cover_image' => '/uploads/book_cover_images/' . $cover_image,
 
-                            'source_id' => $source ?? $source_id,
+                            'source_id' => $source_id,
                             'purchase_amount' => $purchaseAmount,
                             'supplier' => $supplier,
                             'donated_by' => $donated_by,
