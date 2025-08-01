@@ -474,6 +474,9 @@ class BookController extends Controller
                         $failed_count++;
                         $errors[] = "Row " . ($row_index + 1) . ": " . $e->getMessage();
                         Log::info('Processing row', ['row_index' => $row_index + 1, 'data' => $row]);
+                        foreach ($errors as $error) {
+                            Log::error($error);
+                        }
                     }
                 }
             }
