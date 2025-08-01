@@ -71,12 +71,20 @@ class BookController extends Controller
 
     public function importStore(Request $request)
     {
-        $request->validate([
-            'import_csv' => 'required|file|mimes:csv,txt|max:10240', // 10MB max
-        ]);
+        try {
+
+            $request->validate([
+                'csv_file' => 'required|file|mimes:csv,txt|max:1', // 10MB max, 10240
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            session()->flash('error', 'Please fix the validation errors below.');
+            throw $e; // Re-throw to let Laravel handle the redirect with errors
+        }
 
         try {
-            $csv_path = $request->import_csv->store('temp/csv_imports');
+
+            $csv_path = $request->csv_file->store('temp/csv_imports');
 
         } catch (\Illuminate\Database\QueryException $e) {
             // Handle database-specific errors
