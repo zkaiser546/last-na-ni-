@@ -82,6 +82,8 @@ class BookController extends Controller
 
     public function importStore(Request $request)
     {
+        $success_message = "";
+
         try {
 
             $request->validate([
@@ -491,6 +493,8 @@ class BookController extends Controller
                 : 'An unexpected error occurred: ' . $e->getMessage();
             session()->flash('error', $message);
         }
+
+        return to_route('records.index')->with('success', $success_message);
 
     }
 }

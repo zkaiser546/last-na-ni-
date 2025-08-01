@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('patron_types', function (Blueprint $table) {
+        Schema::create('cover_types', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50)->unique();
+            $table->string('key')->unique();
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('patron_types');
+        Schema::dropIfExists('cover_types');
     }
 };

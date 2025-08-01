@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,8 +13,28 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('records', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id(); // Primary key, auto-generated
+
+            $table->string('accession_number')->unique()->nullable();
+            $table->string('title');
+            $table->date('date_received')->nullable();
+            $table->enum('acquisition_status', ['available', 'pending_review', 'processing']);
+            $table->enum('condition', ['excellent', 'good', 'fair', 'poor', 'damaged']);
+            $table->json('subject_headings')->nullable();
+
+            $table->foreignId('added_by')->nullable()
+                ->constrained('users')
+                ->onDelete('set null');
+            $table->foreignId('updated_by')->nullable()
+                ->constrained('users')
+                ->onDelete('set null');
+            $table->foreignId('imported_by')->nullable()
+                ->constrained('users')
+                ->onDelete('set null');
+            $table->timestamps(); // created_at and updated_at
+            $table->softDeletes(); // For soft delete functionality
+
+            // make idex here for performance in searching
         });
     }
 
