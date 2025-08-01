@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/users/admins', [AdminController::class, 'store'])->name('admins.store');
     Route::get('/users/students/create', [StudentController::class, 'create'])->name('students.create');
     Route::post('/users/students', [StudentController::class, 'store'])->name('students.store');
+    Route::get('/users/faculties/create', [FacultyController::class, 'create'])->name('faculties.create');
+    Route::post('/users/faculties', [FacultyController::class, 'store'])->name('faculties.store');
 
     Route::get('/records', function () {
         return Inertia::render('Records');

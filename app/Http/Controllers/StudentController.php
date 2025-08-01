@@ -31,13 +31,13 @@ class StudentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:50',
             'last_name' => 'required|string|max:50',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'student_id' => 'required|numeric|max:9999999999|unique:'.Student::class,
+            'student_id' => 'required|integer|unique:'.Student::class,
         ]);
 
         if ($validator->fails()) {

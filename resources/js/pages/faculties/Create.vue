@@ -9,31 +9,33 @@ import { Button } from '@/components/ui/button';
 import { LoaderCircle } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Users',
-        href: '/users',
-    },
-    {
-        title: 'Create Students',
-        href: '/students/create',
-    },
+  {
+      title: 'Users',
+      href: '/users',
+  },
+  {
+      title: 'Create Faculty',
+      href: '/faculties/create',
+  },
 ];
 
 const form = useForm({
     first_name: '',
     last_name: '',
     email: '',
-    student_id: '',
+    faculty_id: '',
+    department: '',
+    title: '',
 });
 
 const submit = () => {
-    form.post(route('students.store'), {});
+    form.post(route('faculties.store'), {});
 };
 
 </script>
 
 <template>
-    <Head title="Create Students" />
+    <Head title="Create Faculty" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
             <form @submit.prevent="submit" class="flex flex-col gap-6">
@@ -75,22 +77,52 @@ const submit = () => {
                     </div>
 
                     <div class="grid gap-2">
-                        <Label for="student_id">Student ID</Label>
+                        <Label for="faculty_id">Faculty ID</Label>
                         <Input
-                            id="student_id"
+                            id="faculty_id"
                             type="number"
                             required
                             autofocus
                             :tabindex="1"
-                            v-model="form.student_id"
-                            placeholder="Student ID"
+                            v-model="form.faculty_id"
+                            placeholder="Faculty ID"
                         />
-                        <InputError :message="form.errors.student_id" />
+                        <InputError :message="form.errors.faculty_id" />
+                    </div>
+
+                    <div class="grid gap-2">
+                        <Label for="department">Department</Label>
+                        <Input
+                            id="department"
+                            type="text"
+                            required
+                            autofocus
+                            :tabindex="1"
+                            autocomplete="department"
+                            v-model="form.department"
+                            placeholder="Department"
+                        />
+                        <InputError :message="form.errors.department" />
+                    </div>
+
+                    <div class="grid gap-2">
+                        <Label for="title">Title</Label>
+                        <Input
+                            id="title"
+                            type="text"
+                            required
+                            autofocus
+                            :tabindex="1"
+                            autocomplete="title"
+                            v-model="form.title"
+                            placeholder="Title"
+                        />
+                        <InputError :message="form.errors.department" />
                     </div>
 
                     <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="form.processing">
                         <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-                        Create Student
+                        Create Faculty
                     </Button>
                 </div>
             </form>

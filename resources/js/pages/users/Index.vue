@@ -43,7 +43,9 @@ const props = defineProps<Props>();
                 <Link :href="route('students.create')">
                     <Button variant="secondary">Add Student</Button>
                 </Link>
-                <Button variant="secondary">Add Faculty</Button>
+                <Link :href="route('faculties.create')">
+                    <Button variant="secondary">Add Faculty</Button>
+                </Link>
                 <Button variant="secondary">Add Graduate Student</Button>
             </div>
 
