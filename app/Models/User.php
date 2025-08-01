@@ -64,4 +64,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(Student::class);
     }
+
+    public function gradSchoolStudent(): \Illuminate\Database\Eloquent\Relations\HasOne|User
+    {
+        return $this->hasOne(GradSchoolStudent::class);
+    }
 }

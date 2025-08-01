@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\GradSchoolStudent;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Inertia\Inertia;
 
 class GradSchoolStudentController extends Controller
 {
@@ -18,9 +21,9 @@ class GradSchoolStudentController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): \Inertia\Response
     {
-        //
+        return Inertia::render('grad-students/Create');
     }
 
     /**
@@ -28,7 +31,33 @@ class GradSchoolStudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|string|max:50',
+            'last_name' => 'required|string|max:50',
+            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'student_id' => 'required|integer|unique:'.GradSchoolStudent::class,
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error', 'Please fix the validation errors below.');
+        }
+
+        $user = User::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'user_type' => 'grad-school-student',
+        ]);
+
+        $user->gradSchoolStudent()->create([
+            'student_id' => $request->student_id,
+        ]);
+
+        return to_route('users.index')->with('success', 'You successfully created a new Grad School Student');
+
     }
 
     /**
