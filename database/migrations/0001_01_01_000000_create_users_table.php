@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('profile_image')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->enum('role', ['super-admin', 'admin', 'student', 'faculty']);
+            $table->string('password')->nullable();
+            $table->enum('role', ['super-admin', 'staff-admin', 'student', 'faculty', 'graduate-school']);
             $table->rememberToken();
             $table->timestamps();
         });

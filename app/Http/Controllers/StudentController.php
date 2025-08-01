@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
+use Illuminate\Validation\Rules;
 
 class StudentController extends Controller
 {
@@ -20,7 +24,7 @@ class StudentController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('students/Create');
     }
 
     /**
@@ -28,7 +32,25 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'first_name' => 'required|string|max:50',
+            'last_name' => 'required|string|max:50',
+            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'student_id' => 'required|numeric|max:9999999999|unique:'.Student::class,
+        ]);
+
+        $user = User::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+        ]);
+
+        $user->student()->create([
+            'student_id' => $request->student_id,
+        ]);
+
+        return to_route('users.index')->with('success', 'You successfully created a new Admin');
+
     }
 
     /**

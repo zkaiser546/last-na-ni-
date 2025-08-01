@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Admin;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Hash;
@@ -45,7 +44,7 @@ class AdminController extends Controller
             'last_name' => $request->last_name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'user_type' => 'admin',
+            'user_type' => 'staff-admin',
         ]);
 
         $user->admin()->create([

@@ -34,9 +34,14 @@ const props = defineProps<Props>();
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
 
+            <h1 class="text-4xl">FUNCTIONAL lang ha</h1>
+
             <div class="flex gap-2">
                 <Link :href="route('admins.create')">
                     <Button variant="secondary">Add Admin</Button>
+                </Link>
+                <Link :href="route('students.create')">
+                    <Button variant="secondary">Add Student</Button>
                 </Link>
             </div>
 

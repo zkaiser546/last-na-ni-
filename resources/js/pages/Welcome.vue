@@ -77,8 +77,8 @@ declare module '@inertiajs/core' {
         </header>
         <div class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
             <main class="flex w-full max-w-[335px] flex-col-reverse overflow-hidden rounded-lg lg:max-w-4xl lg:flex-row">
-                <div class="dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]">
-                    This page is currently under construction
+                <div class="border dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]">
+                    <h1 class="text-8xl">FUNCTIONAL lang</h1>
                 </div>
             </main>
         </div>
