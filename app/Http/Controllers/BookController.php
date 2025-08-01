@@ -195,25 +195,35 @@ class BookController extends Controller
                             if ($ddc_class) {
                                 $ddc_class_id = $ddc_class->id;
                             } else {
+                                // Generate base code
+                                $base_code = strlen($ddc_class_name) >= 3 ? substr($ddc_class_name, 0, 3) : $ddc_class_name;
+
+                                // Check for duplicates and append number if needed
+                                $code = $base_code;
+                                $counter = 1;
+                                while (DdcClassification::where('code', $code)->exists()) {
+                                    $code = $base_code . $counter;
+                                    $counter++;
+                                }
+
                                 $ddc_class_id = DdcClassification::create([
                                     'name' => $ddc_class_name,
-                                    'code' => strlen($ddc_class_name) >= 3 ? substr($ddc_class_name, 0, 3) : $ddc_class_name
+                                    'code' => $code
                                 ])->id;
                             }
                         }
 
                         $physical_location_id = null;
                         if (!empty($row[8])) {
-                            $physical_location_name = ucwords(strtolower(trim($row[8])));
-                            $physical_location = PhysicalLocation::where('name', 'like', $physical_location_name)->first();
-
+                            $physical_location_name = ucwords(strtolower($row[8]));
+                            $physical_location = PhysicalLocation::where('name', $physical_location_name)->first();
                             if ($physical_location) {
                                 $physical_location_id = $physical_location->id;
                             } else {
                                 // Generate base symbol
                                 $base_symbol = strlen($physical_location_name) >= 3 ? substr($physical_location_name, 0, 3) : $physical_location_name;
 
-                                // Check if symbol already exists and generate unique one
+                                // Check for duplicates and append number if needed
                                 $symbol = $base_symbol;
                                 $counter = 1;
                                 while (PhysicalLocation::where('symbol', $symbol)->exists()) {
