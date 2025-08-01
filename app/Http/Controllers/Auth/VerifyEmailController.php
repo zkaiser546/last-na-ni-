@@ -22,7 +22,7 @@ class VerifyEmailController extends Controller
         if ($request->user()->markEmailAsVerified()) {
             /** @var \Illuminate\Contracts\Auth\MustVerifyEmail $user */
             $user = $request->user();
-            if (User::count() === 1) {
+            if (!User::where('user_type', 'super-admin')->exists()) {
                 $user->update([
                     'user_type' => 'super-admin',
                 ]);
