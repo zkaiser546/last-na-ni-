@@ -6,6 +6,7 @@ import { Head, useForm } from '@inertiajs/vue3';
   import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { LoaderCircle } from 'lucide-vue-next';
+import { Input } from '@/components/ui/input';
 
   const breadcrumbs: BreadcrumbItem[] = [
       {
@@ -44,7 +45,7 @@ import { LoaderCircle } from 'lucide-vue-next';
                 <div class="grid grid-cols-4 gap-6">
                     <div class="grid gap-2">
                         <Label for="csv_file">CSV File</Label>
-                        <input type="file" @input="handleFileInput" />
+                        <Input type="file" @input="handleFileInput" />
                         <progress v-if="form.progress" :value="form.progress.percentage" max="100">
                             {{ form.progress.percentage }}%
                         </progress>
