@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BookController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\GradSchoolStudentController;
+use App\Http\Controllers\RecordController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
 use App\Models\GradSchoolStudent;
@@ -30,9 +32,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/users/grad-students/create', [GradSchoolStudentController::class, 'create'])->name('grad-students.create');
     Route::post('/users/grad-students', [GradSchoolStudentController::class, 'store'])->name('grad-students.store');
 
-    Route::get('/records', function () {
-        return Inertia::render('Records');
-    })->name('records');
+    Route::get('/records', [RecordController::class, 'index'])->name('records.index');
+    Route::get('/records/books/import', [BookController::class, 'import'])->name('books.import');
+    Route::post('/records/books/import', [BookController::class, 'importStore'])->name('books.import.store');
 });
 
 // Test routes (no middleware)

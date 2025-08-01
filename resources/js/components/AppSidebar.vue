@@ -21,7 +21,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Records',
-        href: route('records'),
+        href: '/records',
         icon: BookOpen,
     }
 ];
