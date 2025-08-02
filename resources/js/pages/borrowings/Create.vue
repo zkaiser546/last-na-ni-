@@ -3,9 +3,10 @@
     import AppLayout from '@/layouts/AppLayout.vue';
     import type { BreadcrumbItem } from '@/types';
     import { Input } from '@/components/ui/input';
-    import { LoaderCircle, Search } from 'lucide-vue-next';
+    import { LoaderCircle, Search, ScanQrCode } from 'lucide-vue-next';
     import { Button } from '@/components/ui/button';
     import { computed } from 'vue';
+    import BookScannerDialog from '@/components/BookScannerDialog.vue';
 
     const breadcrumbs: BreadcrumbItem[] = [
       {
@@ -52,8 +53,11 @@
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
         borrow/return here
 
-            <form @submit.prevent="searchAcc">
-                <div class="relative w-full max-w-sm items-center">
+            <div class="relative grid gap-2 w-full max-w-sm items-center">
+                <div>
+                    <BookScannerDialog />
+                </div>
+                <form @submit.prevent="searchAcc">
                     <div class="relative">
                         <Input id="search" type="text" placeholder="Search Accession Number..." class="pl-10"
                                v-model="form.searchAcc"
@@ -69,8 +73,8 @@
                     <Button variant="outline" class="mt-2 w-full" tabindex="6" :disabled="form.processing" @click="clearSearch">
                         Clear
                     </Button>
-                </div>
-            </form>
+                </form>
+            </div>
 
             <!-- Display search result -->
             <div v-if="search_ac_result" class="search-result">
