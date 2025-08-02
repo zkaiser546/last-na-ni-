@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Record;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,7 +14,11 @@ class RecordController extends Controller
      */
     public function index(): \Inertia\Response
     {
-        return Inertia::render('records/Index');
+        $records = Record::latest()->paginate(10);
+
+        return Inertia::render('records/Index', [
+            'records' => $records
+        ]);
     }
 
     /**

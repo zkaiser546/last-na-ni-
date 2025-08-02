@@ -2,8 +2,9 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
-import PlaceholderPattern from '../../components/PlaceholderPattern.vue';
 import { Button } from '@/components/ui/button';
+import { router } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -11,6 +12,41 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dashboard',
     },
 ];
+
+// Define props interface
+interface Records {
+    last_page: number;
+    data: any[]; // Add this
+    current_page: number; // Add this
+    prev_page_url: string | null; // Add this
+    next_page_url: string | null; // Add this
+}
+
+interface Props {
+    records: Records;
+}
+
+// Define props
+const props = defineProps<Props>();
+
+// Convert computed property
+const totalPages = computed(() => {
+    return props.records.last_page;
+});
+
+// Convert method
+const goToPage = (page: number) => {
+    router.get(
+        route('records.index'),
+        { page: page },
+        {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        }
+    );
+};
+
 </script>
 
 <template>
@@ -24,40 +60,58 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <Link :href="route('books.import')">
                     <Button variant="secondary">Initial Import Books</Button>
                 </Link>
+            </div>
 
-                <!--
-                <Link :href="route('students.create')">
-                    <Button variant="secondary">Add Student</Button>
-                </Link>
-                <Link :href="route('faculties.create')">
-                    <Button variant="secondary">Add Faculty</Button>
-                </Link>
-                <Link :href="route('grad-students.create')">
-                    <Button variant="secondary">Add Grad Student</Button>
-                </Link>
-                -->
-            </div>
-            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                <PlaceholderPattern />
-                Try lang gud
-            </div>
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                    hi
+            <div>
+                <!-- Display Records -->
+                <div class="records-container">
+                    <h1>Records</h1>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <!-- Add other columns as needed -->
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="record in records.data" :key="record.id">
+                            <td>{{ record.id }}</td>
+                            <td>{{ record.name }}</td>
+                            <!-- Add other fields as needed -->
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                    mao diay ni diri
+
+                <!-- Pagination Controls -->
+                <div class="pagination">
+                    <!-- Previous Button -->
+                    <button
+                        :disabled="!records.prev_page_url"
+                        @click="goToPage(records.current_page - 1)"
+                    >
+                        Previous
+                    </button>
+
+                    <!-- Page Numbers -->
+                    <button
+                        v-for="page in totalPages"
+                        :key="page"
+                        :class="{ active: page === records.current_page }"
+                        @click="goToPage(page)"
+                    >
+                        {{ page }}
+                    </button>
+
+                    <!-- Next Button -->
+                    <button
+                        :disabled="!records.next_page_url"
+                        @click="goToPage(records.current_page + 1)"
+                    >
+                        Next
+                    </button>
                 </div>
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                    ay oii
-                </div>
-            </div>
-            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                <PlaceholderPattern />
-                lami
             </div>
         </div>
     </AppLayout>
