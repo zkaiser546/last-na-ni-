@@ -76,8 +76,8 @@ const goToPage = (page: number) => {
                         </thead>
                         <tbody>
                         <tr v-for="record in records.data" :key="record.id">
-                            <td>{{ record.id }}</td>
-                            <td>{{ record.name }}</td>
+                            <td>{{ record.accession_number }}</td>
+                            <td>{{ record.title }}</td>
                             <!-- Add other fields as needed -->
                         </tr>
                         </tbody>
