@@ -25,12 +25,10 @@ class BorrowingController extends Controller
         $search_result = null;
         if ($request->searchAcc) {
             $search_result = Record::where('accession_number', $request->searchAcc)->first();
-            session()->flash('success', 'Book successfully found!');
         }
 
         if ($request->scannedAcc) {
             $search_result = Record::where('accession_number', $request->scannedAcc)->first();
-            session()->flash('success', 'Book successfully found!');
         };
 
         return Inertia::render('borrowings/Create', [
