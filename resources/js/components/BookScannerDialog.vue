@@ -1,11 +1,20 @@
 <script lang="ts">
 import QrScanner from 'qr-scanner';
-import { Dialog, DialogFooter, DialogHeader } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTrigger, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
 export default {
     name: 'QrScannerComponent',
-    components: { DialogFooter, DialogHeader, Button, Dialog },
+    components: {
+        Dialog,
+        DialogContent,
+        DialogTrigger,
+        DialogFooter,
+        DialogHeader,
+        DialogTitle,
+        DialogDescription,
+        Button
+    },
     data() {
         return {
             qrScanner: null,
@@ -14,26 +23,42 @@ export default {
             error: '',
             cameras: [],
             currentCameraIndex: 0,
+            isDialogOpen: false,
         };
     },
-    mounted() {
-        this.initializeScanner();
-        this.getCameras();
-    },
-    beforeUnmount() {
-        if (this.qrScanner) {
-            this.qrScanner.destroy();
+    watch: {
+        isDialogOpen(newVal) {
+            if (newVal) {
+                this.$nextTick(() => {
+                    this.initializeScanner();
+                    this.getCameras();
+                });
+            } else {
+                this.cleanup();
+            }
         }
     },
+    beforeUnmount() {
+        this.cleanup();
+    },
     methods: {
+        cleanup() {
+            if (this.qrScanner) {
+                this.qrScanner.destroy();
+                this.qrScanner = null;
+            }
+            this.isScanning = false;
+        },
+
         async initializeScanner() {
             try {
-                // Initialize QR Scanner
-                this.qrScanner = new QrScanner(this.$refs.videoElement, (result) => this.onScanSuccess(result), {
-                    onDecodeError: (error) => this.onScanError(error),
-                    highlightScanRegion: true,
-                    highlightCodeOutline: true,
-                });
+                if (this.$refs.videoElement) {
+                    this.qrScanner = new QrScanner(this.$refs.videoElement, (result) => this.onScanSuccess(result), {
+                        onDecodeError: (error) => this.onScanError(error),
+                        highlightScanRegion: true,
+                        highlightCodeOutline: true,
+                    });
+                }
             } catch (error) {
                 this.error = 'Failed to initialize scanner: ' + error.message;
             }
@@ -49,9 +74,11 @@ export default {
 
         async startScanning() {
             try {
-                await this.qrScanner.start();
-                this.isScanning = true;
-                this.error = '';
+                if (this.qrScanner) {
+                    await this.qrScanner.start();
+                    this.isScanning = true;
+                    this.error = '';
+                }
             } catch (error) {
                 this.error = 'Failed to start scanning: ' + error.message;
             }
@@ -75,14 +102,11 @@ export default {
         onScanSuccess(result) {
             this.scanResult = result.data;
             this.stopScanning();
-
-            // Send result to Laravel backend
             this.sendToBackend(result.data);
         },
 
         onScanError(error) {
-            // Handle scan errors (usually when no QR code is detected)
-            // Don't show these as errors to the user as they're expected
+            // Handle scan errors silently
         },
 
         clearResult() {
@@ -106,53 +130,69 @@ export default {
                 console.error('Failed to send to backend:', error);
             }
         },
+
+        openDialog() {
+            this.isDialogOpen = true;
+        },
+
+        closeDialog() {
+            this.isDialogOpen = false;
+            this.clearResult();
+            this.error = '';
+        }
     },
 };
 </script>
 
 <template>
-    <Dialog>
+    <Dialog v-model:open="isDialogOpen">
         <DialogTrigger as-child>
-            <Button variant="outline"> Edit Profile </Button>
+            <Button variant="outline" @click="openDialog">Open QR Scanner</Button>
         </DialogTrigger>
-        <DialogContent class="sm:max-w-[425px]">
+        <DialogContent class="sm:max-w-[500px]">
             <DialogHeader>
-                <DialogTitle>Edit profile</DialogTitle>
-                <DialogDescription> Make changes to your profile here. Click save when you're done. </DialogDescription>
+                <DialogTitle>QR Code Scanner</DialogTitle>
+                <DialogDescription>
+                    Position a QR code in front of your camera to scan it.
+                </DialogDescription>
             </DialogHeader>
-            <div class="grid gap-4 py-4">
-                <div class="qr-scanner-container">
-                    <h2>QR Code Scanner</h2>
 
-                    <!-- Video element for camera feed -->
-                    <div class="scanner-wrapper">
-                        <video ref="videoElement" class="scanner-video"></video>
-                        <div v-if="!isScanning" class="scanner-overlay">
-                            <button @click="startScanning" class="start-btn">Start Scanning</button>
-                        </div>
-                    </div>
-
-                    <!-- Controls -->
-                    <div class="controls">
-                        <button v-if="isScanning" @click="stopScanning" class="stop-btn">Stop Scanning</button>
-                        <button @click="toggleCamera" class="toggle-btn">Switch Camera</button>
-                    </div>
-
-                    <!-- Results -->
-                    <div v-if="scanResult" class="result">
-                        <h3>Scan Result:</h3>
-                        <p>{{ scanResult }}</p>
-                        <button @click="clearResult">Clear</button>
-                    </div>
-
-                    <!-- Error handling -->
-                    <div v-if="error" class="error">
-                        <p>Error: {{ error }}</p>
+            <div class="qr-scanner-container">
+                <!-- Video element for camera feed -->
+                <div class="scanner-wrapper">
+                    <video ref="videoElement" class="scanner-video"></video>
+                    <div v-if="!isScanning" class="scanner-overlay">
+                        <Button @click="startScanning" class="start-btn">Start Scanning</Button>
                     </div>
                 </div>
+
+                <!-- Controls -->
+                <div class="controls">
+                    <Button v-if="isScanning" @click="stopScanning" variant="destructive" size="sm">
+                        Stop Scanning
+                    </Button>
+                    <Button @click="toggleCamera" variant="outline" size="sm">
+                        Switch Camera
+                    </Button>
+                </div>
+
+                <!-- Results -->
+                <div v-if="scanResult" class="result">
+                    <h4 class="font-semibold">Scan Result:</h4>
+                    <p class="text-sm break-all">{{ scanResult }}</p>
+                    <Button @click="clearResult" variant="outline" size="sm" class="mt-2">
+                        Clear
+                    </Button>
+                </div>
+
+                <!-- Error handling -->
+                <div v-if="error" class="error">
+                    <p class="text-sm">Error: {{ error }}</p>
+                </div>
             </div>
+
             <DialogFooter>
-                <Button type="submit"> Save changes </Button>
+                <Button @click="closeDialog" variant="outline">Close</Button>
             </DialogFooter>
         </DialogContent>
     </Dialog>
@@ -160,23 +200,21 @@ export default {
 
 <style scoped>
 .qr-scanner-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
+    padding: 10px 0;
 }
 
 .scanner-wrapper {
     position: relative;
     width: 100%;
-    max-width: 400px;
-    margin: 20px auto;
+    margin: 15px 0;
 }
 
 .scanner-video {
     width: 100%;
-    height: 300px;
-    border: 2px solid #ddd;
+    height: 250px;
+    border: 2px solid #e5e7eb;
     border-radius: 8px;
+    background: #000;
 }
 
 .scanner-overlay {
@@ -193,50 +231,26 @@ export default {
 }
 
 .controls {
-    text-align: center;
-    margin: 20px 0;
-}
-
-.start-btn,
-.stop-btn,
-.toggle-btn {
-    padding: 10px 20px;
-    margin: 0 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.start-btn {
-    background: #28a745;
-    color: white;
-}
-
-.stop-btn {
-    background: #dc3545;
-    color: white;
-}
-
-.toggle-btn {
-    background: #007bff;
-    color: white;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 15px 0;
 }
 
 .result {
-    margin: 20px 0;
-    padding: 15px;
-    background: #d4edda;
-    border: 1px solid #c3e6cb;
-    border-radius: 5px;
+    margin: 15px 0;
+    padding: 12px;
+    background: #f0f9ff;
+    border: 1px solid #e0f2fe;
+    border-radius: 6px;
 }
 
 .error {
-    margin: 20px 0;
-    padding: 15px;
-    background: #f8d7da;
-    border: 1px solid #f5c6cb;
-    border-radius: 5px;
-    color: #721c24;
+    margin: 15px 0;
+    padding: 12px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    color: #dc2626;
 }
 </style>
