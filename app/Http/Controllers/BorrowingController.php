@@ -11,7 +11,7 @@ class BorrowingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): \Inertia\Response
     {
         return Inertia::render('borrowings/Index');
     }
@@ -19,9 +19,9 @@ class BorrowingController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): \Inertia\Response
     {
-        //
+        return Inertia::render('borrowings/Create');
     }
 
     /**
