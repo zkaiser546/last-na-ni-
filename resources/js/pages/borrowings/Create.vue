@@ -7,7 +7,6 @@
     import { Button } from '@/components/ui/button';
     import { computed } from 'vue';
     import BookScannerDialog from '@/components/BookScannerDialog.vue';
-    import BorrowTypeRadio from '@/components/BorrowTypeRadio.vue';
 
     const breadcrumbs: BreadcrumbItem[] = [
       {
@@ -26,7 +25,6 @@
 
     const form = useForm({
         searchAcc: "",
-        borrowType: "inside", // Add default value
     });
 
     const searchAcc = () => {
@@ -57,12 +55,11 @@
             <div class="grid grid-cols-2 gap-8">
                 <div class="relative grid gap-2 w-full max-w-sm items-center">
 
-                    <BorrowTypeRadio v-model="form.borrowType" />
                     <BookScannerDialog />
 
                     <form @submit.prevent="searchAcc">
                         <div class="relative">
-                            <Input required id="search" type="text" placeholder="Search Accession Number..." class="pl-10"
+                            <Input required id="search" type="number" placeholder="Search Accession Number..." class="pl-10"
                                    v-model="form.searchAcc"
                             />
                             <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
@@ -84,8 +81,8 @@
                         <p><strong>Accession Number:</strong> {{ search_ac_result.accession_number }}</p>
                         <p><strong>Title:</strong> {{ search_ac_result.title }}</p>
                         <!-- Add other fields as needed -->
-                        <Button v-if="form.borrowType==='inside'">Borrow (Inside)</Button>
-                        <Button v-else-if="form.borrowType==='take-home'">Borrow (Take Home)</Button>
+                        <Button>Borrow (Inside)</Button>
+                        <Button>Borrow (Take Home)</Button>
                     </div>
                     <div v-else-if="searchAttempted && !search_ac_result" class="no-result">
                         <p>No record found with that accession number.</p>
