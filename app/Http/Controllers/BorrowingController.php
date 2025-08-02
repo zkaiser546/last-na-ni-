@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Borrowing;
+use App\Models\Record;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -19,9 +20,16 @@ class BorrowingController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): \Inertia\Response
+    public function create(Request $request): \Inertia\Response
     {
-        return Inertia::render('borrowings/Create');
+        $search_result = null;
+        if ($request->searchAcc) {
+            $search_result = Record::where('accession_number', $request->searchAcc)->first();
+        }
+
+        return Inertia::render('borrowings/Create', [
+            'search_ac_result' => $search_result,
+        ]);
     }
 
     /**
