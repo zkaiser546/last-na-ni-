@@ -2,6 +2,7 @@
 import QrScanner from 'qr-scanner';
 import { Dialog, DialogContent, DialogTrigger, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { ScanQrCode } from 'lucide-vue-next';
 
 export default {
     name: 'QrScannerComponent',
@@ -13,7 +14,8 @@ export default {
         DialogHeader,
         DialogTitle,
         DialogDescription,
-        Button
+        Button,
+        ScanQrCode,
     },
     data() {
         return {
@@ -147,7 +149,10 @@ export default {
 <template>
     <Dialog v-model:open="isDialogOpen">
         <DialogTrigger as-child>
-            <Button variant="outline" @click="openDialog">Open QR Scanner</Button>
+            <Button @click="openDialog">
+                <ScanQrCode class="w-4 h-4 mr-2"/>
+                Open QR Scanner
+            </Button>
         </DialogTrigger>
         <DialogContent class="sm:max-w-[500px]">
             <DialogHeader>
