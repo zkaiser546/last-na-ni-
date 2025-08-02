@@ -35,8 +35,6 @@ declare module '@inertiajs/core' {
 
 <template>
     <Head title="Welcome Raffy">
-        <link rel="preconnect" href="https://rsms.me/" />
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>
     <div class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
         <Alert class="absolute top-5 right-5 w-fit pr-8" variant="destructive" v-if="page.props.flash.error && showAlert">
@@ -79,6 +77,13 @@ declare module '@inertiajs/core' {
             <main class="flex w-full max-w-[335px] flex-col-reverse overflow-hidden rounded-lg lg:max-w-4xl lg:flex-row">
                 <div class="border dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]">
                     <h1 class="text-8xl">FUNCTIONAL lang</h1>
+                    <h1 class="text-7xl">Saturday:</h1>
+                    <ul>
+                        <li class="pl-20 text-6xl">I display ang books</li>
+                        <li class="pl-20 text-6xl">Maka book, outside ug inside</li>
+                        <li class="pl-20 text-6xl">Display borrows</li>
+                        <li class="pl-20 text-6xl">Welcome search</li>
+                    </ul>
                 </div>
             </main>
         </div>
