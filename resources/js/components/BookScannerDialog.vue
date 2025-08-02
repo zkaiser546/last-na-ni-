@@ -100,13 +100,27 @@ export default {
         },
 
         onScanSuccess(result) {
-            this.scanResult = result.data;
-            this.stopScanning();
-            this.sendToBackend(result.data);
+            if (this.isValidQRCode(result)) {
+                this.scanResult = result.data;
+                this.stopScanning();
+                this.sendToBackend(result.data);
+            } else {
+                // Handle invalid result
+                this.error = "Invalid book!, please scan again";
+                this.stopScanning();
+                // Optionally continue scanning
+
+            }
+        },
+
+        isValidQRCode(result) {
+            // Check if result.data is an integer up to 5 digits
+            const num = parseInt(result.data);
+            return Number.isInteger(num) && num >= 0 && num <= 99999;
         },
 
         onScanError(error) {
-            // Handle scan errors silently
+            // handle error here silently
         },
 
         clearResult() {
@@ -114,21 +128,7 @@ export default {
         },
 
         async sendToBackend(data) {
-            try {
-                const response = await fetch('/api/qr-scan', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    },
-                    body: JSON.stringify({ qr_data: data }),
-                });
-
-                const result = await response.json();
-                console.log('Backend response:', result);
-            } catch (error) {
-                console.error('Failed to send to backend:', error);
-            }
+            console.log('nice kaayo ' + data)
         },
 
         openDialog() {
