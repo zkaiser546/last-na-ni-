@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\BorrowingController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\GradSchoolStudentController;
 use App\Http\Controllers\RecordController;
@@ -35,6 +36,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/records', [RecordController::class, 'index'])->name('records.index');
     Route::get('/records/books/import', [BookController::class, 'import'])->name('books.import');
     Route::post('/records/books/import', [BookController::class, 'importStore'])->name('books.import.store');
+
+    Route::get('/borrowings', [BorrowingController::class, 'index'])->name('borrowings.index');
+    Route::get('/borrowings/create', [BorrowingController::class, 'create'])->name('borrowings.create');
 });
 
 // Test routes (no middleware)

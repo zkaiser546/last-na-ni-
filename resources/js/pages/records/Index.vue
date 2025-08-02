@@ -8,8 +8,8 @@ import { computed } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Dashboard',
-        href: '/dashboard',
+        title: 'Records',
+        href: '/records',
     },
 ];
 
