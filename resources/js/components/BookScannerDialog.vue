@@ -3,6 +3,7 @@ import QrScanner from 'qr-scanner';
 import { Dialog, DialogContent, DialogTrigger, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ScanQrCode } from 'lucide-vue-next';
+import { router } from '@inertiajs/vue3';
 
 export default {
     name: 'QrScannerComponent',
@@ -130,7 +131,7 @@ export default {
         },
 
         async sendToBackend(data) {
-            console.log('nice kaayo ' + data)
+            router.get(route('borrowings.create'), {scannedAcc: data})
         },
 
         openDialog() {
