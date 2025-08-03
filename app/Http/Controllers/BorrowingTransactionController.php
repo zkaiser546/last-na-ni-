@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Borrowing;
+use App\Models\BorrowingTransaction;
 use App\Models\Record;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class BorrowingController extends Controller
+class BorrowingTransactionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -49,7 +49,7 @@ class BorrowingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Borrowing $borrowing)
+    public function show(BorrowingTransaction $borrowing)
     {
         //
     }
@@ -57,7 +57,7 @@ class BorrowingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Borrowing $borrowing)
+    public function edit(BorrowingTransaction $borrowing)
     {
         //
     }
@@ -65,7 +65,7 @@ class BorrowingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Borrowing $borrowing)
+    public function update(Request $request, BorrowingTransaction $borrowing)
     {
         //
     }
@@ -73,7 +73,7 @@ class BorrowingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Borrowing $borrowing)
+    public function destroy(BorrowingTransaction $borrowing)
     {
         //
     }

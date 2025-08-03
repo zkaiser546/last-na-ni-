@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BookController;
-use App\Http\Controllers\BorrowingController;
+use App\Http\Controllers\BorrowingTransactionController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\GradSchoolStudentController;
 use App\Http\Controllers\RecordController;
@@ -37,9 +37,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/records/books/import', [BookController::class, 'import'])->name('books.import');
     Route::post('/records/books/import', [BookController::class, 'importStore'])->name('books.import.store');
 
-    Route::get('/borrowings', [BorrowingController::class, 'index'])->name('borrowings.index');
-    Route::get('/borrowings/create', [BorrowingController::class, 'create'])->name('borrowings.create');
-    Route::post('/borrowings', [BorrowingController::class, 'store'])->name('borrowings.store');
+    Route::get('/borrowings', [BorrowingTransactionController::class, 'index'])->name('borrowings.index');
+    Route::get('/borrowings/create', [BorrowingTransactionController::class, 'create'])->name('borrowings.create');
+    Route::post('/borrowings', [BorrowingTransactionController::class, 'store'])->name('borrowings.store');
 });
 
 // Test routes (no middleware)

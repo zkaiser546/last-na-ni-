@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Borrowing extends Model
+class BorrowingTransaction extends Model
 {
     //
 }
