@@ -32,6 +32,10 @@ declare module '@inertiajs/core' {
     }
 }
 
+defineProps({
+    records: Object,
+});
+
 </script>
 
 <template>
@@ -75,8 +79,20 @@ declare module '@inertiajs/core' {
                 </template>
             </nav>
         </header>
-        <div class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-            <main class="flex w-full max-w-[335px] flex-col-reverse overflow-hidden rounded-lg lg:max-w-4xl lg:flex-row">
+        <div class="grid w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
+            <div v-if="Object.keys(records?.data).length">
+                <div v-for="record in records?.data" :key="record.id">
+                    {{ record.accession_number }}
+                    {{ record.title }}
+                    isbn: {{ record.book.isbn }}
+                    year: {{ record.book.publication_year }}
+                    authors: {{ record.book.authors }}
+                    cover: {{ record.book.cover_image }}
+                    <img width="100" :src="`/storage/uploads/book-covers/${record.book.cover_image}`" alt="Book Cover" />
+                </div>
+            </div>
+            <main class="flex w-full max-w-[335px] overflow-hidden rounded-lg lg:max-w-4xl lg:flex-row">
+
                 <div class="border dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]">
                     <h1 class="text-8xl">FUNCTIONAL lang</h1>
                     <h1 class="text-7xl">Saturday:</h1>
