@@ -73,7 +73,7 @@ const props = defineProps<Props>();
                             {{ user.email }}
                         </TableCell>
                         <TableCell >
-                            {{ user.user_type }}
+                            {{ user.user_type_id }}
                         </TableCell>
                     </TableRow>
                 </TableBody>

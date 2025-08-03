@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Admin;
 use App\Models\User;
+use App\Models\UserType;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Hash;
@@ -44,12 +45,13 @@ class AdminController extends Controller
             throw $e; // Re-throw to let Laravel handle the redirect with errors
         }
 
+        $adminType = UserType::where('name', 'staff-admin')->firstOrFail();
         $user = User::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'user_type' => 'staff-admin',
+            'user_type_id' => $adminType->id,
         ]);
 
         $user->admin()->create([

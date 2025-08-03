@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\User;
+use App\Models\UserType;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -58,7 +59,10 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn () => $request->session()->get('error'),
             ],
             'config' => [
-                'registration_enabled' => !User::where('user_type', 'super-admin')->exists(),
+                'registration_enabled' => function () {
+                    $superAdminType = UserType::where('name', 'super-admin')->first();
+                    return !($superAdminType && User::where('user_type_id', $superAdminType->id)->exists());
+                },
             ],
         ];
     }

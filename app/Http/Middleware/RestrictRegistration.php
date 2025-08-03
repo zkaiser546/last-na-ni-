@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\User;
+use App\Models\UserType;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,9 +17,12 @@ class RestrictRegistration
      */
     public function handle(Request $request, Closure $next)
     {
-        if (User::where('user_type', 'super-admin')->exists()) {
+        $superAdminType = UserType::where('name', 'super-admin')->first();
+
+        if ($superAdminType && User::where('user_type_id', $superAdminType->id)->exists()) {
             return redirect()->route('home')->with('error', 'Registration is disabled as a super admin already exists.');
         }
+
         return $next($request);
     }
 }
