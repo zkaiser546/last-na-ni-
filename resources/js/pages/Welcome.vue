@@ -3,6 +3,7 @@ import { Head, Link, usePage } from '@inertiajs/vue3';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { AlertCircle, X } from 'lucide-vue-next'
 import { ref, onMounted } from 'vue'
+import BookCard from '@/components/BookCard.vue';
 
 // for alert
 const page = usePage()
@@ -30,10 +31,6 @@ declare module '@inertiajs/core' {
         flash: Flash;
         config: Config;
     }
-}
-
-const getCoverUrl = (path: string) => {
-    return path ? `/storage/uploads/book-covers/${path}` : `/storage/placeholders/sample1.png`;
 }
 
 defineProps({
@@ -85,14 +82,10 @@ defineProps({
         </header>
         <div class="grid w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
             <div v-if="Object.keys(records?.data).length">
-                <div v-for="record in records?.data" :key="record.id">
-                    {{ record.accession_number }}
-                    {{ record.title }}
-                    isbn: {{ record.book.isbn }}
-                    year: {{ record.book.publication_year }}
-                    authors: {{ record.book.authors }}
-                    cover: {{ record.book.cover_image }}
-                    <img width="100" :src="getCoverUrl(record.book.cover_image)" alt="Book Cover" />
+                <div class="grid grid-cols-3 gap-4">
+                    <div v-for="record in records?.data" :key="record.id">
+                        <BookCard :record="record" />
+                    </div>
                 </div>
             </div>
             <main class="flex w-full max-w-[335px] overflow-hidden rounded-lg lg:max-w-4xl lg:flex-row">
