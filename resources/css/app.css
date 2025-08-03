@@ -85,108 +85,109 @@
 }
 
 :root {
-    /* Base colors - High contrast */
-    --background: hsl(0 0% 100%);            /* Pure white */
-    --foreground: hsl(0 0% 5%);              /* Almost black */
-    --card: hsl(0 0% 100%);                  /* Pure white cards */
-    --card-foreground: hsl(0 0% 5%);         /* Almost black text */
-    --popover: hsl(0 0% 100%);               /* Pure white */
-    --popover-foreground: hsl(0 0% 5%);      /* Almost black text */
+    /* Base colors - Soft cream and softened black */
+    --background: hsl(45 100% 98%);
+    --foreground: hsl(0 0% 10%);
+    --card: hsl(45 100% 98%);
+    --card-foreground: hsl(0 0% 10%);
+    --popover: hsl(45 100% 98%);
+    --popover-foreground: hsl(0 0% 10%);
 
     /* Primary - Vibrant School Maroon */
-    --primary: hsl(0 75% 35%);               /* Bold, vibrant maroon */
-    --primary-foreground: hsl(0 0% 100%);    /* Pure white text */
+    --primary: hsl(0 75% 35%);
+    --primary-foreground: hsl(0 0% 100%);
 
     /* Secondary - Vibrant Green */
-    --secondary: hsl(120 75% 35%);           /* Bold green */
-    --secondary-foreground: hsl(0 0% 100%);  /* White text for contrast */
+    --secondary: hsl(120 75% 35%);
+    --secondary-foreground: hsl(0 0% 100%);
 
-    /* Muted tones - Still with good contrast */
-    --muted: hsl(0 0% 95%);                  /* Light gray */
-    --muted-foreground: hsl(0 0% 25%);       /* Dark gray for readability */
+    /* Muted tones - Softer gray with warmth */
+    --muted: hsl(45 40% 93%);
+    --muted-foreground: hsl(0 0% 25%);
 
     /* Accent - Electric Golden Yellow */
-    --accent: hsl(45 100% 55%);              /* Bright, electric yellow */
-    --accent-foreground: hsl(0 0% 10%);      /* Almost black text */
+    --accent: hsl(45 100% 55%);
+    --accent-foreground: hsl(0 0% 10%);
 
-    /* System colors - High contrast */
-    --destructive: hsl(0 85% 50%);           /* Bright red */
-    --destructive-foreground: hsl(0 0% 100%); /* White text */
-    --border: hsl(0 0% 85%);                 /* Clear gray border */
-    --input: hsl(0 0% 98%);                  /* Almost white input */
-    --ring: hsl(45 100% 55%);                /* Bright yellow focus ring */
+    /* System colors */
+    --destructive: hsl(0 85% 50%);
+    --destructive-foreground: hsl(0 0% 100%);
+    --border: hsl(45 30% 85%);
+    --input: hsl(45 60% 96%);
+    --ring: hsl(45 100% 55%);
 
-    /* Chart colors - Vibrant and distinct */
-    --chart-1: hsl(0 75% 35%);               /* Vibrant maroon */
-    --chart-2: hsl(120 60% 40%);             /* Bold green */
-    --chart-3: hsl(45 100% 50%);             /* Electric yellow */
-    --chart-4: hsl(25 80% 45%);              /* Bright orange */
-    --chart-5: hsl(200 60% 45%);             /* Bright blue */
+    /* Chart colors */
+    --chart-1: hsl(0 75% 35%);
+    --chart-2: hsl(120 60% 40%);
+    --chart-3: hsl(45 100% 50%);
+    --chart-4: hsl(25 80% 45%);
+    --chart-5: hsl(200 60% 45%);
 
     --radius: 0.5rem;
 
-    /* Sidebar - High contrast maroon theme */
-    --sidebar-background: hsl(0 75% 35%);    /* Bold maroon background */
-    --sidebar-foreground: hsl(0 0% 100%);    /* White text */
-    --sidebar-primary: hsl(45 100% 55%);     /* Bright yellow primary */
-    --sidebar-primary-foreground: hsl(0 0% 10%); /* Dark text on yellow */
-    --sidebar-accent: hsl(0 0% 98%);             /* Almost pure white */
-    --sidebar-accent-foreground: hsl(0 0% 5%);              /* Almost pure black */
-    --sidebar-border: hsl(0 50% 45%);        /* Lighter maroon border */
-    --sidebar-ring: hsl(45 100% 65%);        /* Bright yellow ring */
-    --sidebar: hsl(0 75% 35%);               /* Bold maroon sidebar */
+    /* Sidebar */
+    --sidebar-background: hsl(0 75% 35%);
+    --sidebar-foreground: hsl(0 0% 100%);
+    --sidebar-primary: hsl(45 100% 55%);
+    --sidebar-primary-foreground: hsl(0 0% 10%);
+    --sidebar-accent: hsl(45 100% 98%);
+    --sidebar-accent-foreground: hsl(0 0% 10%);
+    --sidebar-border: hsl(0 50% 45%);
+    --sidebar-ring: hsl(45 100% 65%);
+    --sidebar: hsl(0 75% 35%);
 }
 
 .dark {
-    /* Dark theme - High contrast with vibrant colors */
-    --background: hsl(0 0% 5%);              /* Almost pure black */
-    --foreground: hsl(0 0% 98%);             /* Almost pure white */
-    --card: hsl(0 15% 8%);                   /* Very dark with maroon hint */
-    --card-foreground: hsl(0 0% 98%);        /* Almost pure white */
-    --popover: hsl(0 15% 8%);                /* Very dark with maroon hint */
-    --popover-foreground: hsl(0 0% 98%);     /* Almost pure white */
+    /* Dark theme - Softer black tones */
+    --background: hsl(0 0% 10%);
+    --foreground: hsl(0 0% 97%);
+    --card: hsl(0 15% 10%);
+    --card-foreground: hsl(0 0% 97%);
+    --popover: hsl(0 15% 10%);
+    --popover-foreground: hsl(0 0% 97%);
 
-    /* Primary - Bright maroon for dark theme */
-    --primary: hsl(0 85% 65%);               /* Bright, vibrant maroon */
-    --primary-foreground: hsl(0 0% 5%);      /* Almost black text */
+    /* Primary - Bright maroon */
+    --primary: hsl(0 85% 65%);
+    --primary-foreground: hsl(0 0% 10%);
 
-    /* Secondary - Electric green for dark theme */
-    --secondary: hsl(120 70% 55%);           /* Bright electric green */
-    --secondary-foreground: hsl(0 0% 5%);    /* Almost black text */
+    /* Secondary - Electric green */
+    --secondary: hsl(120 70% 55%);
+    --secondary-foreground: hsl(0 0% 10%);
 
-    /* Muted tones - High contrast dark */
-    --muted: hsl(0 5% 15%);                  /* Dark muted */
-    --muted-foreground: hsl(0 0% 80%);       /* Light gray for readability */
+    /* Muted tones */
+    --muted: hsl(0 5% 15%);
+    --muted-foreground: hsl(0 0% 80%);
 
-    /* Accent - Glowing yellow for dark theme */
-    --accent: hsl(45 100% 65%);              /* Bright glowing yellow */
-    --accent-foreground: hsl(0 0% 5%);       /* Almost black text */
+    /* Accent */
+    --accent: hsl(45 100% 65%);
+    --accent-foreground: hsl(0 0% 10%);
 
-    /* System colors - Bright for dark */
-    --destructive: hsl(0 90% 60%);           /* Bright red */
-    --destructive-foreground: hsl(0 0% 5%);  /* Dark text */
-    --border: hsl(0 10% 20%);                /* Dark border with contrast */
-    --input: hsl(0 10% 12%);                 /* Dark input with slight warmth */
-    --ring: hsl(45 100% 65%);                /* Bright yellow focus ring */
+    /* System colors */
+    --destructive: hsl(0 90% 60%);
+    --destructive-foreground: hsl(0 0% 10%);
+    --border: hsl(0 10% 20%);
+    --input: hsl(0 10% 12%);
+    --ring: hsl(45 100% 65%);
 
-    /* Dark chart colors - All vibrant and distinct */
-    --chart-1: hsl(0 85% 65%);               /* Bright maroon */
-    --chart-2: hsl(120 70% 55%);             /* Electric green */
-    --chart-3: hsl(45 100% 65%);             /* Glowing yellow */
-    --chart-4: hsl(25 85% 60%);              /* Bright orange */
-    --chart-5: hsl(200 70% 60%);             /* Bright blue */
+    /* Chart colors */
+    --chart-1: hsl(0 85% 65%);
+    --chart-2: hsl(120 70% 55%);
+    --chart-3: hsl(45 100% 65%);
+    --chart-4: hsl(25 85% 60%);
+    --chart-5: hsl(200 70% 60%);
 
-    /* Dark sidebar - Bold contrast */
-    --sidebar-background: hsl(0 20% 3%);     /* Almost black with maroon hint */
-    --sidebar-foreground: hsl(0 0% 95%);     /* Almost white text */
-    --sidebar-primary: hsl(0 85% 65%);       /* Bright maroon */
-    --sidebar-primary-foreground: hsl(0 0% 5%); /* Dark text */
-    --sidebar-accent: hsl(45 100% 65%);      /* Bright yellow accent */
-    --sidebar-accent-foreground: hsl(0 0% 5%); /* Dark text on yellow */
-    --sidebar-border: hsl(0 30% 25%);        /* Visible maroon border */
-    --sidebar-ring: hsl(120 70% 55%);        /* Bright green ring */
-    --sidebar: hsl(0 20% 8%);                /* Very dark maroon sidebar */
+    /* Sidebar */
+    --sidebar-background: hsl(0 20% 10%);
+    --sidebar-foreground: hsl(0 0% 95%);
+    --sidebar-primary: hsl(0 85% 65%);
+    --sidebar-primary-foreground: hsl(0 0% 10%);
+    --sidebar-accent: hsl(45 100% 65%);
+    --sidebar-accent-foreground: hsl(0 0% 10%);
+    --sidebar-border: hsl(0 30% 25%);
+    --sidebar-ring: hsl(120 70% 55%);
+    --sidebar: hsl(0 20% 12%);
 }
+
 
 @layer base {
     * {
