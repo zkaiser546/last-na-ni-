@@ -17,7 +17,7 @@ defineProps({
 </script>
 
 <template>
-    <Dialog>
+    <Dialog class="">
         <DialogTrigger as-child>
             <Card class="grid grid-cols-2">
                 <CardHeader class="">
@@ -33,18 +33,20 @@ defineProps({
                 </CardContent>
             </Card>
         </DialogTrigger>
-        <DialogContent class="sm:max-w-[425px]">
+        <DialogContent class="sm:max-w-6xl grid grid-cols-2">
 
-                <CardHeader class="">
-                    <CardTitle>{{ record?.title }}</CardTitle>
-                    <CardDescription class="flex justify-between">
-                        <div>{{ record?.accession_number }}</div>
-                        <div>{{ record?.book.authors }}</div>
-                    </CardDescription>
-                </CardHeader>
-                <CardContent class="flex justify-end">
-                    <img width="100" :src="getCoverUrl(record?.book.cover_image)" alt="Book Cover" />
-                </CardContent>
+            <CardContent class="flex justify-end">
+                <img width="350" :src="getCoverUrl(record?.book.cover_image)" alt="Book Cover" />
+            </CardContent>
+
+            <CardHeader class="">
+                <CardTitle>{{ record?.title }}</CardTitle>
+                <CardDescription class="flex justify-between">
+                    <div>{{ record?.accession_number }}</div>
+                    <div>{{ record?.book.authors }}</div>
+                </CardDescription>
+            </CardHeader>
+
 
             <!--
         isbn: {{ record?.book.isbn }}
