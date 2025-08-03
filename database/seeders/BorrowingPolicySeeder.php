@@ -86,7 +86,6 @@ class BorrowingPolicySeeder extends Seeder
             ],
             [
                 'name' => 'Borrow Inside Policy',
-                'user_type_id' => $studentType->id,
                 'max_items' => 5,
                 'loan_period_days' => 3,
                 'renewal_limit' => 3,

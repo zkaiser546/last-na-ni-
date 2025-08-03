@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BorrowingPolicy;
 use App\Models\BorrowingTransaction;
 use App\Models\Record;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -48,7 +49,7 @@ class BorrowingTransactionController extends Controller
             // Validate the request
             $validated = $request->validate([
                 'accession_number' => 'required|exists:records,accession_number',
-                'borrow_type' => 'required|in:inside',
+                'borrow_type' => 'required|in:inside,take-home',
             ]);
 
             $transaction = null;
@@ -85,6 +86,15 @@ class BorrowingTransactionController extends Controller
                     'checkout_date' => now(),
                     'checked_out_by' => Auth::id(),
                 ]);
+            }
+
+            else if ($request->borrow_type === 'take-home') {
+
+                $user_type_id = User::where('id', $request->user_id)->first()->user_type_id;
+
+                $borrowingPolicy = BorrowingPolicy::where('user_type_id', $user_type_id)->first();
+
+                dd($borrowingPolicy);
             }
 
             return to_route('borrowings.index')
