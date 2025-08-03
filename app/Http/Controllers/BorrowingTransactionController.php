@@ -27,13 +27,15 @@ class BorrowingTransactionController extends Controller
     public function create(Request $request): \Inertia\Response
     {
         $search_result = null;
-        if ($request->searchAcc) {
-            $search_result = Record::where('accession_number', $request->searchAcc)->first();
-        }
+        $accession_number = $request->searchAcc ?? $request->scannedAcc;
 
-        if ($request->scannedAcc) {
-            $search_result = Record::where('accession_number', $request->scannedAcc)->first();
-        };
+        if ($accession_number) {
+            $search_result = Record::where('accession_number', $accession_number)->first();
+
+            if (!$search_result) {
+                session()->flash('error', 'Sorry there is no record found');
+            }
+        }
 
         return Inertia::render('borrowings/Create', [
             'search_ac_result' => $search_result,

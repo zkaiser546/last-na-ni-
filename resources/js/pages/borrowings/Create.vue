@@ -72,8 +72,49 @@
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-6">
             <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-                <!-- Search Form Section -->
-                <div class="flex flex-col gap-4 w-full max-w-md">
+                <!-- Book Search and Result Section -->
+                <div class="flex flex-col gap-4 w-full">
+                    <!-- Book Result Placeholder -->
+                    <div class="search-result rounded-lg border p-4">
+                        <h3 class="text-lg font-semibold mb-2">Book Information</h3>
+                        <div class="space-y-2">
+                            <p>
+                                <strong>Accession Number:</strong>
+                                <span v-if="search_ac_result" class="text-muted-foreground">
+                                    {{ search_ac_result.accession_number }}
+                                </span>
+                                <span v-else class="text-muted-foreground">
+                                    Enter accession number below
+                                </span>
+                            </p>
+                            <p>
+                                <strong>Title:</strong>
+                                <span v-if="search_ac_result" class="text-muted-foreground">
+                                    {{ search_ac_result.title || 'N/A' }}
+                                </span>
+                                <span v-else class="text-muted-foreground">
+                                    Book title will appear here
+                                </span>
+                            </p>
+                            <p>
+                                <strong>Status:</strong>
+                                <span v-if="search_ac_result" class="text-muted-foreground">
+                                    {{ search_ac_result.status || 'N/A' }}
+                                </span>
+                                <span v-else class="text-muted-foreground">
+                                    Availability status will appear here
+                                </span>
+                            </p>
+                        </div>
+                        <Button v-if="search_ac_result"
+                            @click="borrow('inside')"
+                            :disabled="borrowForm.processing"
+                            class="flex-1"
+                        >
+                            Borrow (Inside)
+                        </Button>
+                    </div>
+                    <!-- Search Form -->
                     <BookScannerDialog />
                     <form @submit.prevent="searchAcc" class="flex flex-col gap-3">
                         <div class="relative">
@@ -112,73 +153,64 @@
                     </form>
                 </div>
 
-                <!-- Search Result Section -->
+                <!-- Patron Search and Result Section -->
                 <div class="flex flex-col gap-4">
-                    <div v-if="search_ac_result" class="search-result rounded-lg border p-4">
-                        <h3 class="text-lg font-semibold mb-2">Record Found:</h3>
+                    <!-- Patron Result Placeholder -->
+                    <div class="search-result rounded-lg border p-4">
+                        <h3 class="text-lg font-semibold mb-2">Patron Information</h3>
                         <div class="space-y-2">
-                            <p><strong>Accession Number:</strong> {{ search_ac_result.accession_number }}</p>
-                            <p><strong>Title:</strong> {{ search_ac_result.title }}</p>
-                            <p><strong>Status:</strong> {{ search_ac_result.status }}</p>
+                            <p><strong>Library ID:</strong> <span class="text-muted-foreground">Enter library ID below</span></p>
+                            <p><strong>Name:</strong> <span class="text-muted-foreground">Patron name will appear here</span></p>
+                            <p><strong>Status:</strong> <span class="text-muted-foreground">Patron status will appear here</span></p>
                         </div>
-                        <div v-if="search_ac_result.status === 'available'" class="mt-4 grid gap-2">
-                            <form @submit.prevent="searchAcc" class="flex flex-col gap-3">
-                                <div class="relative">
-                                    <Input
-                                        required
-                                        id="searchPatron"
-                                        type="number"
-                                        placeholder="Search Library ID..."
-                                        class="pl-10"
-                                        v-model="borrowForm.searchPatron"
-                                    />
-                                    <span class="absolute left-0 inset-y-0 flex items-center justify-center px-2">
+                    </div>
+                    <!-- Patron Search Form (shown only when book is available) -->
+                    <div v-if="search_ac_result && search_ac_result.status === 'available'" class="flex flex-col gap-4">
+                        <form @submit.prevent="searchAcc" class="flex flex-col gap-3">
+                            <div class="relative">
+                                <Input
+                                    required
+                                    id="searchPatron"
+                                    type="number"
+                                    placeholder="Search Library ID..."
+                                    class="pl-10"
+                                    v-model="borrowForm.searchPatron"
+                                />
+                                <span class="absolute left-0 inset-y-0 flex items-center justify-center px-2">
                                     <Search class="size-6 text-muted-foreground" />
                                 </span>
-                                </div>
-                                <div class="flex gap-3">
-                                    <Button
-                                        variant="outline"
-                                        class="flex-1"
-                                        tabindex="6"
-                                        :disabled="borrowForm.processing"
-                                        @click="clearSearch"
-                                    >
-                                        Clear
-                                    </Button>
-                                    <Button
-                                        type="submit"
-                                        class="flex-1"
-                                        tabindex="5"
-                                        :disabled="borrowForm.processing"
-                                    >
-                                        <LoaderCircle v-if="borrowForm.processing" class="h-4 w-4 animate-spin" />
-                                        <span v-else>Find Patron</span>
-                                    </Button>
-                                </div>
-                            </form>
-
-                            <div class="flex flex-col gap-3 sm:flex-row">
+                            </div>
+                            <div class="flex gap-3">
                                 <Button
-                                    @click="borrow('inside')"
-                                    :disabled="borrowForm.processing"
+                                    variant="outline"
                                     class="flex-1"
+                                    tabindex="6"
+                                    :disabled="borrowForm.processing"
+                                    @click="clearSearch"
                                 >
-                                    Borrow (Inside)
+                                    Clear
                                 </Button>
                                 <Button
-                                    @click="borrow('take-home')"
-                                    :disabled="borrowForm.processing"
+                                    type="submit"
                                     class="flex-1"
+                                    tabindex="5"
+                                    :disabled="borrowForm.processing"
                                 >
-                                    Borrow (Take Home)
+                                    <LoaderCircle v-if="borrowForm.processing" class="h-4 w-4 animate-spin" />
+                                    <span v-else>Find Patron</span>
                                 </Button>
                             </div>
-                        </div>
+                        </form>
+                        <!-- Borrow Buttons -->
+                        <Button
+                            @click="borrow('take-home')"
+                            :disabled="borrowForm.processing"
+                            class="flex-1"
+                        >
+                            Borrow (Take Home)
+                        </Button>
                     </div>
-                    <div v-else-if="searchAttempted && !search_ac_result" class="no-result rounded-lg border p-4 text-muted-foreground">
-                        <p>No record found with that accession number.</p>
-                    </div>
+
                 </div>
             </div>
         </div>
