@@ -7,7 +7,6 @@
     import { Button } from '@/components/ui/button';
     import { computed } from 'vue';
     import BookScannerDialog from '@/components/BookScannerDialog.vue';
-    import UsersComboBox from '@/components/UsersComboBox.vue';
 
     const breadcrumbs: BreadcrumbItem[] = [
       {
@@ -122,22 +121,59 @@
                             <p><strong>Title:</strong> {{ search_ac_result.title }}</p>
                             <p><strong>Status:</strong> {{ search_ac_result.status }}</p>
                         </div>
-                        <div v-if="search_ac_result.status === 'available'" class="mt-4 flex flex-col gap-3 sm:flex-row">
-                            <UsersComboBox />
-                            <Button
-                                @click="borrow('inside')"
-                                :disabled="borrowForm.processing"
-                                class="flex-1"
-                            >
-                                Borrow (Inside)
-                            </Button>
-                            <Button
-                                @click="borrow('take-home')"
-                                :disabled="borrowForm.processing"
-                                class="flex-1"
-                            >
-                                Borrow (Take Home)
-                            </Button>
+                        <div v-if="search_ac_result.status === 'available'" class="mt-4 grid gap-2">
+                            <form @submit.prevent="searchAcc" class="flex flex-col gap-3">
+                                <div class="relative">
+                                    <Input
+                                        required
+                                        id="searchPatron"
+                                        type="number"
+                                        placeholder="Search Library ID..."
+                                        class="pl-10"
+                                        v-model="borrowForm.searchPatron"
+                                    />
+                                    <span class="absolute left-0 inset-y-0 flex items-center justify-center px-2">
+                                    <Search class="size-6 text-muted-foreground" />
+                                </span>
+                                </div>
+                                <div class="flex gap-3">
+                                    <Button
+                                        variant="outline"
+                                        class="flex-1"
+                                        tabindex="6"
+                                        :disabled="borrowForm.processing"
+                                        @click="clearSearch"
+                                    >
+                                        Clear
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        class="flex-1"
+                                        tabindex="5"
+                                        :disabled="borrowForm.processing"
+                                    >
+                                        <LoaderCircle v-if="borrowForm.processing" class="h-4 w-4 animate-spin" />
+                                        <span v-else>Find Patron</span>
+                                    </Button>
+                                </div>
+                            </form>
+
+                            <div class="flex flex-col gap-3 sm:flex-row">
+                                <Button
+                                    @click="borrow('inside')"
+                                    :disabled="borrowForm.processing"
+                                    class="flex-1"
+                                >
+                                    Borrow (Inside)
+                                </Button>
+                                <Button
+                                    @click="borrow('take-home')"
+                                    :disabled="borrowForm.processing"
+                                    class="flex-1"
+                                >
+                                    Borrow (Take Home)
+                                </Button>
+                            </div>
                         </div>
                     </div>
                     <div v-else-if="searchAttempted && !search_ac_result" class="no-result rounded-lg border p-4 text-muted-foreground">
