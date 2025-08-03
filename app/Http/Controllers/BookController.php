@@ -271,7 +271,8 @@ class BookController extends Controller
 
                         $source_id = null;
                         if ($source){
-                            $source_from_db = Source::where('name', ucwords($source))->first();
+                            $source_name = ucwords(strtolower($source));
+                            $source_from_db = Source::where('name', $source_name)->first();
                             if ($source_from_db) {
                                 $source_id = $source_from_db->id;
                             } else {
@@ -283,8 +284,8 @@ class BookController extends Controller
                         } else {
 
                             if (!empty($row[15])) {
-                                $source_name = $row[15];
-                                $source_from_db = Source::where('name', ucwords(strtolower($row[15])))->first();
+                                $source_name = ucwords(strtolower($row[15]));
+                                $source_from_db = Source::where('name', $source_name)->first();
                                 if ($source_from_db) {
                                     $source_id = $source_from_db->id;
                                 } else {
