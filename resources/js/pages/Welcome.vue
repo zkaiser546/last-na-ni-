@@ -22,6 +22,7 @@ interface Flash {
 
 interface Config {
     registration_enabled?: boolean | null
+    login_enabled?: boolean | null
 }
 
 declare module '@inertiajs/core' {
@@ -58,6 +59,7 @@ declare module '@inertiajs/core' {
                 </Link>
                 <template v-else>
                     <Link
+                        v-if="$page.props.config.login_enabled"
                         :href="route('login')"
                         class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
                     >

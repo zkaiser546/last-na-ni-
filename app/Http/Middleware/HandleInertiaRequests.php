@@ -63,6 +63,10 @@ class HandleInertiaRequests extends Middleware
                     $superAdminType = UserType::where('name', 'super-admin')->first();
                     return !($superAdminType && User::where('user_type_id', $superAdminType->id)->exists());
                 },
+                'login_enabled' => function () {
+                    $superAdminType = UserType::where('name', 'super-admin')->first();
+                    return $superAdminType && User::where('user_type_id', $superAdminType->id)->exists();
+                }
             ],
         ];
     }

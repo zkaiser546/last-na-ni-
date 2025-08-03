@@ -19,6 +19,7 @@ Route::middleware('guest')->group(function () {
     ->middleware(\App\Http\Middleware\RestrictRegistration::class);
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
+        ->middleware(\App\Http\Middleware\LoginEnabled::class)
         ->name('login');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
