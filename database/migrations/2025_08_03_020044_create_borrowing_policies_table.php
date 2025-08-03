@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('borrowing_policies', function (Blueprint $table) {
             $table->id();
             $table->string('name'); // e.g., 'Student Policy', 'Faculty Policy'
-            $table->enum('user_type', ['student', 'faculty', 'grad-school-student', 'staff-admin'])
-                ->nullable(); // null means applies to all
+            $table->foreignId('user_type_id')->constrained('user_types')->nullOnDelete();
             $table->integer('max_items')->default(5); // Maximum items that can be borrowed
             $table->integer('loan_period_days')->default(14); // Loan period in days
             $table->integer('renewal_limit')->default(2); // Maximum renewals allowed
