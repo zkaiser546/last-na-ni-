@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 const props = defineProps({
     search_result: Object,
     search_term: String,
+    search_button: Boolean,
 });
 
 const form = useForm({
@@ -14,7 +15,7 @@ const form = useForm({
 });
 
 const search = () => {
-    router.get(route('home'), { search: form.search }, { preserveState: true });
+    router.get(route('home'), { search: form.search, search_button: true }, { preserveState: true });
 };
 
 const clearSearch = () => {
@@ -26,14 +27,18 @@ const clearSearch = () => {
 <template>
     <div class="relative w-full max-w-sm items-center">
         <form @submit.prevent="search">
-            <Input v-model="form.search" id="search" type="search"
+            <Input required v-model="form.search" id="search" type="search"
                    placeholder="Search accession, title..." class="pl-10" />
         </form>
         <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
           <Search class="size-6 text-muted-foreground" />
         </span>
     </div>
-    <Button v-if="form.search" @click="clearSearch">Clear</Button>
+    <div class="flex gap-2">
+        <Button variant="outline" v-if="form.search" @click="clearSearch">Clear</Button>
+        <Button @click="search">Search</Button>
+    </div>
+
     <div v-if="search_result?.data?.length" class="max-w-md">
         <div v-for="result in search_result?.data" :key="result.id" class="grid gap-y-4">
             {{ result.accession_number }}
@@ -42,7 +47,7 @@ const clearSearch = () => {
             {{ result.book.publication_year }}
         </div>
     </div>
-    <div v-else>
+    <div v-else-if="!search_result?.data?.length && search_button">
         No records found
     </div>
 </template>
