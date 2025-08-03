@@ -32,6 +32,10 @@ declare module '@inertiajs/core' {
     }
 }
 
+const getCoverUrl = (path: string) => {
+    return path ? `/storage/uploads/book-covers/${path}` : `/storage/placeholders/sample1.png`;
+}
+
 defineProps({
     records: Object,
 });
@@ -88,7 +92,7 @@ defineProps({
                     year: {{ record.book.publication_year }}
                     authors: {{ record.book.authors }}
                     cover: {{ record.book.cover_image }}
-                    <img width="100" :src="`/storage/uploads/book-covers/${record.book.cover_image}`" alt="Book Cover" />
+                    <img width="100" :src="getCoverUrl(record.book.cover_image)" alt="Book Cover" />
                 </div>
             </div>
             <main class="flex w-full max-w-[335px] overflow-hidden rounded-lg lg:max-w-4xl lg:flex-row">
