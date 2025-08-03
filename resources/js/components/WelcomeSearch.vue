@@ -27,12 +27,15 @@ defineProps({
           <Search class="size-6 text-muted-foreground" />
         </span>
     </div>
-    <div v-if="Object.keys(search_result?.data)" class="max-w-md">
+    <div v-if="search_result?.data?.length" class="max-w-md">
         <div v-for="result in search_result?.data" :key="result.id" class="grid gap-y-4">
             {{ result.accession_number }}
             {{ result.title }}
             {{ result.book.authors }}
             {{ result.book.publication_year }}
         </div>
+    </div>
+    <div v-else>
+        No records found
     </div>
 </template>
