@@ -84,6 +84,23 @@ class BorrowingPolicySeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'name' => 'Borrow Inside Policy',
+                'user_type_id' => $studentType->id,
+                'max_items' => 5,
+                'loan_period_days' => 3,
+                'renewal_limit' => 3,
+                'renewal_period_days' => 10,
+                'hold_period_days' => 10,
+                'overdue_fine_per_day' => 7.50,
+                'max_fine_amount' => 750.00,
+                'grace_period_days' => 2,
+                'can_place_holds' => true,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
         ];
 
         DB::table('borrowing_policies')->insert($policies);

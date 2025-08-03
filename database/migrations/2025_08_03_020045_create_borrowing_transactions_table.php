@@ -15,15 +15,16 @@ return new class extends Migration
             $table->id();
             $table->string('transaction_number')->unique(); // e.g., 'BT-2024-000001'
 
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()
+                ->constrained('users')->onDelete('cascade');
             $table->foreignId('record_id')->constrained('records')->onDelete('cascade');
             $table->foreignId('borrowing_policy_id')->constrained('borrowing_policies');
 
-            $table->enum('transaction_type', ['checkout', 'checkin', 'renewal', 'lost', 'damaged']);
-            $table->enum('status', ['active', 'returned', 'overdue', 'lost', 'damaged', 'renewed']);
+            $table->enum('transaction_type', ['borrow-inside','checkout', 'checkin', 'renewal', 'lost', 'damaged']);
+            $table->enum('status', ['borrowed-inside', 'active', 'returned', 'overdue', 'lost', 'damaged', 'renewed']);
 
             $table->datetime('checkout_date');
-            $table->datetime('due_date');
+            $table->datetime('due_date')->nullable();
             $table->datetime('return_date')->nullable();
             $table->datetime('last_renewal_date')->nullable();
             $table->integer('renewal_count')->default(0);

@@ -55,7 +55,7 @@ onMounted(() => {
             {{ page.props.flash.error }}
         </AlertDescription>
     </Alert>
-    <Alert class="fixed border-2 border-green-500 top-5 right-5 w-fit max-w-lg pr-8 z-30" v-if="page.props.flash.success && showAlert">
+    <Alert class="fixed border-2 border-green-500 top-5 right-5 w-fit max-w-md pr-8 z-30" v-if="page.props.flash.success && showAlert">
         <CircleCheckBig />
         <button @click="showAlert = false" class="absolute top-2 right-2 p-1 hover:bg-red-100 rounded-full transition-colors">
             <X class="w-4 h-4" />

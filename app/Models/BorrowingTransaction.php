@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class BorrowingTransaction extends Model
 {
-    //
+    protected $guarded = [];
 }
