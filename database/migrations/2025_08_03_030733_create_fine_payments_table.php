@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('fine_payments', function (Blueprint $table) {
             $table->id();
             $table->string('payment_number')->unique(); // e.g., 'P-2024-000001'
-            $table->foreignId('fine_fee_id')->constrained('fines_fees')->onDelete('cascade');
+            $table->foreignId('fine_fee_id')->constrained('fine_fees')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
 
             $table->decimal('amount', 10, 2);
