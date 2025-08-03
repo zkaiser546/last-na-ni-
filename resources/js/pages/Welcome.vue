@@ -80,15 +80,16 @@ defineProps({
                 </template>
             </nav>
         </header>
-        <div class="grid w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-            <div v-if="Object.keys(records?.data).length">
+        <div class="grid w-full opacity-100 transition-opacity duration-750 starting:opacity-0">
+            <div class="w-full" v-if="Object.keys(records?.data).length">
                 <div class="grid grid-cols-3 gap-4">
                     <div v-for="record in records?.data" :key="record.id">
                         <BookCard :record="record" />
                     </div>
                 </div>
             </div>
-            <main class="flex w-full max-w-[335px] overflow-hidden rounded-lg lg:max-w-4xl lg:flex-row">
+
+            <main class="flex w-full overflow-hidden rounded-lg">
 
                 <div class="border dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]">
                     <h1 class="text-8xl">FUNCTIONAL lang</h1>
