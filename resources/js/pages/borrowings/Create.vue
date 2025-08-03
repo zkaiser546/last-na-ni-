@@ -19,7 +19,7 @@
       },
     ];
 
-    defineProps({
+    const props = defineProps({
       search_ac_result: Object,
     });
 
@@ -45,10 +45,30 @@
         return searchedTerm.value !== ''
     })
 
+    interface BorrowFormData {
+        accession_number: number | null
+        borrow_type: 'inside' | 'take_home' | null
+    }
+
+    type BorrowType = 'inside' | 'take_home'
+
+    const borrowForm = useForm<BorrowFormData>({
+        accession_number: null,
+        borrow_type: null
+    })
+
+    const borrow = (type: BorrowType): void => {
+        if (!props.search_ac_result) return
+
+        borrowForm.accession_number = props.search_ac_result.accession_number
+        borrowForm.borrow_type = type
+        borrowForm.post(route('borrowings.store'))
+    }
+
 </script>
 
 <template>
-    <Head title="Create Students" />
+    <Head title="Borrow/Return books" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
 
@@ -80,9 +100,16 @@
                         <h3>Record Found:</h3>
                         <p><strong>Accession Number:</strong> {{ search_ac_result.accession_number }}</p>
                         <p><strong>Title:</strong> {{ search_ac_result.title }}</p>
+                        <p><strong>Status:</strong> {{ search_ac_result.status }}</p>
                         <!-- Add other fields as needed -->
-                        <Button>Borrow (Inside)</Button>
-                        <Button>Borrow (Take Home)</Button>
+                        <div v-if="search_ac_result.status === 'available'" class="flex gap-2">
+                            <Button @click="borrow('inside')" :disabled="borrowForm.processing">
+                                Borrow (Inside)
+                            </Button>
+                            <Button @click="borrow('take_home')" :disabled="borrowForm.processing">
+                                Borrow (Take Home)
+                            </Button>
+                        </div>
                     </div>
                     <div v-else-if="searchAttempted && !search_ac_result" class="no-result">
                         <p>No record found with that accession number.</p>
