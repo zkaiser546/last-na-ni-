@@ -88,7 +88,7 @@ defineProps({
         <div class="grid w-full opacity-100 transition-opacity duration-750 starting:opacity-0">
 
             <div class="p-8 min-w-full flex flex-col items-center">
-                <WelcomeSearch :search_result="search_result" />
+                <WelcomeSearch :search_result="search_result" :search_term="search_term" />
             </div>
 
             <div class="w-full" v-if="Object.keys(records?.data).length">

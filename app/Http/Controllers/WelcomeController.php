@@ -15,8 +15,13 @@ class WelcomeController extends Controller
 
         $search_result = null;
         if ($request->filled('search')) {
+            $search_term = $request->search;
+
             $search_result = Record::with('book')
-            ->where('accession_number', 'LIKE', '%' . $request->search . '%')
+                ->where(function($query) use ($search_term) {
+                    $query->where('accession_number', 'LIKE', '%' . $search_term . '%')
+                        ->orWhere('title', 'LIKE', '%' . $search_term . '%');
+                })
                 ->paginate(5);
 
         } else {
@@ -26,15 +31,8 @@ class WelcomeController extends Controller
         return Inertia::render('Welcome', [
             'records' => $record,
             'search_result' => $search_result,
+            'search_term' => $request->search,
         ]);
     }
 
-    public function search(Request $request)
-    {
-
-
-        return Inertia::render('Welcome', [
-            'search_result' => $result,
-        ]);
-    }
 }
