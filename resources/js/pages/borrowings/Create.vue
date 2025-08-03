@@ -7,6 +7,7 @@
     import { Button } from '@/components/ui/button';
     import { computed } from 'vue';
     import BookScannerDialog from '@/components/BookScannerDialog.vue';
+    import UsersComboBox from '@/components/UsersComboBox.vue';
 
     const breadcrumbs: BreadcrumbItem[] = [
       {
@@ -68,55 +69,82 @@
 </script>
 
 <template>
-    <Head title="Borrow/Return books" />
+    <Head title="Borrow/Return Books" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-
-            <div class="grid grid-cols-2 gap-8">
-                <div class="relative grid gap-2 w-full max-w-sm items-center">
-
+        <div class="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-6">
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+                <!-- Search Form Section -->
+                <div class="flex flex-col gap-4 w-full max-w-md">
                     <BookScannerDialog />
-
-                    <form @submit.prevent="searchAcc">
+                    <form @submit.prevent="searchAcc" class="flex flex-col gap-3">
                         <div class="relative">
-                            <Input required id="search" type="number" placeholder="Search Accession Number..." class="pl-10"
-                                   v-model="form.searchAcc"
+                            <Input
+                                required
+                                id="search"
+                                type="number"
+                                placeholder="Search Accession Number..."
+                                class="pl-10"
+                                v-model="form.searchAcc"
                             />
-                            <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
+                            <span class="absolute left-0 inset-y-0 flex items-center justify-center px-2">
                                 <Search class="size-6 text-muted-foreground" />
                             </span>
                         </div>
-                        <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="form.processing">
-                            <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-                            Find Book
-                        </Button>
-                        <Button variant="outline" class="mt-2 w-full" tabindex="6" :disabled="form.processing" @click="clearSearch">
-                            Clear
-                        </Button>
+                        <div class="flex gap-3">
+                            <Button
+                                variant="outline"
+                                class="flex-1"
+                                tabindex="6"
+                                :disabled="form.processing"
+                                @click="clearSearch"
+                            >
+                                Clear
+                            </Button>
+                            <Button
+                                type="submit"
+                                class="flex-1"
+                                tabindex="5"
+                                :disabled="form.processing"
+                            >
+                                <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
+                                <span v-else>Find Book</span>
+                            </Button>
+                        </div>
                     </form>
                 </div>
-                <div>
-                    <div v-if="search_ac_result" class="search-result">
-                        <h3>Record Found:</h3>
-                        <p><strong>Accession Number:</strong> {{ search_ac_result.accession_number }}</p>
-                        <p><strong>Title:</strong> {{ search_ac_result.title }}</p>
-                        <p><strong>Status:</strong> {{ search_ac_result.status }}</p>
-                        <!-- Add other fields as needed -->
-                        <div v-if="search_ac_result.status === 'available'" class="flex gap-2">
-                            <Button @click="borrow('inside')" :disabled="borrowForm.processing">
+
+                <!-- Search Result Section -->
+                <div class="flex flex-col gap-4">
+                    <div v-if="search_ac_result" class="search-result rounded-lg border p-4">
+                        <h3 class="text-lg font-semibold mb-2">Record Found:</h3>
+                        <div class="space-y-2">
+                            <p><strong>Accession Number:</strong> {{ search_ac_result.accession_number }}</p>
+                            <p><strong>Title:</strong> {{ search_ac_result.title }}</p>
+                            <p><strong>Status:</strong> {{ search_ac_result.status }}</p>
+                        </div>
+                        <div v-if="search_ac_result.status === 'available'" class="mt-4 flex flex-col gap-3 sm:flex-row">
+                            <UsersComboBox />
+                            <Button
+                                @click="borrow('inside')"
+                                :disabled="borrowForm.processing"
+                                class="flex-1"
+                            >
                                 Borrow (Inside)
                             </Button>
-                            <Button @click="borrow('take-home')" :disabled="borrowForm.processing">
+                            <Button
+                                @click="borrow('take-home')"
+                                :disabled="borrowForm.processing"
+                                class="flex-1"
+                            >
                                 Borrow (Take Home)
                             </Button>
                         </div>
                     </div>
-                    <div v-else-if="searchAttempted && !search_ac_result" class="no-result">
+                    <div v-else-if="searchAttempted && !search_ac_result" class="no-result rounded-lg border p-4 text-muted-foreground">
                         <p>No record found with that accession number.</p>
                     </div>
                 </div>
             </div>
-
         </div>
     </AppLayout>
 </template>
