@@ -45,7 +45,7 @@ import { Input } from '@/components/ui/input';
                 <div class="grid grid-cols-4 gap-6">
                     <div class="grid gap-2">
                         <Label for="csv_file">CSV File</Label>
-                        <Input type="file" @input="handleFileInput" />
+                        <Input required type="file" @input="handleFileInput" />
                         <progress v-if="form.progress" :value="form.progress.percentage" max="100">
                             {{ form.progress.percentage }}%
                         </progress>

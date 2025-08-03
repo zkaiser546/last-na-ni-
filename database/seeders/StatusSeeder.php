@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\AcquisitionStatus;
+use App\Models\Status;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class AcquisitionStatusSeeder extends Seeder
+class StatusSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,12 +15,14 @@ class AcquisitionStatusSeeder extends Seeder
     {
         $statuses = [
             ['key' => 'available', 'name' => 'Available'],
-            ['key' => 'pending_review', 'name' => 'Pending Review'],
-            ['key' => 'processing', 'name' => 'Processing'],
+            ['key' => 'damaged', 'name' => 'Damaged'],
+            ['key' => 'missing', 'name' => 'Missing'],
+            ['key' => 'borrowed', 'name' => 'Borrowed'],
+            ['key' => 'discarded', 'name' => 'Discarded'],
         ];
 
         foreach ($statuses as $status) {
-            AcquisitionStatus::create([
+            Status::create([
                 'key' => $status['key'],
                 'name' => $status['name'],
                 'created_at' => now(),

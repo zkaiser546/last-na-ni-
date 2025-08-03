@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AcademicPeriod;
-use App\Models\AcquisitionStatus;
+use App\Models\Status;
 use App\Models\Book;
 use App\Models\CoverType;
 use App\Models\DdcClassification;
@@ -140,7 +140,7 @@ class BookController extends Controller
                             'accession_number' => $row[1] ?? null,
                             'date_received' => $date_received,
                             'title' => $row[5] ?? null,
-                            'acquisition_status' => AcquisitionStatus::where('key', 'available')->first()->name,
+                            'status' => Status::where('key', 'available')->first()->name,
                             'imported_by' => Auth::user()->id,
                             'subject_headings' => $subject_headings,
                         ];

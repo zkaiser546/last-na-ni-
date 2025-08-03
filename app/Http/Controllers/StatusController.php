@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AcquisitionStatus;
+use App\Models\Status;
 use Illuminate\Http\Request;
 
 class AcquisitionStatusController extends Controller
@@ -34,7 +34,7 @@ class AcquisitionStatusController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(AcquisitionStatus $acquisitionStatus)
+    public function show(Status $acquisitionStatus)
     {
         //
     }
@@ -42,7 +42,7 @@ class AcquisitionStatusController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(AcquisitionStatus $acquisitionStatus)
+    public function edit(Status $acquisitionStatus)
     {
         //
     }
@@ -50,7 +50,7 @@ class AcquisitionStatusController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, AcquisitionStatus $acquisitionStatus)
+    public function update(Request $request, Status $acquisitionStatus)
     {
         //
     }
@@ -58,7 +58,7 @@ class AcquisitionStatusController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(AcquisitionStatus $acquisitionStatus)
+    public function destroy(Status $acquisitionStatus)
     {
         //
     }
