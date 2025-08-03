@@ -46,8 +46,8 @@ class BorrowingTransactionController extends Controller
     public function store(Request $request)
     {
         try {
-            // Validate the request
-            $validated = $request->validate([
+
+            $request->validate([
                 'accession_number' => 'required|exists:records,accession_number',
                 'borrow_type' => 'required|in:inside,take-home',
             ]);
@@ -90,11 +90,11 @@ class BorrowingTransactionController extends Controller
 
             else if ($request->borrow_type === 'take-home') {
 
-                $user_type_id = User::where('id', $request->user_id)->first()->user_type_id;
+                $user_type_id = User::where('id', $request->user_id)->first();
 
+                dd($user_type_id);
                 $borrowingPolicy = BorrowingPolicy::where('user_type_id', $user_type_id)->first();
 
-                dd($borrowingPolicy);
             }
 
             return to_route('borrowings.index')
@@ -105,7 +105,7 @@ class BorrowingTransactionController extends Controller
                 'errors' => $e->errors(),
                 'request' => $request->all(),
             ]);
-            return back()->withErrors($e->errors())->withInput();
+            session()->flash('error', 'An error occurred while creating the borrowing transaction');
 
         } catch (\Exception $e) {
             Log::error('Error in BorrowingController@store', [
@@ -115,7 +115,6 @@ class BorrowingTransactionController extends Controller
                 'user_id' => Auth::id()
             ]);
             session()->flash('error', 'An error occurred while creating the borrowing transaction');
-            return to_route('borrowings.index');
         }
     }
 

@@ -47,10 +47,10 @@
 
     interface BorrowFormData {
         accession_number: number | null
-        borrow_type: 'inside' | 'take_home' | null
+        borrow_type: 'inside' | 'take-home' | null
     }
 
-    type BorrowType = 'inside' | 'take_home'
+    type BorrowType = 'inside' | 'take-home'
 
     const borrowForm = useForm<BorrowFormData>({
         accession_number: null,
@@ -106,7 +106,7 @@
                             <Button @click="borrow('inside')" :disabled="borrowForm.processing">
                                 Borrow (Inside)
                             </Button>
-                            <Button @click="borrow('take_home')" :disabled="borrowForm.processing">
+                            <Button @click="borrow('take-home')" :disabled="borrowForm.processing">
                                 Borrow (Take Home)
                             </Button>
                         </div>
