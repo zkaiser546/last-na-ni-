@@ -333,7 +333,7 @@ class BookController extends Controller
                             'physical_location_id' => $physical_location_id,
 
                             'cover_type_id' => $cover_type_id,
-                            'cover_image' => '/uploads/book_cover_images/' . $cover_image,
+                            'cover_image' => $cover_image,
 
                             'source_id' => $source_id,
                             'purchase_amount' => $purchaseAmount,

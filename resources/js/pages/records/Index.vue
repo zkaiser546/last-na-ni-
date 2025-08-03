@@ -58,7 +58,7 @@ const goToPage = (page: number) => {
 
             <div class="flex gap-2">
                 <Link :href="route('books.import')">
-                    <Button variant="secondary">Initial Import Books</Button>
+                    <Button variant="secondary">Import Books</Button>
                 </Link>
             </div>
 
