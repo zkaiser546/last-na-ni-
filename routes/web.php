@@ -8,13 +8,11 @@ use App\Http\Controllers\GradSchoolStudentController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
-use App\Models\GradSchoolStudent;
+use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome');
-})->name('home');
+Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
 // Routes that require authentication and verification
 Route::middleware(['auth', 'verified'])->group(function () {
