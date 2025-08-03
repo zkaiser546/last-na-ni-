@@ -4,6 +4,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { AlertCircle, X } from 'lucide-vue-next'
 import { ref, onMounted } from 'vue'
 import BookCard from '@/components/BookCard.vue';
+import WelcomeBookDialog from '@/components/WelcomeBookDialog.vue';
 
 // for alert
 const page = usePage()
@@ -80,11 +81,13 @@ defineProps({
                 </template>
             </nav>
         </header>
+
+        <!-- The content itself -->
         <div class="grid w-full opacity-100 transition-opacity duration-750 starting:opacity-0">
             <div class="w-full" v-if="Object.keys(records?.data).length">
                 <div class="grid grid-cols-3 gap-4">
                     <div v-for="record in records?.data" :key="record.id">
-                        <BookCard :record="record" />
+                        <WelcomeBookDialog :record="record" />
                     </div>
                 </div>
             </div>
