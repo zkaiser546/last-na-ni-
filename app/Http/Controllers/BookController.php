@@ -151,7 +151,7 @@ class BookController extends Controller
 
                         $authors = [];
                         if (!empty($row[4])) {
-                            $authors = array_map('trim', explode(',', $row[4]));
+                            $authors = $row[4];
                         }
 
                         $edition = null;

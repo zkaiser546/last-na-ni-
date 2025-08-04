@@ -66,7 +66,78 @@ class UserController extends Controller
                             continue;
                         }
 
-                        //
+                        $library_id = null;
+                        if (!empty($row[0]) && is_numeric($row[0]) && (int)$row[0] !== 0) {
+                            $library_id = (int)$row[0];
+                        }
+
+                        $card_id = null;
+                        if (!empty($row[1]) && is_numeric($row[1]) && (int)$row[1] !== 0) {
+                            $card_id = (int)$row[1];
+                        }
+
+                        $school_id = null;
+                        if (!empty($row[2]) && is_numeric($row[2]) && (int)$row[2] !== 0) {
+                            $school_id = (int)$row[2];
+                        }
+
+                        $first_name = null;
+                        if (!empty($row[3]) && is_string($row[3]) && trim($row[3]) !== '') {
+                            $first_name = trim($row[3]);
+                        }
+
+                        $middle_initial = null;
+                        if (!empty($row[4]) && is_string($row[4])) {
+                            $clean = preg_replace('/[^\p{L}]/u', '', trim($row[4]));
+                            if (strlen($clean) >= 1) {
+                                $middle_initial = strtoupper($clean[0]);
+                            }
+                        }
+
+                        $last_name = null;
+                        if (!empty($row[5]) && is_string($row[5]) && trim($row[5]) !== '') {
+                            $last_name = trim($row[5]);
+                        }
+
+                        $sex = null;
+                        if (!empty($row[6]) && is_string($row[6]) && trim($row[6]) !== '') {
+                            $sex_value = trim($row[6]);
+                            if (strtolower($sex_value) === 'female') {
+                                $sex = 'F';
+                            } elseif (strtolower($sex_value) === 'male') {
+                                $sex = 'M';
+                            }
+                        }
+
+                        $contact_number = null;
+                        if (!empty($row[7]) && is_string($row[7]) && trim($row[7]) !== '') {
+                            $contact_value = trim($row[7]);
+                            $digits_only = preg_replace('/\D/', '', $contact_value);
+                            if (strlen($digits_only) === 10) {
+                                $contact_number = $digits_only;
+                            }
+                        }
+
+                        $email = null;
+                        if (!empty($row[8]) && is_string($row[8]) && trim($row[8]) !== '') {
+                            $email_value = trim($row[8]);
+                            if (filter_var($email_value, FILTER_VALIDATE_EMAIL)) {
+                                $email = $email_value;
+                            }
+                        }
+
+                        $user_profile = null;
+                        if (!empty($row[10]) && is_string($row[10]) && trim($row[10]) !== '') {
+                            $user_profile = trim($row[10]);
+                        }
+
+                        $user_type = null;
+                        if (!empty($row[11]) && is_string($row[11]) && trim($row[11]) !== '') {
+                            $user_type = trim($row[11]);
+                            // relation nalang here:
+                        }
+
+
 
 
                     } catch (\Exception $e) {
