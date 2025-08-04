@@ -23,9 +23,6 @@ defineProps({
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-
-            <h1 class="text-4xl">FUNCTIONALITY lang ha</h1>
-
             <div class="flex gap-2">
                 <Link :href="route('users.import')">
                     <Button variant="secondary">Import Users</Button>
