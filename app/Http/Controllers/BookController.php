@@ -110,7 +110,6 @@ class BookController extends Controller
                 $imported_count = 0;
 
                 foreach ($csv_data as $row_index => $row) {
-
                     try {
                         // Trim all values in the row and check for emptiness
                         $row = array_map('trim', $row); // Trim all values
