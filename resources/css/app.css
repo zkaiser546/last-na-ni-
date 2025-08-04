@@ -86,7 +86,7 @@
 
 :root {
     /* Base colors - Soft cream and softened black */
-    --background: hsl(45 100% 98%);
+    --background: hsl(45 100% 99%);
     --foreground: hsl(0 0% 10%);
     --card: hsl(45 100% 98%);
     --card-foreground: hsl(0 0% 10%);
