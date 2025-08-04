@@ -4,6 +4,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import UsersListTable from '@/components/UsersListTable.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -12,19 +13,9 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-interface User {
-    id: number
-    first_name: string;
-    last_name: string;
-    email: string;
-    user_type: string;
-}
-
-interface Props{
-    users: User[];
-}
-
-const props = defineProps<Props>();
+defineProps({
+    users: Object,
+});
 
 </script>
 
@@ -55,32 +46,7 @@ const props = defineProps<Props>();
             </div>
 
             <h1>List of all users</h1>
-            <Table>
-                <TableHeader>
-                    <TableRow >
-                        <TableHead >First Name</TableHead>
-                        <TableHead >Last Name</TableHead>
-                        <TableHead >Email</TableHead>
-                        <TableHead >User Type</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    <TableRow v-for="user in props.users" :key="user.id">
-                        <TableCell >
-                            {{ user.first_name }}
-                        </TableCell>
-                        <TableCell >
-                            {{ user.last_name }}
-                        </TableCell>
-                        <TableCell >
-                            {{ user.email }}
-                        </TableCell>
-                        <TableCell >
-                            {{ user.user_type_id }}
-                        </TableCell>
-                    </TableRow>
-                </TableBody>
-            </Table>
+            <UsersListTable :users="users"/>
         </div>
     </AppLayout>
 </template>

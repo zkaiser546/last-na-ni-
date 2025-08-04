@@ -15,7 +15,8 @@ class UserController extends Controller
 {
     public function index(): \Inertia\Response
     {
-        $users = User::latest()->get();
+        $users = User::with('userType')
+            ->latest()->paginate(10);
 
         return Inertia::render('users/Index', [
             'users' => $users
