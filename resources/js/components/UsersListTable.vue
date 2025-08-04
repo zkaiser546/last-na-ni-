@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import PaginationLinks from '@/components/PaginationLinks.vue';
 
 defineProps({
     users: Object,
@@ -34,6 +35,8 @@ defineProps({
             </TableRow>
         </TableBody>
     </Table>
+
+    <PaginationLinks :paginator="users" />
 
 </template>
 
