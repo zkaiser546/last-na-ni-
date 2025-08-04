@@ -194,6 +194,13 @@ class UserController extends Controller
                         Log::info('Processing row', ['row_index' => $row_index + 1, 'data' => $row]);
                         foreach ($errors as $error) {
                             Log::error($error);
+                            if ($failed_count > 5) {
+                                if (app()->environment('local', 'development')) {
+                                    dd('Too many errors');
+                                }
+                                // Optionally throw exception or handle differently in production
+                                throw new \Exception("Too many errors occurred during processing");
+                            }
                         }
                     }
                 }

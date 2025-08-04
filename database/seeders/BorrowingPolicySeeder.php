@@ -14,14 +14,14 @@ class BorrowingPolicySeeder extends Seeder
      */
     public function run(): void
     {
-        $studentType = UserType::where('name', 'student')->firstOrFail();
-        $facultyType = UserType::where('name', 'faculty')->firstOrFail();
-        $gradSchoolStudentType = UserType::where('name', 'grad-school-student')->firstOrFail();
-        $staffAdminType = UserType::where('name', 'staff-admin')->firstOrFail();
+        $studentType = UserType::where('name', 'Student')->firstOrFail();
+        $facultyType = UserType::where('name', 'Faculty')->firstOrFail();
+        $staffAdminType = UserType::where('name', 'Staff Admin')->firstOrFail();
+        $superAdminType = UserType::where('name', 'Super Admin')->firstOrFail();
 
         $policies = [
             [
-                'name' => 'Student Policy',
+                'name' => 'Undergraduate Student Policy',
                 'user_type_id' => $studentType->id,
                 'max_items' => 5,
                 'loan_period_days' => 14,
@@ -31,7 +31,23 @@ class BorrowingPolicySeeder extends Seeder
                 'overdue_fine_per_day' => 5.00,
                 'max_fine_amount' => 500.00,
                 'grace_period_days' => 1,
-                'can_place_holds' => false, // Disabled since holds are excluded
+                'can_place_holds' => false,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Graduate Student Policy',
+                'user_type_id' => $studentType->id, // Same user_type, different use-case
+                'max_items' => 10,
+                'loan_period_days' => 21,
+                'renewal_limit' => 3,
+                'renewal_period_days' => 10,
+                'hold_period_days' => 10,
+                'overdue_fine_per_day' => 7.50,
+                'max_fine_amount' => 750.00,
+                'grace_period_days' => 2,
+                'can_place_holds' => true,
                 'is_active' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -47,22 +63,6 @@ class BorrowingPolicySeeder extends Seeder
                 'overdue_fine_per_day' => 10.00,
                 'max_fine_amount' => 1000.00,
                 'grace_period_days' => 3,
-                'can_place_holds' => true,
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Graduate Student Policy',
-                'user_type_id' => $gradSchoolStudentType->id,
-                'max_items' => 10,
-                'loan_period_days' => 21,
-                'renewal_limit' => 3,
-                'renewal_period_days' => 10,
-                'hold_period_days' => 10,
-                'overdue_fine_per_day' => 7.50,
-                'max_fine_amount' => 750.00,
-                'grace_period_days' => 2,
                 'can_place_holds' => true,
                 'is_active' => true,
                 'created_at' => now(),
@@ -85,9 +85,25 @@ class BorrowingPolicySeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'Super Admin Policy',
+                'user_type_id' => $superAdminType->id,
+                'max_items' => 20,
+                'loan_period_days' => 60,
+                'renewal_limit' => 10,
+                'renewal_period_days' => 30,
+                'hold_period_days' => 30,
+                'overdue_fine_per_day' => 0.00,
+                'max_fine_amount' => 0.00,
+                'grace_period_days' => 5,
+                'can_place_holds' => true,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
                 'name' => 'Borrow Inside Policy',
-                'max_items' => 5,
                 'user_type_id' => null,
+                'max_items' => 5,
                 'loan_period_days' => 3,
                 'renewal_limit' => 3,
                 'renewal_period_days' => 10,
@@ -100,9 +116,9 @@ class BorrowingPolicySeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-
         ];
 
         DB::table('borrowing_policies')->insert($policies);
     }
+
 }
