@@ -145,7 +145,10 @@ class UserController extends Controller
                             if ($user_type_from_db) {
                                 $user_type_id = $user_type_from_db->id;
                             } else {
+                                // Generate key from name
+                                $key = strtolower(str_replace(' ', '_', $user_type));
                                 $user_type_id = UserType::create([
+                                    'key' => $key,
                                     'name' => $user_type,
                                 ])->id;
                             }

@@ -14,12 +14,11 @@ class UserTypeSeeder extends Seeder
     public function run(): void
     {
         $userTypes = [
-            ['name' => 'Super Admin'],
-            ['name' => 'Staff Admin'],
-            ['name' => 'Student'],
-            ['name' => 'Faculty'],
+            ['key' => 'super_admin', 'name' => 'Super Admin'],
+            ['key' => 'staff_admin', 'name' => 'Staff Admin'],
+            ['key' => 'student', 'name' => 'Student'],
+            ['key' => 'faculty', 'name' => 'Faculty'],
         ];
-
         DB::table('user_types')->insert($userTypes);
     }
 }

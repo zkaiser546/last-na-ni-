@@ -14,10 +14,10 @@ class BorrowingPolicySeeder extends Seeder
      */
     public function run(): void
     {
-        $studentType = UserType::where('name', 'Student')->firstOrFail();
-        $facultyType = UserType::where('name', 'Faculty')->firstOrFail();
-        $staffAdminType = UserType::where('name', 'Staff Admin')->firstOrFail();
-        $superAdminType = UserType::where('name', 'Super Admin')->firstOrFail();
+        $studentType = UserType::where('key', 'student')->firstOrFail();
+        $facultyType = UserType::where('key', 'faculty')->firstOrFail();
+        $staffAdminType = UserType::where('key', 'staff_admin')->firstOrFail();
+        $superAdminType = UserType::where('key', 'super_admin')->firstOrFail();
 
         $policies = [
             [
