@@ -168,8 +168,16 @@ class UserController extends Controller
                             'user_type_id' => $user_type_id,
                         ];
 
+                        $student_id = null;
+                        if ($library_id) {
+                            if (preg_match('/^\d{9}$/', $library_id)) {
+                                $student_id = $library_id;
+                            }
+                        }
+
                         $student_data = [
                             'student_type' => $student_type,
+                            'student_id' => $student_id,
                         ];
 
                         $user = User::create($user_data);
