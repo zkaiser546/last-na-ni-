@@ -21,7 +21,7 @@ defineProps<{
 
 <template>
     <div class="flex justify-between items-start">
-        <div class="flex items-center rounded-md overflow-hidden shadow-lg">
+        <div class="flex gap-4 items-center rounded-md overflow-hidden shadow-lg">
             <div v-for="(link, i) in paginator.links" :key="i">
                 <template v-if="link.url === null && link.label.includes('Previous')">
                     <span v-html="link.label" />
