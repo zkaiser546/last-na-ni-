@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('student_id')->unique();
+            $table->enum('student_type', ['graduate', 'undergraduate']);
             $table->timestamps();
         });
     }
