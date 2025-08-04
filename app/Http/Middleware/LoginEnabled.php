@@ -17,7 +17,7 @@ class LoginEnabled
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $superAdminType = UserType::where('name', 'super-admin')->first();
+        $superAdminType = UserType::where('key', 'super_admin')->first();
         $loginEnabled = $superAdminType && User::where('user_type_id', $superAdminType->id)->exists();
 
         if (!$loginEnabled) {

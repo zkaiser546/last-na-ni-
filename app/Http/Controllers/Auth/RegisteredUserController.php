@@ -38,7 +38,7 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $superAdminType = UserType::where('name', 'super-admin')->firstOrFail();
+        $superAdminType = UserType::where('key', 'super_admin')->firstOrFail();
 
         $user = User::create([
             'first_name' => $request->first_name,
