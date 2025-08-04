@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Link } from "@inertiajs/vue3";
 interface PaginatorLink {
     url: string | null;
     label: string;
@@ -16,33 +17,18 @@ defineProps<{
     paginator: Paginator;
 }>();
 
-const makeLabel = (label: string): string => {
-    if (label.includes("Previous")) {
-        return "<<";
-    } else if (label.includes("Next")) {
-        return ">>";
-    } else {
-        return label;
-    }
-};
 </script>
 
 <template>
     <div class="flex justify-between items-start">
         <div class="flex items-center rounded-md overflow-hidden shadow-lg">
             <div v-for="(link, i) in paginator.links" :key="i">
-                <component
-                    :is="link.url ? 'a' : 'span'"
-                    :href="link.url"
-                    v-html="makeLabel(link.label)"
-                    class="border-x border-slate-50 w-12 h-12 grid place-items-center bg-white dark:bg-slate-900 dark:border-slate-800"
-                    :class="{
-                        'hover:bg-slate-300 dark:hover:bg-slate-500': link.url,
-                        'text-slate-300': !link.url,
-                        'font-bold text-indigo-500 dark:text-indigo-400':
-                            link.active,
-                    }"
-                />
+                <template v-if="link.url === null && link.label.includes('Previous')">
+                    <span v-html="link.label" />
+                </template>
+                <template v-if="link.url !== null">
+                    <Link :href="link.url">{{ link.label }}</Link>
+                </template>
             </div>
         </div>
 
