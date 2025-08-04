@@ -1,9 +1,22 @@
 <script setup lang="ts">
-defineProps({
-    paginator: Object,
-});
+interface PaginatorLink {
+    url: string | null;
+    label: string;
+    active: boolean;
+}
 
-const makeLabel = (label) => {
+interface Paginator {
+    links: PaginatorLink[];
+    from: number;
+    to: number;
+    total: number;
+}
+
+defineProps<{
+    paginator: Paginator;
+}>();
+
+const makeLabel = (label: string): string => {
     if (label.includes("Previous")) {
         return "<<";
     } else if (label.includes("Next")) {
