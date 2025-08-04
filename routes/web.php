@@ -22,6 +22,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/import', [UserController::class, 'import'])->name('users.import');
+    Route::post('/users/import', [UserController::class, 'importStore'])->name('users.import.store');
+
     Route::get('/users/admins/create', [AdminController::class, 'create'])->name('admins.create');
     Route::post('/users/admins', [AdminController::class, 'store'])->name('admins.store');
     Route::get('/users/students/create', [StudentController::class, 'create'])->name('students.create');

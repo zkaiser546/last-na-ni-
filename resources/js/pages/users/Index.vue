@@ -37,6 +37,9 @@ const props = defineProps<Props>();
             <h1 class="text-4xl">FUNCTIONALITY lang ha</h1>
 
             <div class="flex gap-2">
+                <Link :href="route('users.import')">
+                    <Button variant="secondary">Import Users</Button>
+                </Link>
                 <Link :href="route('admins.create')">
                     <Button variant="secondary">Add Staff Admin</Button>
                 </Link>

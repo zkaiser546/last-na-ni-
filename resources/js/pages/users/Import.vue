@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import { Head, useForm } from '@inertiajs/vue3';
-  import type { BreadcrumbItem } from '@/types';
   import AppLayout from '@/layouts/AppLayout.vue';
-  import InputError from '@/components/InputError.vue';
+  import { LoaderCircle } from 'lucide-vue-next';
   import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { LoaderCircle } from 'lucide-vue-next';
-import { Input } from '@/components/ui/input';
+  import { Input } from '@/components/ui/input';
+  import InputError from '@/components/InputError.vue';
+  import { Button } from '@/components/ui/button';
+  import type { BreadcrumbItem } from '@/types';
 
-  const breadcrumbs: BreadcrumbItem[] = [
-      {
-          title: 'Records',
-          href: '/records',
-      },
-      {
-          title: 'Book Import',
-          href: '/records/books/import',
-      },
-  ];
+    const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Users',
+        href: '/users',
+    },
+    {
+        title: 'Users Import',
+        href: '/users/import',
+    },
+    ];
 
     const form = useForm({
         csv_file: null as File | null,
@@ -30,14 +30,14 @@ import { Input } from '@/components/ui/input';
         }
     };
 
-  const submit = () => {
-      form.post(route('books.import.store'));
-  };
+const submit = () => {
+    form.post(route('users.import.store'));
+};
 
 </script>
 
 <template>
-    <Head title="Import Books" />
+    <Head title="Import Users" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">

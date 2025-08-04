@@ -18,4 +18,14 @@ class UserController extends Controller
             'users' => $users
         ]);
     }
+
+    public function import()
+    {
+        return Inertia::render('users/Import');
+    }
+
+    public function importStore(Request $request)
+    {
+        dd($request->all());
+    }
 }
