@@ -32,7 +32,7 @@ const makeLabel = (label: string): string => {
         <div class="flex items-center rounded-md overflow-hidden shadow-lg">
             <div v-for="(link, i) in paginator.links" :key="i">
                 <component
-                    :is="link.url ? 'Link' : 'span'"
+                    :is="link.url ? 'a' : 'span'"
                     :href="link.url"
                     v-html="makeLabel(link.label)"
                     class="border-x border-slate-50 w-12 h-12 grid place-items-center bg-white dark:bg-slate-900 dark:border-slate-800"
