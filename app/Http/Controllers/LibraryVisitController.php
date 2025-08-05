@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\LibraryVisit;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -25,9 +26,10 @@ class LibraryVisitController extends Controller
         $patron = null;
         if ($request->search_button) {
 
-            $patron = User::findOrFail($request->search);
-            if (!$patron) {
-                session()->flash('error', "<UNK> <UNK> <UNK> <UNK> <UNK> <UNK> <UNK> <UNK>");
+            try {
+                $patron = User::findOrFail($request->search);
+            } catch (ModelNotFoundException $e) {
+                return redirect()->back()->with('error', 'User not found');
             }
 
         }
