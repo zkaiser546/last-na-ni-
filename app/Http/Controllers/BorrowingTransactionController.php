@@ -174,7 +174,6 @@ class BorrowingTransactionController extends Controller
         return to_route('borrowings.index')
             ->with('success', 'Borrowing transaction ' . $transaction->transaction_number . ' added successfully');
 
-
     }
 
     /**

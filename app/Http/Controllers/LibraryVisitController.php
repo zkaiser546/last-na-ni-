@@ -49,7 +49,30 @@ class LibraryVisitController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        $user = null;
+        $purpose = null;
+        try {
+            $user = User::where('id', $request->patron_id)->first();
+            $purpose = VisitPurpose::where('id', $request->purpose_id)->first();
+        } catch (\Exception $e) {
+            session()->flash('error', 'Something went wrong');
+            // Log the error
+            \Log::error('Error in user or book retrieval: ' . $e->getMessage(), [
+                'user_id' => $request->user_id,
+                'book_accession' => $request->book_accession,
+                'exception' => $e
+            ]);
+        }
+
+        LibraryVisit::create([
+            'user_id' => $user->id,
+            'entry_time' => now(),
+            'visit_purpose_id' => $purpose->id,
+        ]);
+
+        return to_route('logger')
+            ->with('success', 'Borrowing transaction ' . $purpose->name . ' added successfully');
+
     }
 
     /**
