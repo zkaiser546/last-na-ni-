@@ -8,7 +8,7 @@ import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, 
 
 // Define props if needed
 interface Props {
-    initialUsers?: { id: number; first_name: string; email: string }[];
+    initialUsers?: { id: number; first_name: string; last_name?: string; email: string }[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 // State for users and search query
-const users = ref<{ value: number; label: string; email: string }[]>([]);
+const users = ref<{ value: number; label: string; email: string; fullName: string }[]>([]);
 const searchQuery = ref('');
 
 // Debounced search function
@@ -34,12 +34,16 @@ const fetchUsers = debounce(async (query: string) => {
                 preserveState: true,
                 onSuccess: (page) => {
                     // Assuming your Laravel controller returns users in page.props.users
-                    const userData = page.props.users as { id: number; first_name: string; email: string }[];
-                    users.value = userData.map((user) => ({
-                        value: user.id,
-                        label: user.first_name,
-                        email: user.email,
-                    }));
+                    const userData = page.props.users as { id: number; first_name: string; last_name?: string; email: string }[];
+                    users.value = userData.map((user) => {
+                        const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ');
+                        return {
+                            value: user.id,
+                            label: fullName || user.first_name, // Fallback to first_name if last_name is empty
+                            email: user.email,
+                            fullName: fullName
+                        };
+                    });
                 },
                 onError: (errors) => {
                     console.error('Error fetching users:', errors);
@@ -67,7 +71,7 @@ watch(searchQuery, (newQuery) => {
                     v-model="searchQuery"
                     class="pl-9"
                     :display-value="(val) => val?.label ?? ''"
-                    placeholder="Search users..."
+                    placeholder="Search users by name or email..."
                 />
                 <span class="absolute start-0 inset-y-0 flex items-center justify-center px-3">
                     <Search class="size-4 text-muted-foreground" />
@@ -86,7 +90,10 @@ watch(searchQuery, (newQuery) => {
                     :key="user.value"
                     :value="user"
                 >
-                    {{ user.label }} ({{ user.email }})
+                    <div class="flex flex-col">
+                        <span class="font-medium">{{ user.fullName }}</span>
+                        <span class="text-sm text-muted-foreground">{{ user.email }}</span>
+                    </div>
 
                     <ComboboxItemIndicator>
                         <Check :class="cn('ml-auto h-4 w-4')" />

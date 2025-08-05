@@ -50,10 +50,13 @@ class BorrowingTransactionController extends Controller
     {
         $query = $request->get('q', '');
 
-        $users = User::select('id', 'first_name', 'email')
-            ->where('first_name', 'LIKE', "%{$query}%")
-            ->orWhere('email', 'LIKE', "%{$query}%")
-            ->limit(5)
+        $users = User::select('id', 'first_name', 'last_name', 'email')
+            ->where(function ($q) use ($query) {
+                $q->where('first_name', 'LIKE', "%{$query}%")
+                    ->orWhere('last_name', 'LIKE', "%{$query}%")
+                    ->orWhere('email', 'LIKE', "%{$query}%");
+            })
+            ->limit(8)
             ->get();
 
         return inertia()->render('borrowings/Create', [
