@@ -63,7 +63,7 @@ const borrowBook = (user_id, book_accession) => {
                 </div>
 
                 <Button
-                    @click="borrowBook(user.id, book_accession)"
+                    @click="borrowBook(user.value, book_accession)"
                     v-if="user.fullName && book_accession"
                     :disabled="isLoading"
                     class="w-full"
