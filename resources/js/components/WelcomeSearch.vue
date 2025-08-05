@@ -36,7 +36,7 @@ const clearSearch = () => {
                     id="search"
                     type="search"
                     placeholder="Search accession, title..."
-                    class="pl-10 search-input"
+                    class="pl-10 search-input w-sm"
                     autocomplete="off"
                 />
                 <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2 search-icon">
@@ -71,24 +71,26 @@ const clearSearch = () => {
     <!-- Search Results -->
     <Transition name="fade" mode="out-in">
         <div v-if="search_result?.data?.length" class="max-w-md results-container">
-            <TransitionGroup name="result-item" tag="div" class="grid gap-y-4">
-                <div
-                    v-for="result in search_result?.data"
-                    :key="result.id"
-                    class="result-item"
-                >
-                    <div class="result-content">
-                        <div class="font-medium">{{ result.accession_number }}</div>
-                        <div class="text-lg font-semibold">{{ result.title }}</div>
-                        <div class="text-sm text-gray-600">{{ result.book.authors }}</div>
-                        <div class="text-sm text-gray-500">{{ result.book.publication_year }}</div>
+            <TransitionGroup name="result-item" tag="div" class="grid gap-y-1">
+                <div v-for="result in search_result?.data" :key="result.id" class="result-item">
+                    <div class="flex gap-4 w-full">
+                        <div class="items-center flex">
+                            <div class="font-medium leading-tight">{{ result.accession_number }}</div>
+                        </div>
+                        <div class="result-content w-full">
+                            <div class="text-md font-semibold leading-tight truncate">{{ result.title }}</div>
+                            <div class="flex justify-between">
+                                <div class="text-sm text-gray-600 leading-tight">{{ result.book.authors }}</div>
+                                <div class="text-sm text-gray-500 leading-tight">{{ result.book.publication_year }}</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </TransitionGroup>
         </div>
         <div v-else-if="!search_result?.data?.length && search_button" class="no-results">
-            <div class="text-center text-gray-500 py-8">
-                <Search class="size-12 mx-auto mb-2 opacity-50" />
+            <div class="text-center text-gray-500 py-4">
+                <Search class="size-8 mx-auto mb-1 opacity-50" />
                 <p>No records found</p>
             </div>
         </div>
@@ -99,7 +101,7 @@ const clearSearch = () => {
 /* Form transitions */
 .search-form {
     width: 100%;
-    max-width: 28rem;
+    max-width: 60rem;
     padding: 0.5rem;
     transition: all 0.3s ease;
 }
