@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use PhpParser\Node\Expr\Cast\Object_;
 
 class BorrowingTransactionController extends Controller
 {
@@ -140,6 +141,12 @@ class BorrowingTransactionController extends Controller
             ]);
             session()->flash('error', 'An error occurred while creating the borrowing transaction');
         }
+    }
+
+    public function borrow($credentials)
+    {
+        dd($credentials);
+        dd($request->all());
     }
 
     /**

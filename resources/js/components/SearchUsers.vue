@@ -90,7 +90,7 @@ watch(searchQuery, (newQuery) => {
                 v-for="user in users"
                 :key="user.value"
             >
-                <BorrowBookDialog :user="user" :book="accessionNumber"/>
+                <BorrowBookDialog :user="user" :book_accession="accessionNumber"/>
             </div>
         </ComboboxList>
     </Combobox>

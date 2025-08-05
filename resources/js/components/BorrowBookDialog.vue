@@ -5,11 +5,22 @@ import {
     DialogContent,
     DialogTrigger,
 } from "@/components/ui/dialog"
+import { router } from '@inertiajs/vue3';
 
 defineProps({
     user: Object,
-    book: String,
+    book_accession: String,
 });
+
+const borrowBook = (user_id, book_accession) => {
+    const credentials = {
+        user_id: user_id,
+        book_accession: book_accession
+    };
+
+    router.post(route('borrowings.borrow', credentials))
+};
+
 </script>
 
 <template>
@@ -21,7 +32,9 @@ defineProps({
         </DialogTrigger>
         <DialogContent class="sm:max-w-[425px]">
             {{ user.fullName  }}
-            {{ book ? book : 'No book selected' }}
+            {{ book_accession ? book_accession : 'No book selected' }}
+
+            <Button @click="borrowBook()" v-if="user.fullName && book_accession">Borrow Book</Button>
         </DialogContent>
     </Dialog>
 </template>

@@ -133,8 +133,8 @@
                             <Input
                                 required
                                 id="search"
-
                                 placeholder="Search Accession Number..."
+                                type="number"
                                 class="pl-10"
                                 v-model="form.searchAcc"
                             />
