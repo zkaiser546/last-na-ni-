@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
+Route::get('/logger', [\App\Http\Controllers\LibraryVisitController::class, 'create'])->name('logger');
 
 // Routes that require authentication and verification
 Route::middleware(['auth', 'verified'])->group(function () {

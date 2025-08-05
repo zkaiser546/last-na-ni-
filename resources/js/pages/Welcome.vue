@@ -59,9 +59,9 @@ defineProps({
             </AlertDescription>
         </Alert>
         <header class="flex  justify-between mb-6 w-full p-4 px-8 text-sm not-has-[nav]:hidden">
-            <div class="flex items-center gap-2">
+            <Link :href="route('logger')" class="flex items-center gap-2">
                 <AppLogo />
-            </div>
+            </Link>
             <nav class="flex items-center justify-end gap-4">
                 <Link
                     v-if="$page.props.auth.user"
