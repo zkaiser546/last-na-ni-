@@ -167,17 +167,7 @@
 
                 <!-- Patron Search and Result Section -->
                 <div class="flex flex-col gap-4">
-                    <!-- Patron Result Placeholder -->
-                    <div class="search-result rounded-lg border p-4">
-                        <h3 class="text-lg font-semibold mb-2">Patron Information</h3>
-                        <div class="space-y-2">
-                            <p><strong>Library ID:</strong> <span class="text-muted-foreground">Enter library ID below</span></p>
-                            <p><strong>Name:</strong> <span class="text-muted-foreground">Patron name will appear here</span></p>
-                            <p><strong>Status:</strong> <span class="text-muted-foreground">Patron status will appear here</span></p>
-                        </div>
-                    </div>
 
-                    <!-- combo box-->
                     <SearchUsers :accessionNumber="selectedAccessionNumber" />
 
                 </div>

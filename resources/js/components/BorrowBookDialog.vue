@@ -13,7 +13,6 @@ defineProps({
 </script>
 
 <template>
-    {{ console.log(book)}}
     <Dialog>
         <DialogTrigger as-child>
             <Button variant="ghost" class="w-full text-left">
