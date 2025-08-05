@@ -143,9 +143,8 @@ class BorrowingTransactionController extends Controller
         }
     }
 
-    public function borrow($credentials)
+    public function borrow(Request $request)
     {
-        dd($credentials);
         dd($request->all());
     }
 

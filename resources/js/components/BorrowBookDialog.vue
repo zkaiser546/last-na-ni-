@@ -6,21 +6,41 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { router } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 defineProps({
     user: Object,
     book_accession: String,
 });
 
+const isLoading = ref(false);
+
 const borrowBook = (user_id, book_accession) => {
-    const credentials = {
+    if (isLoading.value) return;
+
+    isLoading.value = true;
+
+    const data = {
         user_id: user_id,
         book_accession: book_accession
     };
 
-    router.post(route('borrowings.borrow', credentials))
+    router.post(route('borrowings.borrow'), data, {
+        onSuccess: (page) => {
+            // Handle success - maybe show a toast notification
+            console.log('Book borrowed successfully');
+            isLoading.value = false;
+        },
+        onError: (errors) => {
+            // Handle validation errors
+            console.error('Borrowing failed:', errors);
+            isLoading.value = false;
+        },
+        onFinish: () => {
+            isLoading.value = false;
+        }
+    });
 };
-
 </script>
 
 <template>
@@ -31,10 +51,26 @@ const borrowBook = (user_id, book_accession) => {
             </Button>
         </DialogTrigger>
         <DialogContent class="sm:max-w-[425px]">
-            {{ user.fullName  }}
-            {{ book_accession ? book_accession : 'No book selected' }}
+            <div class="space-y-4">
+                <div>
+                    <h3 class="text-lg font-semibold">{{ user.fullName }}</h3>
+                    <p class="text-sm text-gray-600">{{ user.email }}</p>
+                </div>
 
-            <Button @click="borrowBook()" v-if="user.fullName && book_accession">Borrow Book</Button>
+                <div>
+                    <strong>Book Accession:</strong>
+                    {{ book_accession ? book_accession : 'No book selected' }}
+                </div>
+
+                <Button
+                    @click="borrowBook(user.id, book_accession)"
+                    v-if="user.fullName && book_accession"
+                    :disabled="isLoading"
+                    class="w-full"
+                >
+                    {{ isLoading ? 'Processing...' : 'Borrow Book' }}
+                </Button>
+            </div>
         </DialogContent>
     </Dialog>
 </template>

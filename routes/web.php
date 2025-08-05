@@ -40,7 +40,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/borrowings/create', [BorrowingTransactionController::class, 'create'])->name('borrowings.create');
     Route::post('/borrowings', [BorrowingTransactionController::class, 'store'])->name('borrowings.store');
     Route::get('/users/search', [BorrowingTransactionController::class, 'searchUser'])->name('borrowings.users.search');
-    Route::post('/borrowings/borrow/{credentials}', [BorrowingTransactionController::class, 'borrow'])->name('borrowings.borrow');
+    Route::post('/borrowings/borrow', [BorrowingTransactionController::class, 'borrow'])->name('borrowings.borrow');
 });
 
 // Test routes (no middleware)
