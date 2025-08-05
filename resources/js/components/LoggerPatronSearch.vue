@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { UserRoundSearch } from 'lucide-vue-next';
 import { router, useForm } from '@inertiajs/vue3';
+import LoggerDialog from '@/components/LoggerDialog.vue';
 
 const props = defineProps({
     patron: Object,
@@ -43,10 +44,7 @@ const clearSearch = () => {
 
     {{ console.log(patron)}}
     <div v-if="patron" class="max-w-md">
-        hi
-        <div v-for="result in patron?.data" :key="result.id" class="grid gap-y-4">
-            {{ result }}
-        </div>
+        <LoggerDialog :patron="patron" :modal="true" :open="patron"/>
     </div>
     <div v-else-if="!patron && search_button">
         No records found
