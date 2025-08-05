@@ -9,7 +9,7 @@ import BorrowBookDialog from '@/components/BorrowBookDialog.vue';
 // Define props if needed
 interface Props {
     initialUsers?: { id: number; first_name: string; last_name?: string; email: string }[];
-    accessionNumber?: number | null;
+    accessionNumber?: string | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -90,7 +90,7 @@ watch(searchQuery, (newQuery) => {
                 v-for="user in users"
                 :key="user.value"
             >
-                <BorrowBookDialog :user="user"/>
+                <BorrowBookDialog :user="user" :book="accessionNumber"/>
             </div>
         </ComboboxList>
     </Combobox>

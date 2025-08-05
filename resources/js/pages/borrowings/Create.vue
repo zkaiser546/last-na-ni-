@@ -178,7 +178,7 @@
                     </div>
 
                     <!-- combo box-->
-                    <SearchUsers :accession-number="selectedAccessionNumber" />
+                    <SearchUsers :accessionNumber="selectedAccessionNumber" />
 
                 </div>
             </div>

@@ -8,11 +8,12 @@ import {
 
 defineProps({
     user: Object,
-    book: Number,
+    book: String,
 });
 </script>
 
 <template>
+    {{ console.log(book)}}
     <Dialog>
         <DialogTrigger as-child>
             <Button variant="ghost" class="w-full text-left">
@@ -21,7 +22,7 @@ defineProps({
         </DialogTrigger>
         <DialogContent class="sm:max-w-[425px]">
             {{ user.fullName  }}
-            {{ book }}
+            {{ book ? book : 'No book selected' }}
         </DialogContent>
     </Dialog>
 </template>
