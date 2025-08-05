@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { Head, usePage } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
   import LoggerPatronSearch from '@/components/LoggerPatronSearch.vue';
 import { AlertCircle, CircleCheckBig, X } from 'lucide-vue-next';
   import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -40,7 +40,7 @@ import { AlertCircle, CircleCheckBig, X } from 'lucide-vue-next';
 <template>
     <Head title="Patron Logger"></Head>
     <div class="flex min-h-screen flex-col items-center text-[#1b1b18] lg:justify-center dark:bg-[#0a0a0a]">
-
+        <Link :href="route('home')" class="fixed top-0 left-0 opacity-0 bg-red-500">home</Link>
         <Alert class="absolute top-5 right-5 w-fit pr-8" variant="destructive" v-if="page.props.flash.error && showAlert">
             <AlertCircle class="w-4 h-4" />
             <button @click="showAlert = false" class="absolute top-2 right-2 p-1 hover:bg-red-100 rounded-full transition-colors">

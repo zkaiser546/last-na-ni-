@@ -48,7 +48,7 @@ defineProps({
 <template>
     <Head title="Welcome">
     </Head>
-    <div class="flex min-h-screen flex-col items-center bg-green-200 text-[#1b1b18] lg:justify-center dark:bg-[#0a0a0a]">
+    <div class="flex min-h-screen flex-col items-center bg-background text-[#1b1b18] lg:justify-center dark:bg-[#0a0a0a]">
         <Alert class="absolute top-5 right-5 w-fit pr-8" variant="destructive" v-if="page.props.flash.error && showAlert">
             <AlertCircle class="w-4 h-4" />
             <button @click="showAlert = false" class="absolute top-2 right-2 p-1 hover:bg-red-100 rounded-full transition-colors">
@@ -101,7 +101,7 @@ defineProps({
                 />
             </div>
 
-            <div class="w-full" v-if="Object.keys(records?.data).length">
+            <div class="w-full p-16" v-if="Object.keys(records?.data).length">
                 <div class="grid grid-cols-3 gap-4">
                     <div v-for="record in records?.data" :key="record.id">
                         <WelcomeBookDialog :record="record" />
