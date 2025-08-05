@@ -7,6 +7,7 @@ import WelcomeBookDialog from '@/components/WelcomeBookDialog.vue';
 import WelcomeSearch from '@/components/WelcomeSearch.vue';
 import AppLogo from '@/components/AppLogo.vue';
 import AppearanceTabs from '@/components/AppearanceTabs.vue';
+import { Button } from '@/components/ui/button';
 
 // for alert
 const page = usePage()
@@ -64,7 +65,6 @@ defineProps({
                 <AppLogo />
             </Link>
             <nav class="flex items-center justify-end gap-4">
-                (temporary placement)
                 <AppearanceTabs />
                 <Link
                     v-if="$page.props.auth.user"
@@ -79,14 +79,14 @@ defineProps({
                         :href="route('login')"
                         class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
                     >
-                        Log in
+                        <Button class="w-[120px]">Log in</Button>
                     </Link>
                     <Link
                         v-if="$page.props.config.registration_enabled"
                         :href="route('register')"
                         class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
                     >
-                        Register
+                        <Button class="w-[120px]">Register</Button>
                     </Link>
                 </template>
             </nav>

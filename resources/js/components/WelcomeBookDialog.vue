@@ -36,7 +36,7 @@ defineProps({
         <DialogContent class="sm:max-w-6xl grid grid-cols-2">
 
             <CardContent class="flex justify-end">
-                <img width="350" :src="getCoverUrl(record?.book.cover_image)" alt="Book Cover" />
+                <img width="350" loading="lazy" :src="getCoverUrl(record?.book.cover_image)" alt="Book Cover" />
             </CardContent>
 
             <CardHeader class="">
