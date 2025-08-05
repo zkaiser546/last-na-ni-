@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import type { BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Button } from '@/components/ui/button';
+import Latest from '@/components/borrowing/Latest.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -12,7 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 defineProps({
-    transactions: Object,
+    latest_transactions: Object,
 })
 
 </script>
@@ -32,13 +33,9 @@ defineProps({
             </div>
 
             <h1 class="text-2xl">Latest transactions</h1>
-            <div v-if="Object.keys(transactions?.data).length">
-                <div class="grid grid-cols-3 gap-4">
-                    <div v-for="transaction in transactions?.data" :key="transaction.id">
-                        {{ transaction.transaction_number }}
-                    </div>
-                </div>
-            </div>
+
+            <Latest :transactions="latest_transactions"/>
+
         </div>
     </AppLayout>
 </template>

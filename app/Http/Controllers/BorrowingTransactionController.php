@@ -18,10 +18,10 @@ class BorrowingTransactionController extends Controller
      */
     public function index(): \Inertia\Response
     {
-        $transactions = BorrowingTransaction::latest()->paginate(10);
+        $latest_transactions = BorrowingTransaction::latest()->paginate(10);
 
         return Inertia::render('borrowings/Index', [
-            'transactions' => $transactions
+            'latest_transactions' => $latest_transactions
         ]);
     }
 
