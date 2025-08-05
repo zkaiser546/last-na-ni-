@@ -5,6 +5,8 @@ import { router } from '@inertiajs/vue3';
 import { Check, Search } from 'lucide-vue-next';
 import { cn } from '@/utils';
 import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxItemIndicator, ComboboxList } from '@/components/ui/combobox';
+import { Dialog } from '@/components/ui/dialog';
+import BorrowBookDialog from '@/components/BorrowBookDialog.vue';
 
 // Define props if needed
 interface Props {
@@ -105,4 +107,7 @@ watch(searchQuery, (newQuery) => {
             </ComboboxGroup>
         </ComboboxList>
     </Combobox>
+
+    <BorrowBookDialog />
+
 </template>
