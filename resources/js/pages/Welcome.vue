@@ -5,6 +5,7 @@ import { AlertCircle, X } from 'lucide-vue-next'
 import { ref, onMounted } from 'vue'
 import WelcomeBookDialog from '@/components/WelcomeBookDialog.vue';
 import WelcomeSearch from '@/components/WelcomeSearch.vue';
+import AppLogo from '@/components/AppLogo.vue';
 
 // for alert
 const page = usePage()
@@ -44,9 +45,9 @@ defineProps({
 </script>
 
 <template>
-    <Head title="Welcome Raffy">
+    <Head title="Welcome">
     </Head>
-    <div class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
+    <div class="flex min-h-screen flex-col items-center bg-green-200 text-[#1b1b18] lg:justify-center dark:bg-[#0a0a0a]">
         <Alert class="absolute top-5 right-5 w-fit pr-8" variant="destructive" v-if="page.props.flash.error && showAlert">
             <AlertCircle class="w-4 h-4" />
             <button @click="showAlert = false" class="absolute top-2 right-2 p-1 hover:bg-red-100 rounded-full transition-colors">
@@ -57,7 +58,10 @@ defineProps({
                 {{ page.props.flash.error }}
             </AlertDescription>
         </Alert>
-        <header class="mb-6 w-full bg-red-500 max-w-[335px] text-sm not-has-[nav]:hidden lg:max-w-4xl">
+        <header class="flex  justify-between mb-6 w-full p-4 px-8 text-sm not-has-[nav]:hidden">
+            <div class="flex items-center gap-2">
+                <AppLogo />
+            </div>
             <nav class="flex items-center justify-end gap-4">
                 <Link
                     v-if="$page.props.auth.user"
