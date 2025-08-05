@@ -8,30 +8,23 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+
+defineProps({
+    purposes: Object
+});
+
 </script>
 
 <template>
     <Select>
-        <SelectTrigger class="w-[180px]">
+        <SelectTrigger class="w-[280px]">
             <SelectValue placeholder="Select a fruit" />
         </SelectTrigger>
         <SelectContent>
-            <SelectGroup>
-                <SelectLabel>Fruits</SelectLabel>
-                <SelectItem value="apple">
-                    Apple
-                </SelectItem>
-                <SelectItem value="banana">
-                    Banana
-                </SelectItem>
-                <SelectItem value="blueberry">
-                    Blueberry
-                </SelectItem>
-                <SelectItem value="grapes">
-                    Grapes
-                </SelectItem>
-                <SelectItem value="pineapple">
-                    Pineapple
+            <SelectGroup >
+                <SelectLabel>Purpose</SelectLabel>
+                <SelectItem v-for="purpose in purposes" :key="purpose.id" value="purpose.id">
+                    {{ purpose.name }}
                 </SelectItem>
             </SelectGroup>
         </SelectContent>

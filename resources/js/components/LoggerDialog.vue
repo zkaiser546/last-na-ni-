@@ -54,7 +54,7 @@ watch(() => props.patron, (newPatron) => {
                         Purpose
                     </Label>
 
-                    <LoggerPurposeSelect />
+                    <LoggerPurposeSelect :purposes="purposes"/>
 
                 </div>
             </div>

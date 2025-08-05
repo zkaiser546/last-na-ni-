@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\LibraryVisit;
 use App\Models\User;
+use App\Models\VisitPurpose;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -24,10 +25,12 @@ class LibraryVisitController extends Controller
     public function create(Request $request)
     {
         $patron = null;
+        $purposes = null;
         if ($request->search_button) {
 
             try {
                 $patron = User::where('library_id', $request->search)->first();
+                $purposes = VisitPurpose::all()->sortBy('sort_order');
             } catch (ModelNotFoundException $e) {
                 session()->flash('error', 'User not found');
             }
@@ -35,6 +38,7 @@ class LibraryVisitController extends Controller
 
         return Inertia::render('library-visit/Create', [
             'patron' => $patron,
+            'purposes' => $purposes,
             'search_term' => $request->search,
             'search_button' => (boolean)$request->search_button,
         ]);
