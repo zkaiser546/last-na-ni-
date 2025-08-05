@@ -27,7 +27,7 @@ class LibraryVisitController extends Controller
         if ($request->search_button) {
 
             try {
-                $patron = User::findOrFail($request->search);
+                $patron = User::where('library_id', $request->search)->first();
             } catch (ModelNotFoundException $e) {
                 session()->flash('error', 'User not found');
             }

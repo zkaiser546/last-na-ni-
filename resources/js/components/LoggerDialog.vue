@@ -9,12 +9,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {  ref, watch } from 'vue';
+import LoggerPurposeComboBox from '@/components/LoggerPurposeComboBox.vue';
 
 const props = defineProps({
     patron: Object,
+    purposes: Object,
 });
 
 const open = ref(false)
@@ -38,25 +39,21 @@ watch(() => props.patron, (newPatron) => {
                 Edit Profile
             </Button>
         </DialogTrigger>
-        <DialogContent class="sm:max-w-[425px]">
+        <DialogContent class="sm:max-w-lg">
             <DialogHeader>
-                <DialogTitle>Edit profile</DialogTitle>
+                <DialogTitle>Welcome back {{ patron.first_name }}!</DialogTitle>
                 <DialogDescription>
-                    Make changes to your profile here. Click save when you're done.
+                    What transaction would you do today?
                 </DialogDescription>
             </DialogHeader>
             <div class="grid gap-4 py-4">
                 <div class="grid grid-cols-4 items-center gap-4">
                     <Label for="name" class="text-right">
-                        Name
+                        Purpose
                     </Label>
-                    <Input id="name" value="Pedro Duarte" class="col-span-3" />
-                </div>
-                <div class="grid grid-cols-4 items-center gap-4">
-                    <Label for="username" class="text-right">
-                        Username
-                    </Label>
-                    <Input id="username" value="@peduarte" class="col-span-3" />
+
+                    <LoggerPurposeComboBox :purposes="purposes" />
+
                 </div>
             </div>
             <DialogFooter>

@@ -94,7 +94,4 @@ watch(searchQuery, (newQuery) => {
             </div>
         </ComboboxList>
     </Combobox>
-
-
-
 </template>

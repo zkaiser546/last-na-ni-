@@ -8,6 +8,7 @@ import LoggerDialog from '@/components/LoggerDialog.vue';
 
 const props = defineProps({
     patron: Object,
+    purposes: Object,
     search_term: String,
     search_button: Boolean,
 });
@@ -42,9 +43,8 @@ const clearSearch = () => {
         <Button @click="search">Search</Button>
     </div>
 
-    {{ console.log(patron)}}
     <div v-if="patron" class="max-w-md">
-        <LoggerDialog :patron="patron" :modal="true"/>
+        <LoggerDialog :purposes="purposes" :patron="patron" :modal="true"/>
     </div>
     <div v-else-if="!patron && search_button">
         No records found
