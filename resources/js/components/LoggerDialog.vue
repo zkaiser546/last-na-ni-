@@ -12,6 +12,8 @@ import {
 import { Label } from "@/components/ui/label"
 import {  ref, watch } from 'vue';
 import LoggerPurposeComboBox from '@/components/LoggerPurposeComboBox.vue';
+import LoggerPatronSearch from '@/components/LoggerPatronSearch.vue';
+import LoggerPurposeSelect from '@/components/LoggerPurposeSelect.vue';
 
 const props = defineProps({
     patron: Object,
@@ -52,7 +54,7 @@ watch(() => props.patron, (newPatron) => {
                         Purpose
                     </Label>
 
-                    <LoggerPurposeComboBox :purposes="purposes" />
+                    <LoggerPurposeSelect />
 
                 </div>
             </div>

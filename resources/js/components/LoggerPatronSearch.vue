@@ -29,7 +29,7 @@ const clearSearch = () => {
 </script>
 
 <template>
-    <div class="relative w-full max-w-sm items-center">
+    <div class="relative w-full max-w-sm items-center dark:text-card-foreground">
         <form @submit.prevent="search">
             <Input required v-model="form.search" id="search" type="number"
                    placeholder="Enter Library ID" class="pl-10" autocomplete="off"/>
@@ -38,15 +38,17 @@ const clearSearch = () => {
           <UserRoundSearch class="size-6 text-muted-foreground" />
         </span>
     </div>
-    <div class="flex gap-2">
+    <div class="flex gap-2 dark:text-card-foreground">
         <Button variant="outline" v-if="form.search" @click="clearSearch">Clear</Button>
         <Button @click="search">Search</Button>
     </div>
 
     <div v-if="patron" class="max-w-md">
+
         <LoggerDialog :purposes="purposes" :patron="patron" :modal="true"/>
+
     </div>
-    <div v-else-if="!patron && search_button">
+    <div v-else-if="!patron && search_button" class="dark:text-card-foreground">
         No records found
     </div>
 </template>

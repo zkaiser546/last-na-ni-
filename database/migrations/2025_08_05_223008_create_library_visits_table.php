@@ -16,13 +16,14 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->dateTime('entry_time');
             $table->dateTime('exit_time')->nullable();
-            $table->foreignId('purpose_id')->constrained('purposes')->onDelete('delete');
+            $table->foreignId('visit_purpose_id')->constrained('visit_purposes')->onDelete('cascade');
+            $table->string('other_visit_purpose')->nullable();
             $table->enum('entry_method', ['manual', 'card_scan', 'qr_code'])->default('manual');
             $table->timestamps();
 
             $table->index(['user_id', 'entry_time']);
             $table->index(['entry_time', 'exit_time']);
-            $table->index('purpose');
+            $table->index('visit_purpose_id');
             $table->index(['created_at']); // For daily/monthly reports
         });
     }
