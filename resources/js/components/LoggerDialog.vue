@@ -11,9 +11,15 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import {  ref, watch } from 'vue';
-import LoggerPurposeComboBox from '@/components/LoggerPurposeComboBox.vue';
-import LoggerPatronSearch from '@/components/LoggerPatronSearch.vue';
-import LoggerPurposeSelect from '@/components/LoggerPurposeSelect.vue';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue
+} from '@/components/ui/select';
 
 const props = defineProps({
     patron: Object,
@@ -54,8 +60,19 @@ watch(() => props.patron, (newPatron) => {
                         Purpose
                     </Label>
 
-                    <LoggerPurposeSelect :purposes="purposes"/>
-
+                    <Select>
+                        <SelectTrigger class="w-[280px]">
+                            <SelectValue placeholder="Select a fruit" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup >
+                                <SelectLabel>Purpose</SelectLabel>
+                                <SelectItem v-for="purpose in purposes" :key="purpose.id" value="purpose.id">
+                                    {{ purpose.name }}
+                                </SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
             <DialogFooter>
