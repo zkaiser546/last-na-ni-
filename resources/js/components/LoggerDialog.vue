@@ -7,27 +7,45 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
+    DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {  ref, watch } from 'vue';
 
-defineProps({
+const props = defineProps({
     patron: Object,
 });
+
+const open = ref(false)
+
+// Watch for patron changes and open dialog
+watch(() => props.patron, (newPatron) => {
+    if (newPatron) {
+        open.value = true
+    }
+}, { immediate: true })
 
 </script>
 
 <template>
-    <Dialog>
+    <Dialog v-model:open="open">
+        <DialogTrigger as-child class="hidden">
+            <Button
+                ref="triggerRef"
+                variant="outline"
+            >
+                Edit Profile
+            </Button>
+        </DialogTrigger>
         <DialogContent class="sm:max-w-[425px]">
             <DialogHeader>
-                <DialogTitle>Log-in to USeP Tagum Library</DialogTitle>
+                <DialogTitle>Edit profile</DialogTitle>
                 <DialogDescription>
                     Make changes to your profile here. Click save when you're done.
                 </DialogDescription>
             </DialogHeader>
             <div class="grid gap-4 py-4">
-                <div>{{ patron.first_name }}</div>
                 <div class="grid grid-cols-4 items-center gap-4">
                     <Label for="name" class="text-right">
                         Name
@@ -42,11 +60,6 @@ defineProps({
                 </div>
             </div>
             <DialogFooter>
-                <DialogClose as-child>
-                    <Button type="button" variant="ghost">
-                        Close
-                    </Button>
-                </DialogClose>
                 <Button type="submit">
                     Save changes
                 </Button>

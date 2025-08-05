@@ -44,7 +44,7 @@ const clearSearch = () => {
 
     {{ console.log(patron)}}
     <div v-if="patron" class="max-w-md">
-        <LoggerDialog :patron="patron" :modal="true" :open="patron"/>
+        <LoggerDialog :patron="patron" :modal="true"/>
     </div>
     <div v-else-if="!patron && search_button">
         No records found
