@@ -2,10 +2,8 @@
 import { ref, watch } from 'vue';
 import { debounce } from 'lodash';
 import { router } from '@inertiajs/vue3';
-import { Check, Search } from 'lucide-vue-next';
-import { cn } from '@/utils';
-import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxItemIndicator, ComboboxList } from '@/components/ui/combobox';
-import { Dialog } from '@/components/ui/dialog';
+import { Search } from 'lucide-vue-next';
+import { Combobox, ComboboxAnchor, ComboboxInput, ComboboxList } from '@/components/ui/combobox';
 import BorrowBookDialog from '@/components/BorrowBookDialog.vue';
 
 // Define props if needed
@@ -85,29 +83,18 @@ watch(searchQuery, (newQuery) => {
         </ComboboxAnchor>
 
         <ComboboxList class="w-full">
-            <ComboboxEmpty class="p-2">
+            <div v-if="!users || users.length === 0">
                 No User Found
-            </ComboboxEmpty>
-
-            <ComboboxGroup>
-                <ComboboxItem
-                    v-for="user in users"
-                    :key="user.value"
-                    :value="user"
-                >
-                    <div class="flex flex-col">
-                        <span class="font-medium">{{ user.fullName }}</span>
-                        <span class="text-sm text-muted-foreground">{{ user.email }}</span>
-                    </div>
-
-                    <ComboboxItemIndicator>
-                        <Check :class="cn('ml-auto h-4 w-4')" />
-                    </ComboboxItemIndicator>
-                </ComboboxItem>
-            </ComboboxGroup>
+            </div>
+            <div
+                v-for="user in users"
+                :key="user.value"
+            >
+                <BorrowBookDialog :user="user"/>
+            </div>
         </ComboboxList>
     </Combobox>
 
-    <BorrowBookDialog />
+
 
 </template>
