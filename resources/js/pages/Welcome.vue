@@ -50,6 +50,7 @@ defineProps({
     <Head title="Welcome">
     </Head>
     <div class="flex min-h-screen flex-col items-center bg-background text-[#1b1b18] lg:justify-center dark:bg-[#0a0a0a]">
+
         <Alert class="absolute top-5 right-5 w-fit pr-8" variant="destructive" v-if="page.props.flash.error && showAlert">
             <AlertCircle class="w-4 h-4" />
             <button @click="showAlert = false" class="absolute top-2 right-2 p-1 hover:bg-red-100 rounded-full transition-colors">
@@ -60,7 +61,8 @@ defineProps({
                 {{ page.props.flash.error }}
             </AlertDescription>
         </Alert>
-        <header class="flex  justify-between mb-6 w-full p-4 px-8 text-sm not-has-[nav]:hidden">
+
+        <header class="flex justify-between items-center w-full p-4 px-8 text-sm not-has-[nav]:hidden">
             <Link :href="route('logger')" class="flex items-center gap-2 dark:text-foreground">
                 <AppLogo />
             </Link>
@@ -95,10 +97,16 @@ defineProps({
         <!-- The content itself -->
         <div class="grid w-full opacity-100 transition-opacity duration-750 starting:opacity-0">
 
-            <div class="p-8 min-w-full flex flex-col items-center">
-                <WelcomeSearch :search_result="search_result" :search_term="search_term"
-                               :search_button="search_button"
-                />
+            <div class="p-8 h-[360px] bg-[url(/storage/images/eagle.jpg)] bg-cover min-w-full flex justify-center items-center">
+                <div class="grid bg-background">
+                    <WelcomeSearch :search_result="search_result" :search_term="search_term"
+                                   :search_button="search_button"
+                    />
+                </div>
+            </div>
+
+            <div class="w-full p-8">
+
             </div>
 
             <div class="w-full p-16" v-if="Object.keys(records?.data).length">
