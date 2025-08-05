@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { Search } from "lucide-vue-next"
-import { Input } from "@/components/ui/input"
-import { router, useForm } from '@inertiajs/vue3';
+
+import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { UserRoundSearch } from 'lucide-vue-next';
+import { router, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
     search_result: Object,
@@ -29,10 +30,10 @@ const clearSearch = () => {
     <div class="relative w-full max-w-sm items-center">
         <form @submit.prevent="search">
             <Input required v-model="form.search" id="search" type="search"
-                   placeholder="Search accession, title..." class="pl-10" autocomplete="off"/>
+                   placeholder="Enter Library ID" class="pl-10" autocomplete="off"/>
         </form>
         <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
-          <Search class="size-6 text-muted-foreground" />
+          <UserRoundSearch class="size-6 text-muted-foreground" />
         </span>
     </div>
     <div class="flex gap-2">
@@ -52,3 +53,7 @@ const clearSearch = () => {
         No records found
     </div>
 </template>
+
+<style scoped>
+
+</style>
