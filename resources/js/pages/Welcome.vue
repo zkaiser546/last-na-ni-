@@ -57,7 +57,7 @@ defineProps({
                 {{ page.props.flash.error }}
             </AlertDescription>
         </Alert>
-        <header class="mb-6 w-full max-w-[335px] text-sm not-has-[nav]:hidden lg:max-w-4xl">
+        <header class="mb-6 w-full bg-red-500 max-w-[335px] text-sm not-has-[nav]:hidden lg:max-w-4xl">
             <nav class="flex items-center justify-end gap-4">
                 <Link
                     v-if="$page.props.auth.user"
@@ -102,19 +102,6 @@ defineProps({
                 </div>
             </div>
 
-            <main class="flex w-full overflow-hidden rounded-lg">
-
-                <div class="border dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]">
-                    <h1 class="text-8xl">FUNCTIONAL lang</h1>
-                    <h1 class="text-7xl">Saturday:</h1>
-                    <ul>
-                        <li class="pl-20 text-6xl">I display ang books</li>
-                        <li class="pl-20 text-6xl">Maka book, outside ug inside</li>
-                        <li class="pl-20 text-6xl">Display borrows</li>
-                        <li class="pl-20 text-6xl">Welcome search</li>
-                    </ul>
-                </div>
-            </main>
         </div>
         <div class="hidden h-14.5 lg:block"></div>
     </div>
