@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use App\Models\BorrowingPolicy;
 use App\Models\BorrowingTransaction;
 use App\Models\Record;
@@ -113,15 +114,6 @@ class BorrowingTransactionController extends Controller
                 ]);
             }
 
-            else if ($request->borrow_type === 'take-home') {
-
-                $user_type_id = User::where('id', $request->user_id)->first();
-
-                dd($user_type_id);
-                $borrowingPolicy = BorrowingPolicy::where('user_type_id', $user_type_id)->first();
-
-            }
-
             return to_route('borrowings.index')
                 ->with('success', 'Borrowing transaction ' . $transaction->transaction_number . ' added successfully');
 
@@ -145,7 +137,42 @@ class BorrowingTransactionController extends Controller
 
     public function borrow(Request $request)
     {
-        dd($request->all());
+        $user = null;
+        $policy = null;
+        $book = null;
+        try {
+            $user = User::findOrFail($request->user_id);
+            $book = Record::where('accession_number', $request->book_accession)->first();
+            $policy = BorrowingPolicy::where('user_type_id', $user->user_type_id)->first();
+        } catch (\Exception $e) {
+            session()->flash('error', 'Something went wrong');
+            // Log the error
+            \Log::error('Error in user or book retrieval: ' . $e->getMessage(), [
+                'user_id' => $request->user_id,
+                'book_accession' => $request->book_accession,
+                'exception' => $e
+            ]);
+        }
+
+        $transactionNumber = 'BRW-IN-' . date('YmdHis') . '-' . str_pad(random_int(1, 99999), 5, '0', STR_PAD_LEFT);
+        $policy_loan_period_days = $policy->loan_period_days;
+
+        $transaction = BorrowingTransaction::create([
+            'transaction_number' => $transactionNumber,
+            'user_id' => $user->id,
+            'record_id' => $book->id,
+            'borrowing_policy_id' => $policy->id,
+            'transaction_type' => 'checkout',
+            'status' => 'active',
+            'checkout_date' => now(),
+            'due_date' => now()->addDays($policy_loan_period_days),
+            'checked_out_by' => Auth::id(),
+        ]);
+
+        return to_route('borrowings.index')
+            ->with('success', 'Borrowing transaction ' . $transaction->transaction_number . ' added successfully');
+
+
     }
 
     /**

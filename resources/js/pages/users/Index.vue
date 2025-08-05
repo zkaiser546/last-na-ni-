@@ -36,9 +36,6 @@ defineProps({
                 <Link :href="route('faculties.create')">
                     <Button variant="secondary">Add Faculty</Button>
                 </Link>
-                <Link :href="route('grad-students.create')">
-                    <Button variant="secondary">Add Grad Student</Button>
-                </Link>
             </div>
 
             <h1>List of all users</h1>
