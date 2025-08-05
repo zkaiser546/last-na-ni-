@@ -9,10 +9,12 @@ import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, 
 // Define props if needed
 interface Props {
     initialUsers?: { id: number; first_name: string; last_name?: string; email: string }[];
+    accessionNumber?: number | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    initialUsers: () => []
+    initialUsers: () => [],
+    accessionNumber: null, // default value for accessionNumber
 });
 
 // State for users and search query
@@ -61,6 +63,7 @@ const fetchUsers = debounce(async (query: string) => {
 watch(searchQuery, (newQuery) => {
     fetchUsers(newQuery);
 });
+
 </script>
 
 <template>

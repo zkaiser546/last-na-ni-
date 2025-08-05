@@ -5,7 +5,7 @@
     import { Input } from '@/components/ui/input';
     import { LoaderCircle, Search } from 'lucide-vue-next';
     import { Button } from '@/components/ui/button';
-    import { computed } from 'vue';
+    import { computed, ref, watchEffect } from 'vue';
     import BookScannerDialog from '@/components/BookScannerDialog.vue';
     import SearchUsers from '@/components/SearchUsers.vue';
 
@@ -65,6 +65,17 @@
         borrowForm.borrow_type = type
         borrowForm.post(route('borrowings.store'))
     }
+
+    // Create persistent accession number variable
+    const selectedAccessionNumber = ref<number | null>(null);
+
+    // Update when search result changes
+    watchEffect(() => {
+        if (props.search_ac_result?.accession_number) {
+            selectedAccessionNumber.value = props.search_ac_result.accession_number;
+        }
+    });
+
 
 </script>
 
@@ -167,54 +178,7 @@
                     </div>
 
                     <!-- combo box-->
-                    <SearchUsers />
-
-                    <!-- Patron Search Form (shown only when book is available) -->
-                    <div v-if="search_ac_result && search_ac_result.status === 'available'" class="flex flex-col gap-4">
-                        <form @submit.prevent="searchAcc" class="flex flex-col gap-3">
-                            <div class="relative">
-                                <Input
-                                    required
-                                    id="searchPatron"
-                                    type="number"
-                                    placeholder="Search Library ID..."
-                                    class="pl-10"
-                                    v-model="borrowForm.searchPatron"
-                                />
-                                <span class="absolute left-0 inset-y-0 flex items-center justify-center px-2">
-                                    <Search class="size-6 text-muted-foreground" />
-                                </span>
-                            </div>
-                            <div class="flex gap-3">
-                                <Button
-                                    variant="outline"
-                                    class="flex-1"
-                                    tabindex="6"
-                                    :disabled="borrowForm.processing"
-                                    @click="clearSearch"
-                                >
-                                    Clear
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    class="flex-1"
-                                    tabindex="5"
-                                    :disabled="borrowForm.processing"
-                                >
-                                    <LoaderCircle v-if="borrowForm.processing" class="h-4 w-4 animate-spin" />
-                                    <span v-else>Find Patron</span>
-                                </Button>
-                            </div>
-                        </form>
-                        <!-- Borrow Buttons -->
-                        <Button
-                            @click="borrow('take-home')"
-                            :disabled="borrowForm.processing"
-                            class="flex-1"
-                        >
-                            Borrow (Take Home)
-                        </Button>
-                    </div>
+                    <SearchUsers :accession-number="selectedAccessionNumber" />
 
                 </div>
             </div>
