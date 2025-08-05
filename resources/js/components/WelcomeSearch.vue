@@ -26,17 +26,41 @@ const clearSearch = () => {
 </script>
 
 <template>
-    <form @submit.prevent="search">
-        <div class="relative w-full max-w-sm items-center">
-                <Input required v-model="form.search" id="search" type="search"
-                       placeholder="Search accession, title..." class="pl-10" autocomplete="off"/>
-            <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
-              <Search class="size-6 text-muted-foreground" />
+    <form @submit.prevent="search" class="w-full max-w-md">
+        <div class="flex items-center gap-2">
+            <!-- Search Input Container -->
+            <div class="relative flex-1">
+                <Input
+                    required
+                    v-model="form.search"
+                    id="search"
+                    type="search"
+                    placeholder="Search accession, title..."
+                    class="pl-10"
+                    autocomplete="off"
+                />
+                <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
+                <Search class="size-6 text-muted-foreground" />
             </span>
-        </div>
-        <div class="flex gap-2">
-            <Button type="button" variant="outline" v-if="form.search" @click="clearSearch">Clear</Button>
-            <Button type="submit" @click="search">Search</Button>
+            </div>
+
+            <!-- Button Container -->
+            <div class="flex gap-2 flex-shrink-0">
+                <Button
+                    type="submit"
+                    @click="search"
+                >
+                    Search
+                </Button>
+                <Button
+                    type="button"
+                    variant="outline"
+                    v-if="form.search"
+                    @click="clearSearch"
+                >
+                    Clear
+                </Button>
+            </div>
         </div>
     </form>
 
