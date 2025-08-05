@@ -46,6 +46,21 @@ class BorrowingTransactionController extends Controller
         ]);
     }
 
+    public function searchUser(Request $request)
+    {
+        $query = $request->get('q', '');
+
+        $users = User::select('id', 'first_name', 'email')
+            ->where('first_name', 'LIKE', "%{$query}%")
+            ->orWhere('email', 'LIKE', "%{$query}%")
+            ->limit(5)
+            ->get();
+
+        return inertia()->render('borrowings/Create', [
+            'users' => $users
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */

@@ -31,8 +31,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/users/students', [StudentController::class, 'store'])->name('students.store');
     Route::get('/users/faculties/create', [FacultyController::class, 'create'])->name('faculties.create');
     Route::post('/users/faculties', [FacultyController::class, 'store'])->name('faculties.store');
-    Route::get('/users/grad-students/create', [GradSchoolStudentController::class, 'create'])->name('grad-students.create');
-    Route::post('/users/grad-students', [GradSchoolStudentController::class, 'store'])->name('grad-students.store');
 
     Route::get('/records', [RecordController::class, 'index'])->name('records.index');
     Route::get('/records/books/import', [BookController::class, 'import'])->name('books.import');
@@ -41,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/borrowings', [BorrowingTransactionController::class, 'index'])->name('borrowings.index');
     Route::get('/borrowings/create', [BorrowingTransactionController::class, 'create'])->name('borrowings.create');
     Route::post('/borrowings', [BorrowingTransactionController::class, 'store'])->name('borrowings.store');
+    Route::get('/users/search', [BorrowingTransactionController::class, 'searchUser'])->name('borrowings.users.search');
 });
 
 // Test routes (no middleware)

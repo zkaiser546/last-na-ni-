@@ -7,6 +7,7 @@
     import { Button } from '@/components/ui/button';
     import { computed } from 'vue';
     import BookScannerDialog from '@/components/BookScannerDialog.vue';
+    import SearchUsers from '@/components/SearchUsers.vue';
 
     const breadcrumbs: BreadcrumbItem[] = [
       {
@@ -121,7 +122,7 @@
                             <Input
                                 required
                                 id="search"
-                                type="number"
+
                                 placeholder="Search Accession Number..."
                                 class="pl-10"
                                 v-model="form.searchAcc"
@@ -164,6 +165,10 @@
                             <p><strong>Status:</strong> <span class="text-muted-foreground">Patron status will appear here</span></p>
                         </div>
                     </div>
+
+                    <!-- combo box-->
+                    <SearchUsers />
+
                     <!-- Patron Search Form (shown only when book is available) -->
                     <div v-if="search_ac_result && search_ac_result.status === 'available'" class="flex flex-col gap-4">
                         <form @submit.prevent="searchAcc" class="flex flex-col gap-3">
