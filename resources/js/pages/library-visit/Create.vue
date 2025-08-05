@@ -8,7 +8,7 @@ import { Head, usePage } from '@inertiajs/vue3';
 
   defineProps({
       records: Object,
-      search_result: Object,
+      patron: Object,
       search_term: String,
       search_button: Boolean,
   });
@@ -53,7 +53,7 @@ import { Head, usePage } from '@inertiajs/vue3';
 
         <div class="grid w-full opacity-100 transition-opacity duration-750 starting:opacity-0">
             <div class="p-8 min-w-full flex flex-col items-center">
-                <LoggerPatronSearch :search_result="search_result" :search_term="search_term"
+                <LoggerPatronSearch :patron="patron" :search_term="search_term"
                                :search_button="search_button"
                 />
             </div>

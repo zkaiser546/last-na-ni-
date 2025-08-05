@@ -29,12 +29,14 @@ class LibraryVisitController extends Controller
             try {
                 $patron = User::findOrFail($request->search);
             } catch (ModelNotFoundException $e) {
-                return redirect()->back()->with('error', 'User not found');
+                session()->flash('error', 'User not found');
             }
-
         }
+
         return Inertia::render('library-visit/Create', [
             'patron' => $patron,
+            'search_term' => $request->search,
+            'search_button' => (boolean)$request->search_button,
         ]);
     }
 

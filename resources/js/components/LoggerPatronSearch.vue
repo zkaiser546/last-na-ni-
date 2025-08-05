@@ -6,7 +6,7 @@ import { UserRoundSearch } from 'lucide-vue-next';
 import { router, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
-    search_result: Object,
+    patron: Object,
     search_term: String,
     search_button: Boolean,
 });
@@ -21,7 +21,7 @@ const search = () => {
 
 const clearSearch = () => {
     form.search = ''; // Clear the search input
-    router.get(route('home'), { search: '' }, { preserveState: true }); // Update the route
+    router.get(route('logger'), { search: '' }, { preserveState: true }); // Update the route
 };
 
 </script>
@@ -41,15 +41,14 @@ const clearSearch = () => {
         <Button @click="search">Search</Button>
     </div>
 
-    <div v-if="search_result?.data?.length" class="max-w-md">
-        <div v-for="result in search_result?.data" :key="result.id" class="grid gap-y-4">
-            {{ result.accession_number }}
-            {{ result.title }}
-            {{ result.book.authors }}
-            {{ result.book.publication_year }}
+    {{ console.log(patron)}}
+    <div v-if="patron" class="max-w-md">
+        hi
+        <div v-for="result in patron?.data" :key="result.id" class="grid gap-y-4">
+            {{ result }}
         </div>
     </div>
-    <div v-else-if="!search_result?.data?.length && search_button">
+    <div v-else-if="!patron && search_button">
         No records found
     </div>
 </template>
