@@ -4,6 +4,7 @@ import type { BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Button } from '@/components/ui/button';
 import Latest from '@/components/borrowing/Latest.vue';
+import LatestTransactions from '@/components/LatestTransactions.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -34,7 +35,7 @@ defineProps({
 
             <h1 class="text-2xl">Latest transactions</h1>
 
-            <Latest :transactions="latest_transactions"/>
+            <LatestTransactions :transactions="latest_transactions" />
 
         </div>
     </AppLayout>

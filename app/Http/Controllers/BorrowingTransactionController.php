@@ -154,7 +154,7 @@ class BorrowingTransactionController extends Controller
             ]);
         }
 
-        $transactionNumber = 'BRW-IN-' . date('YmdHis') . '-' . str_pad(random_int(1, 99999), 5, '0', STR_PAD_LEFT);
+        $transactionNumber = 'BRW-OUT-' . date('YmdHis') . '-' . str_pad(random_int(1, 99999), 5, '0', STR_PAD_LEFT);
         $policy_loan_period_days = $policy->loan_period_days;
 
         $transaction = BorrowingTransaction::create([
