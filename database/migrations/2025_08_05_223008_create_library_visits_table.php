@@ -13,7 +13,17 @@ return new class extends Migration
     {
         Schema::create('library_visits', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->dateTime('entry_time');
+            $table->dateTime('exit_time')->nullable();
+            $table->foreignId('purpose_id')->constrained('purposes')->onDelete('delete');
+            $table->enum('entry_method', ['manual', 'card_scan', 'qr_code'])->default('manual');
             $table->timestamps();
+
+            $table->index(['user_id', 'entry_time']);
+            $table->index(['entry_time', 'exit_time']);
+            $table->index('purpose');
+            $table->index(['created_at']); // For daily/monthly reports
         });
     }
 
