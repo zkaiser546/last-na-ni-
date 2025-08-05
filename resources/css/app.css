@@ -113,7 +113,7 @@
     --destructive: hsl(0 85% 50%);
     --destructive-foreground: hsl(0 0% 100%);
     --border: hsl(45 30% 85%);
-    --input: hsl(45 60% 96%);
+    --input: hsl(45 60% 86%); /* 96 to 86 */
     --ring: hsl(45 100% 55%);
 
     /* Chart colors */

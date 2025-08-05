@@ -16,7 +16,7 @@ const form = useForm({
 });
 
 const search = () => {
-    router.get(route('home'), { search: form.search, search_button: true }, { preserveState: true });
+    router.get(route('logger'), { search: form.search, search_button: true }, { preserveState: true });
 };
 
 const clearSearch = () => {
@@ -29,7 +29,7 @@ const clearSearch = () => {
 <template>
     <div class="relative w-full max-w-sm items-center">
         <form @submit.prevent="search">
-            <Input required v-model="form.search" id="search" type="search"
+            <Input required v-model="form.search" id="search" type="number"
                    placeholder="Enter Library ID" class="pl-10" autocomplete="off"/>
         </form>
         <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">

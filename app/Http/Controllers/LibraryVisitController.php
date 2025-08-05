@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\LibraryVisit;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -19,9 +20,20 @@ class LibraryVisitController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        return Inertia::render('library-visit/Create');
+        $patron = null;
+        if ($request->search_button) {
+
+            $patron = User::findOrFail($request->search);
+            if (!$patron) {
+                session()->flash('error', "<UNK> <UNK> <UNK> <UNK> <UNK> <UNK> <UNK> <UNK>");
+            }
+
+        }
+        return Inertia::render('library-visit/Create', [
+            'patron' => $patron,
+        ]);
     }
 
     /**
