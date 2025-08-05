@@ -6,6 +6,7 @@ import { ref, onMounted } from 'vue'
 import WelcomeBookDialog from '@/components/WelcomeBookDialog.vue';
 import WelcomeSearch from '@/components/WelcomeSearch.vue';
 import AppLogo from '@/components/AppLogo.vue';
+import AppearanceTabs from '@/components/AppearanceTabs.vue';
 
 // for alert
 const page = usePage()
@@ -59,10 +60,12 @@ defineProps({
             </AlertDescription>
         </Alert>
         <header class="flex  justify-between mb-6 w-full p-4 px-8 text-sm not-has-[nav]:hidden">
-            <Link :href="route('logger')" class="flex items-center gap-2">
+            <Link :href="route('logger')" class="flex items-center gap-2 dark:text-foreground">
                 <AppLogo />
             </Link>
             <nav class="flex items-center justify-end gap-4">
+                (temporary placement)
+                <AppearanceTabs />
                 <Link
                     v-if="$page.props.auth.user"
                     :href="route('dashboard')"
