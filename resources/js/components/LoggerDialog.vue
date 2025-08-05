@@ -10,7 +10,8 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
-import {  ref, watch } from 'vue';
+import { ref, watch } from 'vue';
+import { useForm } from '@inertiajs/vue3';
 import {
     Select,
     SelectContent,
@@ -27,13 +28,42 @@ const props = defineProps({
 });
 
 const open = ref(false)
+const selectedPurpose = ref('')
+
+// Create Inertia form
+const form = useForm({
+    patron_id: null,
+    purpose_id: null,
+})
 
 // Watch for patron changes and open dialog
 watch(() => props.patron, (newPatron) => {
     if (newPatron) {
+        form.patron_id = newPatron.id
         open.value = true
     }
 }, { immediate: true })
+
+// Handle purpose selection
+const handlePurposeChange = (value: string) => {
+    selectedPurpose.value = value
+    form.purpose_id = value
+}
+
+// Submit form
+const submitForm = () => {
+    form.post(route('logger.store'), {
+        onSuccess: () => {
+            open.value = false
+            // Reset form or handle success
+            form.reset()
+            selectedPurpose.value = ''
+        },
+        onError: (errors) => {
+            console.error('Form submission errors:', errors)
+        }
+    })
+}
 
 </script>
 
@@ -54,32 +84,47 @@ watch(() => props.patron, (newPatron) => {
                     What transaction would you do today?
                 </DialogDescription>
             </DialogHeader>
-            <div class="grid gap-4 py-4">
-                <div class="grid grid-cols-4 items-center gap-4">
-                    <Label for="name" class="text-right">
-                        Purpose
-                    </Label>
+            <form @submit.prevent="submitForm">
+                <div class="grid gap-4 py-4">
+                    <div class="grid grid-cols-4 items-center gap-4">
+                        <Label for="purpose" class="text-right">
+                            Purpose
+                        </Label>
 
-                    <Select>
-                        <SelectTrigger class="w-[280px]">
-                            <SelectValue placeholder="Select a fruit" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup >
-                                <SelectLabel>Purpose</SelectLabel>
-                                <SelectItem v-for="purpose in purposes" :key="purpose.id" value="purpose.id">
-                                    {{ purpose.name }}
-                                </SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
+                        <Select v-model="selectedPurpose" @update:modelValue="handlePurposeChange">
+                            <SelectTrigger class="w-[280px]">
+                                <SelectValue placeholder="Select a purpose" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel>Purpose</SelectLabel>
+                                    <SelectItem
+                                        v-for="purpose in purposes"
+                                        :key="purpose.id"
+                                        :value="purpose.id.toString()"
+                                    >
+                                        {{ purpose.name }}
+                                    </SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <!-- Show validation errors if any -->
+                    <div v-if="form.errors.purpose_id" class="text-red-500 text-sm">
+                        {{ form.errors.purpose_id }}
+                    </div>
                 </div>
-            </div>
-            <DialogFooter>
-                <Button type="submit">
-                    Save changes
-                </Button>
-            </DialogFooter>
+                <DialogFooter>
+                    <Button
+                        type="submit"
+                        :disabled="form.processing || !selectedPurpose"
+                    >
+                        <span v-if="form.processing">Processing...</span>
+                        <span v-else>Save changes</span>
+                    </Button>
+                </DialogFooter>
+            </form>
         </DialogContent>
     </Dialog>
 </template>

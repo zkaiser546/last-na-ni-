@@ -5,6 +5,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\BorrowingTransactionController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\GradSchoolStudentController;
+use App\Http\Controllers\LibraryVisitController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
@@ -13,7 +14,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
-Route::get('/logger', [\App\Http\Controllers\LibraryVisitController::class, 'create'])->name('logger');
+Route::get('/logger', [LibraryVisitController::class, 'create'])->name('logger');
+Route::post('/logger', [LibraryVisitController::class, 'store'])->name('logger.store');
 
 // Routes that require authentication and verification
 Route::middleware(['auth', 'verified'])->group(function () {
