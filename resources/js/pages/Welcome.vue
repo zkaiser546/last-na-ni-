@@ -98,7 +98,7 @@ defineProps({
         <div class="grid w-full opacity-100 transition-opacity duration-750 starting:opacity-0">
 
             <div class="p-8 h-[360px] bg-[url(/storage/images/eagle.jpg)] bg-cover min-w-full flex justify-center items-center">
-                <div class="grid bg-background">
+                <div class="grid bg-background rounded-lg">
                     <WelcomeSearch :search_result="search_result" :search_term="search_term"
                                    :search_button="search_button"
                     />

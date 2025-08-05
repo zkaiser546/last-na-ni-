@@ -26,7 +26,7 @@ const clearSearch = () => {
 </script>
 
 <template>
-    <form @submit.prevent="search" class="w-full max-w-md">
+    <form @submit.prevent="search" class="w-full max-w-md p-2">
         <div class="flex items-center gap-2">
             <!-- Search Input Container -->
             <div class="relative flex-1">
