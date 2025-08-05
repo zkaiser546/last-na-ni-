@@ -26,53 +26,241 @@ const clearSearch = () => {
 </script>
 
 <template>
-    <form @submit.prevent="search" class="w-full max-w-md p-2">
+    <form @submit.prevent="search" class="search-form">
         <div class="flex items-center gap-2">
             <!-- Search Input Container -->
-            <div class="relative flex-1">
+            <div class="relative flex-1 search-input-container">
                 <Input
                     required
                     v-model="form.search"
                     id="search"
                     type="search"
                     placeholder="Search accession, title..."
-                    class="pl-10"
+                    class="pl-10 search-input"
                     autocomplete="off"
                 />
-                <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
-                <Search class="size-6 text-muted-foreground" />
-            </span>
+                <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2 search-icon">
+                    <Search class="size-6 text-muted-foreground" />
+                </span>
             </div>
 
             <!-- Button Container -->
-            <div class="flex gap-2 flex-shrink-0">
+            <div class="flex gap-2 flex-shrink-0 button-container">
                 <Button
                     type="submit"
                     @click="search"
+                    class="search-button"
                 >
                     Search
                 </Button>
-                <Button
-                    type="button"
-                    variant="outline"
-                    v-if="form.search"
-                    @click="clearSearch"
-                >
-                    Clear
-                </Button>
+                <Transition name="clear-button">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        v-if="form.search"
+                        @click="clearSearch"
+                        class="clear-button"
+                    >
+                        Clear
+                    </Button>
+                </Transition>
             </div>
         </div>
     </form>
 
-    <div v-if="search_result?.data?.length" class="max-w-md">
-        <div v-for="result in search_result?.data" :key="result.id" class="grid gap-y-4">
-            {{ result.accession_number }}
-            {{ result.title }}
-            {{ result.book.authors }}
-            {{ result.book.publication_year }}
+    <!-- Search Results -->
+    <Transition name="fade" mode="out-in">
+        <div v-if="search_result?.data?.length" class="max-w-md results-container">
+            <TransitionGroup name="result-item" tag="div" class="grid gap-y-4">
+                <div
+                    v-for="result in search_result?.data"
+                    :key="result.id"
+                    class="result-item"
+                >
+                    <div class="result-content">
+                        <div class="font-medium">{{ result.accession_number }}</div>
+                        <div class="text-lg font-semibold">{{ result.title }}</div>
+                        <div class="text-sm text-gray-600">{{ result.book.authors }}</div>
+                        <div class="text-sm text-gray-500">{{ result.book.publication_year }}</div>
+                    </div>
+                </div>
+            </TransitionGroup>
         </div>
-    </div>
-    <div v-else-if="!search_result?.data?.length && search_button">
-        No records found
-    </div>
+        <div v-else-if="!search_result?.data?.length && search_button" class="no-results">
+            <div class="text-center text-gray-500 py-8">
+                <Search class="size-12 mx-auto mb-2 opacity-50" />
+                <p>No records found</p>
+            </div>
+        </div>
+    </Transition>
 </template>
+
+<style scoped>
+/* Form transitions */
+.search-form {
+    width: 100%;
+    max-width: 28rem;
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.search-input-container {
+    transition: transform 0.2s ease;
+}
+
+.search-input-container:focus-within {
+    transform: scale(1.02);
+}
+
+.search-input {
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.search-icon {
+    transition: color 0.3s ease;
+}
+
+.search-input:focus + .search-icon {
+    color: rgb(59, 130, 246);
+}
+
+/* Button transitions */
+.button-container {
+    transition: gap 0.3s ease;
+}
+
+.search-button,
+.clear-button {
+    transition: all 0.3s ease;
+}
+
+.search-button:hover,
+.clear-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.search-button:active,
+.clear-button:active {
+    transform: translateY(0);
+}
+
+/* Clear button transition */
+.clear-button-enter-active,
+.clear-button-leave-active {
+    transition: all 0.3s ease;
+}
+
+.clear-button-enter-from {
+    opacity: 0;
+    transform: translateX(10px) scale(0.9);
+}
+
+.clear-button-leave-to {
+    opacity: 0;
+    transform: translateX(10px) scale(0.9);
+}
+
+/* Results container transitions */
+.results-container {
+    transition: all 0.3s ease;
+}
+
+/* Fade transition for results/no results */
+.fade-enter-active,
+.fade-leave-active {
+    transition: all 0.4s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+/* Individual result item transitions */
+.result-item {
+    transition: all 0.3s ease;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgb(229, 231, 235);
+    background: white;
+}
+
+.result-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: rgb(209, 213, 219);
+}
+
+.result-content {
+    transition: all 0.3s ease;
+}
+
+/* TransitionGroup animations for result items */
+.result-item-enter-active {
+    transition: all 0.5s ease;
+}
+
+.result-item-leave-active {
+    transition: all 0.3s ease;
+}
+
+.result-item-enter-from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+}
+
+.result-item-leave-to {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+}
+
+.result-item-move {
+    transition: transform 0.3s ease;
+}
+
+/* No results transition */
+.no-results {
+    transition: all 0.4s ease;
+}
+
+/* Loading states (optional) */
+.search-form:has(.search-input:focus) .search-button {
+    background-color: rgb(59, 130, 246);
+    color: white;
+}
+
+/* Responsive transitions */
+@media (max-width: 640px) {
+    .search-form {
+        max-width: 100%;
+        padding: 0.25rem;
+    }
+
+    .button-container {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .result-item:hover {
+        transform: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+</style>
