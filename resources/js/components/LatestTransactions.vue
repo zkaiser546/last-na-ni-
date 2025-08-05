@@ -45,8 +45,8 @@ defineProps({
                 <TableCell class="font-medium">
                     {{ transaction.transaction_number }}
                 </TableCell>
-                <TableCell>{{ transaction.user_id }}</TableCell>
-                <TableCell>{{ transaction.record_id }}</TableCell>
+                <TableCell>{{ transaction.user ? transaction.user.first_name + ' ' + transaction.user.last_name : '(borrowed inside)' }}</TableCell>
+                <TableCell>{{ transaction.record.accession_number + ' --- ' + transaction.record.title }}</TableCell>
                 <TableCell class="text-right">
                     {{ transaction.checkout_date }}
                 </TableCell>
