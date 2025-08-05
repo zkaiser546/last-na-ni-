@@ -27,7 +27,7 @@ defineProps({
 
 <template>
     <Table>
-        <TableCaption>A list of your recent invoices.</TableCaption>
+        <TableCaption>A list of your recent borrowing transactions.</TableCaption>
         <TableHeader>
             <TableRow>
                 <TableHead class="w-[100px]">
