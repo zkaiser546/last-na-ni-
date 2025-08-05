@@ -60,9 +60,9 @@ watch(searchQuery, (newQuery) => {
 </script>
 
 <template>
-    <Combobox by="label">
-        <ComboboxAnchor>
-            <div class="relative w-full max-w-sm items-center">
+    <Combobox by="label" class="w-sm">
+        <ComboboxAnchor class="w-full">
+            <div class="relative w-full items-center">
                 <ComboboxInput
                     v-model="searchQuery"
                     class="pl-9"
@@ -75,9 +75,9 @@ watch(searchQuery, (newQuery) => {
             </div>
         </ComboboxAnchor>
 
-        <ComboboxList>
-            <ComboboxEmpty>
-                No users found.
+        <ComboboxList class="w-full">
+            <ComboboxEmpty class="p-2">
+                No User Found
             </ComboboxEmpty>
 
             <ComboboxGroup>
