@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BorrowingTransactionController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\GradSchoolStudentController;
 use App\Http\Controllers\LibraryVisitController;
@@ -21,9 +22,7 @@ Route::post('/logger', [LibraryVisitController::class, 'store'])->name('logger.s
 // Routes that require authentication and verification
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/import', [UserController::class, 'import'])->name('users.import');

@@ -2,8 +2,8 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
-import PlaceholderPattern from '../components/PlaceholderPattern.vue';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -11,20 +11,39 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dashboard',
     },
 ];
+
+defineProps({
+    userCount: Number,
+});
 </script>
 
 <template>
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
             <div class="flex gap-2">
                 <Link :href="route('borrowings.create')">
                     <Button variant="secondary">Borrow Book</Button>
                 </Link>
             </div>
-            <div class="flex gap-2">
-                hi
+            <div class="grid grid-cols-4 gap-2">
+                <Card class="p-4">
+                    No. of users:
+                    {{ userCount }}
+                </Card>
+                <Card class="p-4">
+                    No. of records:
+                    {{ userCount }}
+                </Card>
+                <Card class="p-4">
+                    No. of users:
+                    {{ userCount }}
+                </Card>
+                <Card class="p-4">
+                    No. of users:
+                    {{ userCount }}
+                </Card>
             </div>
         </div>
     </AppLayout>
