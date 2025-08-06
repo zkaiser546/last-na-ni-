@@ -7,7 +7,7 @@ import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
 import { BookOpen, BookOpenCheck, Folder, LayoutGrid, Library, Users } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
-import { LogIn } from 'lucide-vue-next';
+import { FileClock  } from 'lucide-vue-next';
 
 const mainNavItems: NavItem[] = [
     {
@@ -31,9 +31,9 @@ const mainNavItems: NavItem[] = [
         icon: BookOpenCheck,
     },
     {
-        title: 'Logger',
+        title: 'Visitors',
         href: '/logger',
-        icon: LogIn,
+        icon: FileClock ,
     },
 
 ];
