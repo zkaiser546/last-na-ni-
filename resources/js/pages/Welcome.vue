@@ -49,7 +49,7 @@ defineProps({
 <template>
     <Head title="Welcome">
     </Head>
-    <div class="flex min-h-screen flex-col items-center bg-background text-[#1b1b18] lg:justify-center dark:bg-[#0a0a0a]">
+    <div class="flex min-h-screen flex-col bg-background text-[#1b1b18] lg:justify-center dark:bg-[#0a0a0a]">
 
         <Alert class="absolute top-5 right-5 w-fit pr-8" variant="destructive" v-if="page.props.flash.error && showAlert">
             <AlertCircle class="w-4 h-4" />
