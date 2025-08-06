@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
-Route::get('/logger', [LibraryVisitController::class, 'create'])->name('logger');
+Route::get('/logger', [LibraryVisitController::class, 'index'])->name('logger.index');
+Route::get('/logger/create', [LibraryVisitController::class, 'create'])->name('logger.create');
 Route::post('/logger', [LibraryVisitController::class, 'store'])->name('logger.store');
 
 // Routes that require authentication and verification

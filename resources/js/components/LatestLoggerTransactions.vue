@@ -22,24 +22,24 @@ defineProps({
         <TableHeader>
             <TableRow>
                 <TableHead class="w-[100px]">
-                    Transaction Number
+                    User
                 </TableHead>
-                <TableHead>Patron</TableHead>
-                <TableHead>Book</TableHead>
+                <TableHead>Entry Time</TableHead>
+                <TableHead>Exit Time</TableHead>
                 <TableHead class="text-right">
-                    Check-out Date
+                    Purpose
                 </TableHead>
             </TableRow>
         </TableHeader>
         <TableBody>
             <TableRow v-for="transaction in transactions.data" :key="transaction.id">
                 <TableCell class="font-medium">
-                    {{ transaction.transaction_number }}
+                    {{ transaction.user_id }}
                 </TableCell>
-                <TableCell>{{ transaction.user ? transaction.user.first_name + ' ' + transaction.user.last_name : '(borrowed inside)' }}</TableCell>
-                <TableCell>{{ transaction.record.accession_number + ' --- ' + transaction.record.title }}</TableCell>
+                <TableCell>{{ transaction.entry_time }}</TableCell>
+                <TableCell>{{ transaction.exit_time }}</TableCell>
                 <TableCell class="text-right">
-                    {{ transaction.checkout_date }}
+                    {{ transaction.visit_purpose_id }}
                 </TableCell>
             </TableRow>
         </TableBody>

@@ -63,7 +63,7 @@ defineProps({
         </Alert>
 
         <header class="flex justify-between items-center w-full p-4 px-8 text-sm not-has-[nav]:hidden">
-            <Link :href="route('logger')" class="flex items-center gap-2 dark:text-foreground">
+            <Link :href="route('logger.create')" class="flex items-center gap-2 dark:text-foreground">
                 <AppLogo />
             </Link>
             <nav class="flex items-center justify-end gap-4">

@@ -18,12 +18,12 @@ const form = useForm({
 });
 
 const search = () => {
-    router.get(route('logger'), { search: form.search, search_button: true }, { preserveState: true });
+    router.get(route('logger.create'), { search: form.search, search_button: true }, { preserveState: true });
 };
 
 const clearSearch = () => {
     form.search = ''; // Clear the search input
-    router.get(route('logger'), { search: '' }, { preserveState: true }); // Update the route
+    router.get(route('logger.create'), { search: '' }, { preserveState: true }); // Update the route
 };
 
 </script>

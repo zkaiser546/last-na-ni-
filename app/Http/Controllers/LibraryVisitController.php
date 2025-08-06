@@ -16,7 +16,11 @@ class LibraryVisitController extends Controller
      */
     public function index()
     {
-        //
+        $visits = LibraryVisit::latest()->paginate(10);
+
+        return Inertia::render('logger/Index', [
+            'visits' => $visits
+        ]);
     }
 
     /**
@@ -70,7 +74,7 @@ class LibraryVisitController extends Controller
             'visit_purpose_id' => $purpose->id,
         ]);
 
-        return to_route('logger')
+        return to_route('logger.create')
             ->with('success', 'Borrowing transaction ' . $purpose->name . ' added successfully');
 
     }
