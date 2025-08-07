@@ -15,7 +15,7 @@ import {
 } from '@tanstack/vue-table'
 import { ArrowUpDown, ChevronDown } from 'lucide-vue-next'
 
-import { h, ref, computed } from 'vue'
+import { h, ref } from 'vue'
 import DropdownAction from './DataTableDemoColumn.vue'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
