@@ -53,11 +53,6 @@ import { Textarea } from '@/components/ui/textarea'
 import { TagsInput, TagsInputInput, TagsInputItem, TagsInputItemDelete, TagsInputItemText } from '@/components/ui/tags-input'
 import { useForm } from '@inertiajs/vue3';
 import { toast } from 'vue-sonner'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
 
 //Props Data
 const props = defineProps({
