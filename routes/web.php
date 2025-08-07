@@ -24,16 +24,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/import', [UserController::class, 'import'])->name('users.import');
-    Route::post('/users/import', [UserController::class, 'importStore'])->name('users.import.store');
-
-    Route::get('/users/admins/create', [AdminController::class, 'create'])->name('admins.create');
-    Route::post('/users/admins', [AdminController::class, 'store'])->name('admins.store');
-    Route::get('/users/students/create', [StudentController::class, 'create'])->name('students.create');
-    Route::post('/users/students', [StudentController::class, 'store'])->name('students.store');
-    Route::get('/users/faculties/create', [FacultyController::class, 'create'])->name('faculties.create');
-    Route::post('/users/faculties', [FacultyController::class, 'store'])->name('faculties.store');
+    Route::prefix('users')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('users.index');
+        Route::get('/import', [UserController::class, 'import'])->name('users.import');
+        Route::post('/import', [UserController::class, 'importStore'])->name('users.import.store');
+        Route::get('/admins/create', [AdminController::class, 'create'])->name('admins.create');
+        Route::post('/admins', [AdminController::class, 'store'])->name('admins.store');
+        Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
+        Route::post('/students', [StudentController::class, 'store'])->name('students.store');
+        Route::get('/faculties/create', [FacultyController::class, 'create'])->name('faculties.create');
+        Route::post('/faculties', [FacultyController::class, 'store'])->name('faculties.store');
+    });
 
     Route::get('/records', [RecordController::class, 'index'])->name('records.index');
     Route::get('/records/books/import', [BookController::class, 'import'])->name('books.import');
@@ -42,7 +43,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/borrowings', [BorrowingTransactionController::class, 'index'])->name('borrowings.index');
     Route::get('/borrowings/create', [BorrowingTransactionController::class, 'create'])->name('borrowings.create');
     Route::post('/borrowings', [BorrowingTransactionController::class, 'store'])->name('borrowings.store');
-    Route::get('/users/search', [BorrowingTransactionController::class, 'searchUser'])->name('borrowings.users.search');
+    Route::get('/borrowings/users/search', [BorrowingTransactionController::class, 'searchUser'])->name('borrowings.users.search');
     Route::post('/borrowings/borrow', [BorrowingTransactionController::class, 'borrow'])->name('borrowings.borrow');
 });
 
