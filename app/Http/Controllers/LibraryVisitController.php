@@ -69,13 +69,12 @@ class LibraryVisitController extends Controller
         $user_entry = null;
         $success_message = '';
 
+        $user = User::where('id', $request->patron_id)->first();
+
         try {
 
-            $user = User::findOrFail('id', $request->patron_id);
-
-            $user_entry = LibraryVisit::with('user_id', $request->patron_id)->whereNull('exit_time')->first();
-
             if (!$request->purpose_id) {
+                $user_entry = LibraryVisit::where('user_id', $request->patron_id)->whereNull('exit_time')->first();
 
                 $user_entry->update([
                     'exit_time' => now(),
@@ -98,9 +97,9 @@ class LibraryVisitController extends Controller
         } catch (\Exception $e) {
             session()->flash('error', 'Something went wrong');
             // Log the error
-            \Log::error('Error in user or book retrieval: ' . $e->getMessage(), [
-                'user_id' => $request->user_id,
-                'book_accession' => $request->book_accession,
+            \Log::error('Error: ' . $e->getMessage(), [
+                'user_id' => $request->patron_id,
+                'purpose_id' => $request->purpose_id,
                 'exception' => $e
             ]);
         }
