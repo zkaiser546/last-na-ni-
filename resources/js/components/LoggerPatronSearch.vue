@@ -11,6 +11,7 @@ const props = defineProps({
     purposes: Object,
     search_term: String,
     search_button: Boolean,
+    is_logout: Boolean,
 });
 
 const form = useForm({
@@ -45,7 +46,7 @@ const clearSearch = () => {
 
     <div v-if="patron" class="max-w-md">
 
-        <LoggerDialog :purposes="purposes" :patron="patron" :modal="true"/>
+        <LoggerDialog v-if="!is_logout" :purposes="purposes" :patron="patron" :modal="true"/>
 
     </div>
     <div v-else-if="!patron && search_button" class="dark:text-card-foreground">

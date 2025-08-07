@@ -11,6 +11,7 @@ import { AlertCircle, CircleCheckBig, X } from 'lucide-vue-next';
       purposes: Object,
       search_term: String,
       search_button: Boolean,
+      is_logout: Boolean,
   });
 
   // for alert
@@ -65,7 +66,7 @@ import { AlertCircle, CircleCheckBig, X } from 'lucide-vue-next';
         <div class="grid w-full opacity-100 transition-opacity duration-750 starting:opacity-0">
             <div class="p-8 min-w-full flex flex-col items-center">
                 <LoggerPatronSearch :purposes="purposes" :patron="patron" :search_term="search_term"
-                               :search_button="search_button"
+                               :search_button="search_button" :is_logout="is_logout"
                 />
             </div>
         </div>

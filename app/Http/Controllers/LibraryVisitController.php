@@ -44,19 +44,22 @@ class LibraryVisitController extends Controller
             }
         }
 
+        $is_logout = false;
         if ($user_entry)
         {
-            LibraryVisit::update([
+            $user_entry->update([
                 'exit_time' => now(),
             ]);
-            $success_message = 'Thank you for visiting USeP library.';
+            session()->flash('success', 'Thank you for visiting USeP Library');
+            $is_logout = true;
         }
 
         return Inertia::render('library-visit/Create', [
             'patron' => $patron,
             'purposes' => $purposes,
-            'search_term' => $request->search,
+            'search_term' => $is_logout ? null : $request->search,
             'search_button' => (boolean)$request->search_button,
+            'is_logout' => $is_logout,
         ]);
     }
 
