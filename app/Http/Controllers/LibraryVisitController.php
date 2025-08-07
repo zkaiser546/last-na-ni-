@@ -31,6 +31,9 @@ class LibraryVisitController extends Controller
         $patron = null;
         $purposes = null;
         $user_entry = null;
+        $is_logout = false;
+
+
         if ($request->search_button) {
 
             try {
@@ -38,26 +41,19 @@ class LibraryVisitController extends Controller
                 $purposes = VisitPurpose::all()->sortBy('sort_order');
 
                 $user_entry = LibraryVisit::where('user_id', $patron->id)->whereNull('exit_time')->first();
+                if ($user_entry) {
+                    $is_logout = true;
+                }
 
             } catch (ModelNotFoundException $e) {
                 session()->flash('error', 'User not found');
             }
         }
 
-        $is_logout = false;
-        if ($user_entry)
-        {
-            $user_entry->update([
-                'exit_time' => now(),
-            ]);
-            session()->flash('success', 'Thank you for visiting USeP Library');
-            $is_logout = true;
-        }
-
         return Inertia::render('library-visit/Create', [
             'patron' => $patron,
             'purposes' => $purposes,
-            'search_term' => $is_logout ? null : $request->search,
+            'search_term' => $request->search,
             'search_button' => (boolean)$request->search_button,
             'is_logout' => $is_logout,
         ]);
@@ -70,9 +66,35 @@ class LibraryVisitController extends Controller
     {
         $user = null;
         $purpose = null;
+        $user_entry = null;
+        $success_message = '';
+
         try {
-            $user = User::where('id', $request->patron_id)->first();
-            $purpose = VisitPurpose::where('id', $request->purpose_id)->first();
+
+            $user = User::findOrFail('id', $request->patron_id);
+
+            $user_entry = LibraryVisit::with('user_id', $request->patron_id)->whereNull('exit_time')->first();
+
+            if (!$request->purpose_id) {
+
+                $user_entry->update([
+                    'exit_time' => now(),
+                ]);
+                $success_message = 'Thank you for visiting USeP Library!';
+
+            } else {
+
+                $purpose = VisitPurpose::where('id', $request->purpose_id)->first();
+                if ($purpose) {
+                    LibraryVisit::create([
+                        'user_id' => $user->id,
+                        'entry_time' => now(),
+                        'visit_purpose_id' => $purpose->id,
+                    ]);
+                    $success_message = 'Welcome to USeP Library!';
+                }
+            }
+
         } catch (\Exception $e) {
             session()->flash('error', 'Something went wrong');
             // Log the error
@@ -83,14 +105,8 @@ class LibraryVisitController extends Controller
             ]);
         }
 
-        LibraryVisit::create([
-            'user_id' => $user->id,
-            'entry_time' => now(),
-            'visit_purpose_id' => $purpose->id,
-        ]);
-
         return to_route('logger.create')
-            ->with('success', 'Welcome to USeP Library!');
+            ->with('success', $success_message);
 
     }
 

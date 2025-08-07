@@ -46,7 +46,7 @@ const clearSearch = () => {
 
     <div v-if="patron" class="max-w-md">
 
-        <LoggerDialog v-if="!is_logout" :purposes="purposes" :patron="patron" :modal="true"/>
+        <LoggerDialog :is_logout="is_logout" :purposes="purposes" :patron="patron" :modal="true"/>
 
     </div>
     <div v-else-if="!patron && search_button" class="dark:text-card-foreground">

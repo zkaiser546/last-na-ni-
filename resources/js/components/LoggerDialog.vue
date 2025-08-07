@@ -25,6 +25,7 @@ import {
 const props = defineProps({
     patron: Object,
     purposes: Object,
+    is_logout: Boolean,
 });
 
 const open = ref(false)
@@ -80,12 +81,13 @@ const submitForm = () => {
         <DialogContent class="sm:max-w-lg">
             <DialogHeader>
                 <DialogTitle>Welcome back {{ patron.first_name }}!</DialogTitle>
-                <DialogDescription>
+                <DialogDescription v-if="!is_logout">
                     What transaction would you do today?
                 </DialogDescription>
+                <div v-if="is_logout">Would you like to log-out now?</div>
             </DialogHeader>
             <form @submit.prevent="submitForm">
-                <div class="grid gap-4 py-4">
+                <div v-if="!is_logout" class="grid gap-4 py-4">
                     <div class="grid grid-cols-4 items-center gap-4">
                         <Label for="purpose" class="text-right">
                             Purpose
@@ -117,11 +119,20 @@ const submitForm = () => {
                 </div>
                 <DialogFooter>
                     <Button
+                        v-if="!is_logout"
                         type="submit"
                         :disabled="form.processing || !selectedPurpose"
                     >
                         <span v-if="form.processing">Processing...</span>
                         <span v-else>Save changes</span>
+                    </Button>
+                    <Button
+                        v-else
+                        type="submit"
+                        :disabled="form.processing"
+                    >
+                        <span v-if="form.processing">Processing...</span>
+                        <span v-else>Logout</span>
                     </Button>
                 </DialogFooter>
             </form>
