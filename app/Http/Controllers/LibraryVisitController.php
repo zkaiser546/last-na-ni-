@@ -37,16 +37,21 @@ class LibraryVisitController extends Controller
         if ($request->search_button) {
 
             try {
-                $patron = User::where('library_id', $request->search)->first();
-                $purposes = VisitPurpose::all()->sortBy('sort_order');
 
-                $user_entry = LibraryVisit::where('user_id', $patron->id)->whereNull('exit_time')->first();
-                if ($user_entry) {
-                    $is_logout = true;
+                $patron = User::where('library_id', $request->search)->first();
+
+                if ($patron) {
+                    $purposes = VisitPurpose::all()->sortBy('sort_order');
+
+                    $user_entry = LibraryVisit::where('user_id', $patron->id)->whereNull('exit_time')->first();
+                    if ($user_entry) {
+                        $is_logout = true;
+                    }
                 }
+                session()->flash('error', 'User not found');
 
             } catch (ModelNotFoundException $e) {
-                session()->flash('error', 'User not found');
+                \Log::error('Error: ' . $e->getMessage());
             }
         }
 
@@ -104,7 +109,9 @@ class LibraryVisitController extends Controller
             ]);
         }
 
-        return to_route('logger.create')
+        return to_route('logger.create', [
+            'search_term' => '',
+        ])
             ->with('success', $success_message);
 
     }
