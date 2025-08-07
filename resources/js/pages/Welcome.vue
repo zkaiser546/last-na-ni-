@@ -8,6 +8,7 @@ import WelcomeSearch from '@/components/WelcomeSearch.vue';
 import AppLogo from '@/components/AppLogo.vue';
 import AppearanceTabs from '@/components/AppearanceTabs.vue';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 
 // for alert
 const page = usePage()
@@ -42,6 +43,7 @@ defineProps({
     search_result: Object,
     search_term: String,
     search_button: Boolean,
+    user_count: Number,
 });
 
 </script>
@@ -50,6 +52,7 @@ defineProps({
     <Head title="Welcome">
     </Head>
     <div class="flex min-h-screen flex-col bg-background text-[#1b1b18] lg:justify-center dark:bg-[#0a0a0a]">
+        <Link :href="route('logger.create')" class="fixed top-0 left-0 opacity-0 bg-red-500">hi</Link>
 
         <Alert class="absolute top-5 right-5 w-fit pr-8" variant="destructive" v-if="page.props.flash.error && showAlert">
             <AlertCircle class="w-4 h-4" />
@@ -63,9 +66,7 @@ defineProps({
         </Alert>
 
         <header class="flex justify-between items-center w-full p-4 px-8 text-sm not-has-[nav]:hidden">
-            <Link :href="route('logger.create')" class="flex items-center gap-2 dark:text-foreground">
-                <AppLogo />
-            </Link>
+            <AppLogo />
             <nav class="flex items-center justify-end gap-4">
                 <AppearanceTabs />
                 <Link
@@ -105,8 +106,23 @@ defineProps({
                 </div>
             </div>
 
-            <div class="w-full p-8">
-
+            <div class="w-full p-16 grid grid-cols-4 gap-2">
+                <Card class="p-4">
+                    No. of users:
+                    {{ user_count }}
+                </Card>
+                <Card class="p-4">
+                    No. of records:
+                    {{ user_count }}
+                </Card>
+                <Card class="p-4">
+                    No. of users:
+                    {{ user_count }}
+                </Card>
+                <Card class="p-4">
+                    No. of users:
+                    {{ user_count }}
+                </Card>
             </div>
 
             <div class="w-full p-16" v-if="Object.keys(records?.data).length">

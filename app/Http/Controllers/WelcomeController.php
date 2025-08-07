@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Record;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -31,11 +32,14 @@ class WelcomeController extends Controller
             }
         }
 
+        $user_count = User::count();
+
         return Inertia::render('Welcome', [
             'records' => $record,
             'search_result' => $search_result,
             'search_term' => $request->search,
             'search_button' => $request->search_button,
+            'user_count' => $user_count,
         ]);
     }
 
