@@ -4,7 +4,25 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { UserRoundSearch } from 'lucide-vue-next';
 import { router, useForm } from '@inertiajs/vue3';
-import LoggerDialog from '@/components/LoggerDialog.vue';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue
+} from '@/components/ui/select';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader, DialogTitle,
+    DialogTrigger
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { ref, watch } from 'vue';
 
 const props = defineProps({
     patron: Object,
@@ -15,6 +33,8 @@ const props = defineProps({
 
 const form = useForm({
     search: '',
+    patron_id: null,
+    purpose_id: null,
 });
 
 const search = () => {
@@ -22,9 +42,38 @@ const search = () => {
 };
 
 const clearSearch = () => {
-    form.search = ''; // Clear the search input
-    // router.get(route('logger.create'), { search: '' }, { preserveState: true }); // Update the route
+    form.search = '';
 };
+
+const open = ref(false)
+const selectedPurpose = ref('')
+
+// Watch for patron changes and open dialog
+watch(() => props.patron, (newPatron) => {
+    if (newPatron) {
+        form.patron_id = newPatron.id
+        open.value = true
+    }
+}, { immediate: true })
+
+const handlePurposeChange = (value: string) => {
+    selectedPurpose.value = value
+    form.purpose_id = value
+}
+
+const submitForm = () => {
+    form.post(route('logger.store'), {
+        onSuccess: () => {
+            open.value = false
+            // Reset form or handle success
+            form.reset()
+            selectedPurpose.value = ''
+        },
+        onError: (errors) => {
+            console.error('Form submission errors:', errors)
+        }
+    })
+}
 
 </script>
 
@@ -45,7 +94,75 @@ const clearSearch = () => {
 
     <div v-if="patron" class="max-w-md">
 
-        <LoggerDialog :is_logout="is_logout" :purposes="purposes" :patron="patron" :modal="true"/>
+        <Dialog v-model:open="open">
+            <DialogTrigger as-child class="hidden">
+                <Button
+                    ref="triggerRef"
+                    variant="outline"
+                >
+                    Edit Profile
+                </Button>
+            </DialogTrigger>
+            <DialogContent class="sm:max-w-lg">
+                <DialogHeader>
+                    <DialogTitle>Welcome back {{ patron.first_name }}!</DialogTitle>
+                    <DialogDescription v-if="!is_logout">
+                        What transaction would you do today?
+                    </DialogDescription>
+                    <div v-if="is_logout">Would you like to log-out now?</div>
+                </DialogHeader>
+                <form @submit.prevent="submitForm">
+                    <div v-if="!is_logout" class="grid gap-4 py-4">
+                        <div class="grid grid-cols-4 items-center gap-4">
+                            <Label for="purpose" class="text-right">
+                                Purpose
+                            </Label>
+
+                            <Select v-model="selectedPurpose" @update:modelValue="handlePurposeChange">
+                                <SelectTrigger class="w-[280px]">
+                                    <SelectValue placeholder="Select a purpose" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectLabel>Purpose</SelectLabel>
+                                        <SelectItem
+                                            v-for="purpose in purposes"
+                                            :key="purpose.id"
+                                            :value="purpose.id.toString()"
+                                        >
+                                            {{ purpose.name }}
+                                        </SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <!-- Show validation errors if any -->
+                        <div v-if="form.errors.purpose_id" class="text-red-500 text-sm">
+                            {{ form.errors.purpose_id }}
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button
+                            v-if="!is_logout"
+                            type="submit"
+                            :disabled="form.processing || !selectedPurpose"
+                        >
+                            <span v-if="form.processing">Processing...</span>
+                            <span v-else>Save changes</span>
+                        </Button>
+                        <Button
+                            v-else
+                            type="submit"
+                            :disabled="form.processing"
+                        >
+                            <span v-if="form.processing">Processing...</span>
+                            <span v-else>Logout</span>
+                        </Button>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
 
     </div>
     <div v-else-if="!patron && search_button" class="dark:text-card-foreground">

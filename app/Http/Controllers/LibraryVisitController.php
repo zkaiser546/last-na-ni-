@@ -69,9 +69,6 @@ class LibraryVisitController extends Controller
      */
     public function store(Request $request)
     {
-        $user = null;
-        $purpose = null;
-        $user_entry = null;
         $success_message = '';
 
         $user = User::where('id', $request->patron_id)->first();
@@ -99,6 +96,8 @@ class LibraryVisitController extends Controller
                 }
             }
 
+            session()->flash('success', $success_message);
+
         } catch (\Exception $e) {
             session()->flash('error', 'Something went wrong');
             // Log the error
@@ -109,8 +108,7 @@ class LibraryVisitController extends Controller
             ]);
         }
 
-        return to_route('logger.create')
-            ->with('success', $success_message);
+        return to_route('logger.create');
 
     }
 
