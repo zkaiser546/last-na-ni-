@@ -146,6 +146,12 @@ class BorrowingTransactionController extends Controller
             $user = User::findOrFail($request->user_id);
             $book = Record::where('accession_number', $request->book_accession)->first();
             $policy = BorrowingPolicy::where('user_type_id', $user->user_type_id)->first();
+
+            if ($book->status === 'borrowed') {
+                session()->flash('error', 'Book already borrowed');
+                return Inertia::render('borrowings/Create');
+            }
+
         } catch (\Exception $e) {
             session()->flash('error', 'Something went wrong');
             // Log the error
@@ -169,6 +175,10 @@ class BorrowingTransactionController extends Controller
             'checkout_date' => now(),
             'due_date' => now()->addDays($policy_loan_period_days),
             'checked_out_by' => Auth::id(),
+        ]);
+
+        $book->update([
+            'status' => 'borrowed'
         ]);
 
         return to_route('borrowings.index')

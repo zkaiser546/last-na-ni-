@@ -45,7 +45,7 @@ onMounted(() => {
 <template>
 
     <!--  my alerts  -->
-    <Alert class="fixed top-5 right-5 w-fit pr-8 z-30" variant="destructive" v-if="page.props.flash.error && showAlert">
+    <Alert class="fixed top-5 right-5 w-fit pr-8 z-51" variant="destructive" v-if="page.props.flash.error && showAlert">
         <AlertCircle class="w-4 h-4" />
         <button @click="showAlert = false" class="absolute top-2 right-2 p-1 hover:bg-red-100 rounded-full transition-colors">
             <X class="w-4 h-4" />
