@@ -2,6 +2,7 @@
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import PaginationLinks from '@/components/PaginationLinks.vue';
+import PageLinks from '@/components/PageLinks.vue';
 
 defineProps({
     users: Object,
@@ -37,6 +38,7 @@ defineProps({
     </Table>
 
     <PaginationLinks :paginator="users" />
+    <PageLinks :paginator="users" />
 
 </template>
 
