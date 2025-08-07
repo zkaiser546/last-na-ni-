@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\User;
 use App\Models\UserType;
 use Illuminate\Http\Request;
@@ -13,13 +14,28 @@ use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    public function index(): \Inertia\Response
+    public function index(Request $request): \Inertia\Response
     {
-        $users = User::with('userType')
-            ->latest()->paginate(10);
+        $perPage = $request->input('per_page', 10);
+        $status = $request->input('is_active', null);
+        $sortField = $request->input('sort_field', 'name');
+        $sortDirection = $request->input('sort_direction', 'desc');
+        $filters = [];
+        if (!empty($status)) {
+            $filters[] = [
+                'id' => 'is_active',
+                'value' => $status
+            ];
+        }
 
+        $products =  Product::query()->when($status, function ($query, $status) {
+            if (is_array($status) && !empty($status)) {
+                $query->whereIn('is_active', $status);
+            }
+        })->orderBy($sortField, $sortDirection)->paginate(perPage: $perPage);
         return Inertia::render('users/Index', [
-            'users' => $users
+            'data' => $products,
+            'filter' => $filters
         ]);
     }
 
