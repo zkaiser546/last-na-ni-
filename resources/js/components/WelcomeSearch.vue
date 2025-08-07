@@ -233,8 +233,8 @@ const clearSearch = () => {
 
 /* Loading states (optional) */
 .search-form:has(.search-input:focus) .search-button {
-    background-color: rgb(59, 130, 246);
-    color: white;
+    background-color: var(--accent);
+    color: var(--accent-foreground);
 }
 
 /* Responsive transitions */
