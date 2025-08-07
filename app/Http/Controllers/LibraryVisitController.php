@@ -30,14 +30,26 @@ class LibraryVisitController extends Controller
     {
         $patron = null;
         $purposes = null;
+        $user_entry = null;
         if ($request->search_button) {
 
             try {
                 $patron = User::where('library_id', $request->search)->first();
                 $purposes = VisitPurpose::all()->sortBy('sort_order');
+
+                $user_entry = LibraryVisit::where('user_id', $patron->id)->whereNull('exit_time')->first();
+
             } catch (ModelNotFoundException $e) {
                 session()->flash('error', 'User not found');
             }
+        }
+
+        if ($user_entry)
+        {
+            LibraryVisit::update([
+                'exit_time' => now(),
+            ]);
+            $success_message = 'Thank you for visiting USeP library.';
         }
 
         return Inertia::render('library-visit/Create', [
@@ -75,7 +87,7 @@ class LibraryVisitController extends Controller
         ]);
 
         return to_route('logger.create')
-            ->with('success', 'Borrowing transaction ' . $purpose->name . ' added successfully');
+            ->with('success', 'Welcome to USeP Library!');
 
     }
 
