@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\GradSchoolStudentController;
 use App\Http\Controllers\LibraryVisitController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
@@ -43,6 +44,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/borrowings', [BorrowingTransactionController::class, 'store'])->name('borrowings.store');
     Route::get('/borrowings/users/search', [BorrowingTransactionController::class, 'searchUser'])->name('borrowings.users.search');
     Route::post('/borrowings/borrow', [BorrowingTransactionController::class, 'borrow'])->name('borrowings.borrow');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('products')->group(function () {
+        Route::get('/', [ProductController::class, 'index'])->name('product.index');
+        Route::post('/', [ProductController::class, 'store'])->name('product.store');  //with POST
+        Route::get('/{product}', [ProductController::class, 'edit'])->name('product.edit');  //with GET
+        Route::put('/{product}', [ProductController::class, 'update'])->name('product.update');  //with GET
+    });
 });
 
 // Test routes (no middleware)

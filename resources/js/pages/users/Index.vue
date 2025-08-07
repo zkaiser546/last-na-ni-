@@ -335,23 +335,6 @@ const submit = () => {
     })
 
 }
-// Coonfig Key Of Cloudinary:
-const cloudName = 'dpt3nsrwo';
-const uploadPreset = 'cloudinary-stripe-vuets';
-
-
-const myWidget = cloudinary.createUploadWidget(
-    {
-        cloudName: cloudName,
-        uploadPreset: uploadPreset
-    },
-    (error, result) => {
-        if (!error && result && result.event === 'success') {
-            //Do somthing
-            imageUrl.value.push(result.info.secure_url)
-        }
-    }
-);
 
 const openWidget = () => {
     myWidget.open();
@@ -391,16 +374,12 @@ const onEdit = async (id) => {
         const imageUrls = data.data.image.map((e) => e.url);
         imageUrl.value = imageUrls
 
-
         //Open Dialog
         showDialog.value = true
-
 
     } catch (error) {
         console.error(error);
     }
-
-
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -420,7 +399,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         <template #title>
             Product Page
         </template>
-        <div>
+        <div class="p-4">
             <div class="w-full">
                 <div class="flex gap-2 items-center justify-between py-4">
                     <div class="flex gap-2">
@@ -519,171 +498,10 @@ const breadcrumbs: BreadcrumbItem[] = [
                             </Button>
                         </div>
 
-                        <!-- <Button variant="outline" size="sm" :disabled="!table.getCanPreviousPage()" @click="table.previousPage()">
-                          Previous
-                        </Button>
-                        <Button variant="outline" size="sm" :disabled="!table.getCanNextPage()" @click="table.nextPage()">
-                          Next
-                        </Button> -->
                     </div>
                 </div>
             </div>
             <!-- Dialog -->
-            <Dialog v-model:open="showDialog">
-                <DialogContent class="max-w-[1225px]">
-                    <DialogHeader>
-                        <DialogTitle>Create Product</DialogTitle>
-                        <DialogDescription>
-                            Make changes to your profile here. Click save when you're done.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <form>
-                        <div class="grid grid-cols-2 gap-5 ">
-                            <!-- Col 1 -->
-                            <div class="flex flex-col gap-2">
-                                <div class="grid gap-2">
-                                    <Label for="name">
-                                        Name
-                                    </Label>
-                                    <Input id="name" v-model="form.name" />
-                                    <span v-if="errors?.name" class="text-red-600 text-sm">{{ errors.name }}</span>
-                                </div>
-                                <div class="grid gap-2">
-                                    <Label for="title">
-                                        Title
-                                    </Label>
-                                    <Input id="title" v-model="form.title" />
-                                    <span v-if="errors?.title" class="text-red-600 text-sm">{{ errors.title }}</span>
-                                </div>
-                                <div class="grid gap-2">
-                                    <Label for="title">
-                                        Description
-                                    </Label>
-                                    <Textarea v-model="form.description" />
-                                </div>
-                                <div class="grid gap-2">
-                                    <Label for="category_ref_id">
-                                        Category
-                                    </Label>
-                                    <Select v-model="form.category_ref_id">
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select a category" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem value="1">
-                                                    Apple
-                                                </SelectItem>
-                                                <SelectItem value="2">
-                                                    Banana
-                                                </SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    <span v-if="errors?.category_ref_id" class="text-red-600 text-sm">{{ errors.category_ref_id }}</span>
-
-                                </div>
-                                <div class="grid gap-2">
-                                    <Label for="brand_ref_id">
-                                        Brand
-                                    </Label>
-                                    <Select v-model="form.brand_ref_id">
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select a brand" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem value="1">
-                                                    Brand 1
-                                                </SelectItem>
-                                                <SelectItem value="2">
-                                                    Brand 2
-                                                </SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    <span v-if="errors?.brand_ref_id" class="text-red-600 text-sm">{{ errors.brand_ref_id }}</span>
-                                </div>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div class="grid gap-2">
-                                        <Label for="price">
-                                            Price
-                                        </Label>
-                                        <Input type="number" v-model="form.price" />
-                                    </div>
-                                    <div class="grid gap-2">
-                                        <Label for="discount_price">
-                                            Discount Price
-                                        </Label>
-                                        <Input type="number" v-model="form.discount_price" />
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Col 2 -->
-                            <div class="flex flex-col gap-2">
-                                <div class="grid gap-2">
-                                    <!-- <img alt="Product image" class="aspect-square w-full rounded-md object-cover" height="100" src="https://www.shadcn-vue.com/placeholder.svg" width="300"> -->
-                                    <div class="grid grid-cols-3 gap-2">
-                                        <div v-for="img in imageUrl">
-                                            <img alt="Product image" class="aspect-square w-full rounded-md object-cover" height="45" :src="img" width="45">
-                                        </div>
-
-                                        <button @click="openWidget" class="flex aspect-square w-full items-center justify-center rounded-md border border-dashed" type="button">
-                                            <Upload class="h-4 w-4 text-muted-foreground" />
-                                            <span class="sr-only">Upload</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div class="grid gap-2">
-                                    <Label for="benefits_content">
-                                        Benefits content
-                                    </Label>
-                                    <Textarea v-model="form.benefits_content" />
-                                </div>
-                                <div class="grid gap-2">
-                                    <Label for="ingredients_content">
-                                        Ingredients content
-                                    </Label>
-                                    <Textarea v-model="form.ingredients_content" />
-                                </div>
-                                <div class="grid gap-2">
-                                    <Label for="howtouse_content">
-                                        Howtouse content
-                                    </Label>
-                                    <Textarea v-model="form.howtouse_content" />
-                                </div>
-                                <div class="grid gap-2">
-                                    <Label for="product_size_id">
-                                        Product size
-                                    </Label>
-                                    <TagsInput v-model="productSize">
-                                        <TagsInputItem v-for="item in productSize" :key="item" :value="item">
-                                            <TagsInputItemText />
-                                            <TagsInputItemDelete />
-                                        </TagsInputItem>
-                                        <TagsInputInput placeholder="ml , kg .." />
-                                    </TagsInput>
-                                </div>
-                                <div class="flex  items-center gap-2 pt-5">
-                                    <Label for="is_active" @click="form.is_active = !form.is_active" class="flex items-center gap-2">
-                                        <Checkbox v-model="form.is_active" :checked="form.is_active == 1" />
-                                        <div>
-                                            Status
-                                        </div>
-                                    </Label>
-                                    <!-- Have default 0 -->
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                    <DialogFooter>
-                        <Button @click="submit">
-                            Create
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </div>
     </AppLayout>
 </template>
