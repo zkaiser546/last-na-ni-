@@ -41,6 +41,8 @@ defineProps({
             <h1>List of all users</h1>
             <UsersListTable :users="users"/>
 
+            hi, test github
+
         </div>
     </AppLayout>
 </template>
