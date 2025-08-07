@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BorrowingTransaction;
+use App\Models\LibraryVisit;
 use App\Models\Record;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -33,13 +35,17 @@ class WelcomeController extends Controller
         }
 
         $user_count = User::count();
+        $record_count = Record::count();
+        $transaction_count = BorrowingTransaction::count() + LibraryVisit::count();
 
         return Inertia::render('Welcome', [
             'records' => $record,
             'search_result' => $search_result,
             'search_term' => $request->search,
             'search_button' => $request->search_button,
-            'user_count' => $user_count,
+            'userCount' => $user_count,
+            'recordCount' => $record_count,
+            'transactionCount' => $transaction_count,
         ]);
     }
 

@@ -43,7 +43,9 @@ defineProps({
     search_result: Object,
     search_term: String,
     search_button: Boolean,
-    user_count: Number,
+    userCount: Number,
+    recordCount: Number,
+    transactionCount: Number,
 });
 
 </script>
@@ -106,26 +108,23 @@ defineProps({
                 </div>
             </div>
 
-            <div class="w-full p-16 grid grid-cols-4 gap-2">
-                <Card class="p-4">
-                    No. of users:
-                    {{ user_count }}
+            <div class="w-full p-16 pb-0 grid grid-cols-3 gap-16">
+                <Card class="p-4 gap-2">
+                    <h4 class="text-6xl">{{ userCount }}</h4>
+                    <div>Patrons</div>
                 </Card>
-                <Card class="p-4">
-                    No. of records:
-                    {{ user_count }}
+                <Card class="p-4 gap-2">
+                    <h4 class="text-6xl">{{ recordCount }}</h4>
+                    <div>Books, Multimedia, Magazine, Periodals Thesis, Dissertations</div>
                 </Card>
-                <Card class="p-4">
-                    No. of users:
-                    {{ user_count }}
-                </Card>
-                <Card class="p-4">
-                    No. of users:
-                    {{ user_count }}
+                <Card class="p-4 gap-2">
+                    <h4 class="text-6xl">{{ transactionCount }}</h4>
+                    <div>Transactions</div>
                 </Card>
             </div>
 
             <div class="w-full p-16" v-if="Object.keys(records?.data).length">
+                <h3 class="text-3xl text-center mb-8">Latest in Book Collections</h3>
                 <div class="grid grid-cols-3 gap-4">
                     <div v-for="record in records?.data" :key="record.id">
                         <WelcomeBookDialog :record="record" />
