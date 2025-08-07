@@ -78,7 +78,7 @@ const clearSearch = () => {
                             <div class="font-medium leading-tight">{{ result.accession_number }}</div>
                         </div>
                         <div class="result-content w-full">
-                            <div class="text-md font-semibold leading-tight truncate w-sm">{{ result.title }}</div>
+                            <div class="text-md font-semibold leading-tight truncate w-sm  0">{{ result.title }}</div>
                             <div class="flex justify-between">
                                 <div class="text-sm text-gray-600 leading-tight">{{ result.book.authors }}</div>
                                 <div class="text-sm text-gray-500 leading-tight">{{ result.book.publication_year }}</div>
