@@ -23,7 +23,7 @@ const search = () => {
 
 const clearSearch = () => {
     form.search = ''; // Clear the search input
-    router.get(route('logger.create'), { search: '' }, { preserveState: true }); // Update the route
+    // router.get(route('logger.create'), { search: '' }, { preserveState: true }); // Update the route
 };
 
 </script>
