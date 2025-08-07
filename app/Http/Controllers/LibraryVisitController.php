@@ -47,8 +47,9 @@ class LibraryVisitController extends Controller
                     if ($user_entry) {
                         $is_logout = true;
                     }
+                } else {
+                    session()->flash('error', 'User not found');
                 }
-                session()->flash('error', 'User not found');
 
             } catch (ModelNotFoundException $e) {
                 \Log::error('Error: ' . $e->getMessage());
@@ -58,7 +59,6 @@ class LibraryVisitController extends Controller
         return Inertia::render('library-visit/Create', [
             'patron' => $patron,
             'purposes' => $purposes,
-            'search_term' => $request->search,
             'search_button' => (boolean)$request->search_button,
             'is_logout' => $is_logout,
         ]);
@@ -109,9 +109,7 @@ class LibraryVisitController extends Controller
             ]);
         }
 
-        return to_route('logger.create', [
-            'search_term' => '',
-        ])
+        return to_route('logger.create')
             ->with('success', $success_message);
 
     }

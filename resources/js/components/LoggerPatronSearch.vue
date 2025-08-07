@@ -9,13 +9,12 @@ import LoggerDialog from '@/components/LoggerDialog.vue';
 const props = defineProps({
     patron: Object,
     purposes: Object,
-    search_term: String,
     search_button: Boolean,
     is_logout: Boolean,
 });
 
 const form = useForm({
-    search: props.search_term,
+    search: '',
 });
 
 const search = () => {
