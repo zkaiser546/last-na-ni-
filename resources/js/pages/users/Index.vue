@@ -89,9 +89,9 @@ const columns: ColumnDef<RowData>[] = [
             return h(Button, {
                 variant: 'ghost',
                 onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
-            }, () => ['Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['First Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('first_name')),
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('first_name')),
     },
     {
         accessorKey: 'middle_initial',
@@ -101,7 +101,10 @@ const columns: ColumnDef<RowData>[] = [
                 onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
             }, () => ['M.I', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('middle_initial')),
+        cell: ({ row }: { row: Row<RowData> }) => {
+            const middleInitial = row.getValue('middle_initial');
+            return h('div', { class: 'capitalize' }, middleInitial ? middleInitial + '.' : '');
+        },
     },
     {
         accessorKey: 'last_name',
@@ -111,7 +114,7 @@ const columns: ColumnDef<RowData>[] = [
                 onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
             }, () => ['Last Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('last_name')),
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('last_name')),
     },
     {
         accessorKey: 'sex',
