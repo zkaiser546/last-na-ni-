@@ -124,15 +124,15 @@ const columns: ColumnDef<RowData>[] = [
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('sex')),
     },
     {
-        accessorKey: 'is_active',
-        header: 'Status',
+        accessorKey: 'user_type_id',
+        header: 'User Type',
         cell: ({ row }: { row: Row<RowData> }) => {
-            const status = row.getValue('is_active');
+            const userType = row.original.user_type;
 
-            if (status) {
-                return h('div', h(Badge, 'Active'))
+            if (userType) {
+                return h('div', h(Badge, userType.name || 'Unknown'))
             } else {
-                return h('div', h(Badge, { variant: 'outline' }, 'Inactive'))
+                return h('div', h(Badge, { variant: 'outline' }, 'No User Type'))
             }
         },
     },

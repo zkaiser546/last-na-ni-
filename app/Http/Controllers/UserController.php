@@ -17,20 +17,22 @@ class UserController extends Controller
     public function index(Request $request): \Inertia\Response
     {
         $perPage = $request->input('per_page', 10);
-        $status = $request->input('is_active', null);
+        $user_type_id = $request->input('user_type_id', null);
         $sortField = $request->input('sort_field', 'last_name');
         $sortDirection = $request->input('sort_direction', 'desc');
         $filters = [];
-        if (!empty($status)) {
+        if (!empty($user_type_id)) {
             $filters[] = [
-                'id' => 'is_active',
-                'value' => $status
+                'id' => 'user_type_id',
+                'value' => $user_type_id
             ];
         }
 
-        $users = User::query()->with('userType')->when($status, function ($query, $status) {
-            if (is_array($status) && !empty($status)) {
-                $query->whereIn('is_active', $status);
+        $users = User::query()->with('userType')->when($user_type_id, function ($query, $user_type_id) {
+            if (is_array($user_type_id) && !empty($user_type_id)) {
+                $query->whereIn('user_type_id', $user_type_id);
+            } elseif (!empty($user_type_id)) {
+                $query->where('user_type_id', $user_type_id);
             }
         })->orderBy($sortField, $sortDirection)->paginate(perPage: $perPage);
 
