@@ -288,8 +288,6 @@ const filter_toolbar = [
     filter_status,
 ];
 
-
-
 const showDialog = ref(false);
 const showDialogCreate = () => {
     showDialog.value = true
@@ -355,7 +353,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </div>
                 </div>
                 <div class="rounded-md border">
-                    <Table>
+                    <Table class="w-full">
                         <TableHeader>
                             <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
                                 <TableHead v-for="header in headerGroup.headers" :key="header.id">
