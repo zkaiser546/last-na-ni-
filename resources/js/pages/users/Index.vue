@@ -27,7 +27,6 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import {
-    Table,
     TableBody,
     TableCell,
     TableHead,
@@ -53,11 +52,14 @@ const props = withDefaults(defineProps<Props>(), {
     filter: () => []
 })
 
+
+import type { Table } from '@tanstack/vue-table'
+type RowData = any
 const data = props.data.data; // Now safe to access directly
 const columns = [
     {
         id: 'select',
-        header: ({ table }) => h(Checkbox, {
+        header: ({ table }: { table: Table<RowData> }) => h(Checkbox, {
             'checked': table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate'),
             'onUpdate:checked': value => table.toggleAllPageRowsSelected(!!value),
             'ariaLabel': 'Select all',
