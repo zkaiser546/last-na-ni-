@@ -28,7 +28,7 @@ class UserController extends Controller
             ];
         }
 
-        $users = User::query()->when($status, function ($query, $status) {
+        $users = User::query()->with('userType')->when($status, function ($query, $status) {
             if (is_array($status) && !empty($status)) {
                 $query->whereIn('is_active', $status);
             }
