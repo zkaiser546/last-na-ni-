@@ -18,7 +18,7 @@ class UserController extends Controller
     {
         $perPage = $request->input('per_page', 10);
         $status = $request->input('is_active', null);
-        $sortField = $request->input('sort_field', 'name');
+        $sortField = $request->input('sort_field', 'last_name');
         $sortDirection = $request->input('sort_direction', 'desc');
         $filters = [];
         if (!empty($status)) {
@@ -28,13 +28,14 @@ class UserController extends Controller
             ];
         }
 
-        $products =  Product::query()->when($status, function ($query, $status) {
+        $users = User::query()->when($status, function ($query, $status) {
             if (is_array($status) && !empty($status)) {
                 $query->whereIn('is_active', $status);
             }
         })->orderBy($sortField, $sortDirection)->paginate(perPage: $perPage);
+
         return Inertia::render('users/Index', [
-            'data' => $products,
+            'data' => $users,
             'filter' => $filters
         ]);
     }
