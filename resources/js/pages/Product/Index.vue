@@ -64,7 +64,7 @@ const data = props.data?.data || [];
 const columns = [
   {
     id: 'select',
-    header: ({ table }) => h(Checkbox, {
+    header: ({ table }: { table: Table<any> }) => h(Checkbox, {
       'checked': table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate'),
       'onUpdate:checked': value => table.toggleAllPageRowsSelected(!!value),
       'ariaLabel': 'Select all',
