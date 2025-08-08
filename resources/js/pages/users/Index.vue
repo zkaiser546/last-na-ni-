@@ -43,12 +43,16 @@ import { useForm } from '@inertiajs/vue3';
 import { toast } from 'vue-sonner'
 
 interface Props {
-    data?: { data: any[] }
+    data?: {
+        data: any[]
+        current_page?: number
+        per_page?: number
+    }
     filter?: any[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    data: () => ({ data: [] }),
+    data: () => ({ data: [], current_page: 1, per_page: 10 }),
     filter: () => []
 })
 
@@ -141,8 +145,8 @@ const rowSelection = ref({})
 const expanded = ref({})
 const pageSizes = [1, 2, 3, 5, 10, 15, 30, 40, 50, 100,];
 const pagination = ref({
-    pageIndex: props.data.current_page - 1,
-    pageSize: props.data.per_page,
+    pageIndex: (props.data?.current_page ?? 1) - 1,
+    pageSize: props.data?.per_page ?? 10,
 })
 
 
