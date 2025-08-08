@@ -39,9 +39,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 import { Plus } from 'lucide-vue-next'
 
-import { useForm } from '@inertiajs/vue3';
-import { toast } from 'vue-sonner'
-
 interface Props {
     data?: {
         data: any[]
@@ -132,7 +129,6 @@ const columns = [
 
             return h('div', { class: 'relative' }, h(DropdownAction, {
                 payment,
-                onEdit,
                 onExpand: row.toggleExpanded,
             }))
         },
@@ -318,9 +314,12 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuCheckboxItem v-for="column in table.getAllColumns().filter((column) => column.getCanHide())" :key="column.id" class="capitalize" :checked="column.getIsVisible()" @update:checked="(value) => {
-                  column.toggleVisibility(!!value)
-                }">
+                                <DropdownMenuCheckboxItem v-for="column in
+                                table.getAllColumns().filter((column) => column.getCanHide())"
+                                                          :key="column.id" class="capitalize"
+                                                          :checked="column.getIsVisible()" @update:checked="(value) => {
+                                          column.toggleVisibility(!!value)
+                                        }">
                                     {{ column.id }}
                                 </DropdownMenuCheckboxItem>
                             </DropdownMenuContent>
@@ -360,7 +359,6 @@ const breadcrumbs: BreadcrumbItem[] = [
                         </TableBody>
                     </Table>
                 </div>
-                test git on users x products
                 <div class="flex items-center justify-end space-x-2 py-4">
                     <div class="flex-1 text-sm text-muted-foreground">
                         {{ table.getFilteredSelectedRowModel().rows.length }} of
