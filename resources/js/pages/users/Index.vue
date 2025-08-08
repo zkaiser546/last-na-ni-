@@ -47,16 +47,17 @@ interface Props {
         data: any[]
         current_page?: number
         per_page?: number
+        last_page?: number
     }
     filter?: any[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    data: () => ({ data: [], current_page: 1, per_page: 10 }),
+    data: () => ({ data: [], current_page: 1, per_page: 10, last_page: 1 }),
     filter: () => []
 })
 
-import type { Table, Row, Column } from '@tanstack/vue-table'
+import type { Table, Row, Column, SortingState, ColumnFiltersState } from '@tanstack/vue-table'
 type RowData = any
 const data = props.data.data; // Now safe to access directly
 const columns = [
@@ -138,8 +139,8 @@ const columns = [
     },
 ]
 
-const sorting = ref([])
-const columnFilters = ref(props.filter ?? [])
+const sorting = ref<SortingState>([])
+const columnFilters = ref<ColumnFiltersState>(props.filter ?? [])
 const columnVisibility = ref({})
 const rowSelection = ref({})
 const expanded = ref({})
@@ -149,7 +150,6 @@ const pagination = ref({
     pageSize: props.data?.per_page ?? 10,
 })
 
-
 const table = useVueTable({
     data,
     columns,
@@ -158,7 +158,7 @@ const table = useVueTable({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
-    pageCount: props.data.last_page,
+    pageCount: props.data?.last_page ?? 1,
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
@@ -185,7 +185,7 @@ const table = useVueTable({
         } else {
             sorting.value = updaterOrValue
         }
-        let filters = {};
+        let filters: Record<string, any> = {};
         if (columnFilters.value) {
             filters = columnFilters.value.reduce((acc, filter) => {
                 acc[filter.id] = filter.value
@@ -212,7 +212,7 @@ const table = useVueTable({
         }
         let filters = {};
         if (columnFilters.value) {
-            filters = columnFilters.value.reduce((acc, filter) => {
+            filters = columnFilters.value.reduce((acc: Record<string, any>, filter) => {
                 acc[filter.id] = filter.value
                 return acc
             }, {})
@@ -242,6 +242,7 @@ const table = useVueTable({
         get pagination() { return pagination.value },
     },
 })
+
 import {
     CheckCircledIcon,
     MinusCircledIcon,
