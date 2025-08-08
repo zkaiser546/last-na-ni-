@@ -13,7 +13,7 @@ import {
     getSortedRowModel,
     useVueTable,
 } from '@tanstack/vue-table'
-import { ArrowUpDown, ChevronDown } from 'lucide-vue-next'
+import { ArrowUpDown, ChevronDown, X } from 'lucide-vue-next'
 
 import { h, ref } from 'vue'
 import DropdownAction from './DataTableDemoColumn.vue'
@@ -254,6 +254,18 @@ const table = useVueTable({
     },
 })
 
+// Local state for the input
+const filterInput = ref<string>((table.getColumn('first_name')?.getFilterValue() as string) ?? '')
+// Function to apply the filter
+const applyFilter = () => {
+    table.getColumn('first_name')?.setFilterValue(filterInput.value)
+}
+
+const clearFilter = () => {
+    filterInput.value = ''
+    table.getColumn('first_name')?.setFilterValue('')
+}
+
 import {
     CheckCircledIcon,
     MinusCircledIcon,
@@ -310,14 +322,23 @@ const breadcrumbs: BreadcrumbItem[] = [
             <div class="w-full">
                 <div class="flex gap-2 items-center justify-between py-4">
                     <div class="flex gap-2">
-                        <Input
-                            class="max-w-sm"
-                            placeholder="Filter name..."
-                            :model-value="(table.getColumn('first_name')?.getFilterValue() as string) ?? ''"
-                            @update:model-value="(value: string | number) => {
-                                table.getColumn('first_name')?.setFilterValue(value)
-                            }"
-                        />
+                        <div class="relative">
+                            <Input
+                                class="max-w-sm pr-8"
+                                placeholder="Filter name..."
+                                v-model="filterInput"
+                                @keyup.enter="applyFilter"
+                                @blur="applyFilter"
+                            />
+                            <Button
+                                v-if="filterInput"
+                                variant="ghost"
+                                class="absolute right-0 top-0 h-full px-2"
+                                @click="clearFilter"
+                            >
+                                <X class="h-4 w-4" />
+                            </Button>
+                        </div>
                         <div v-for="filter in filter_toolbar" :key="filter.title">
                             <Filter :column="table.getColumn(filter.column)" :title="filter.title" :options="filter.data"></Filter>
                         </div>
