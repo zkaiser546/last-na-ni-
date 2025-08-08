@@ -54,10 +54,10 @@ const props = withDefaults(defineProps<Props>(), {
     filter: () => []
 })
 
-import type { Table, Row, Column, SortingState, ColumnFiltersState } from '@tanstack/vue-table'
+import type { Table, Row, Column, SortingState, ColumnFiltersState, ColumnDef } from '@tanstack/vue-table'
 type RowData = any
 const data = props.data.data; // Now safe to access directly
-const columns = [
+const columns: ColumnDef<RowData>[] = [
     {
         id: 'select',
         header: ({ table }: { table: Table<RowData> }) => h(Checkbox, {
@@ -296,8 +296,12 @@ const breadcrumbs: BreadcrumbItem[] = [
             <div class="w-full">
                 <div class="flex gap-2 items-center justify-between py-4">
                     <div class="flex gap-2">
-                        <Input class="max-w-sm" placeholder="Filter name..." :model-value="table.getColumn('name')?.getFilterValue()" @update:model-value=" table.getColumn('name')?.setFilterValue($event)" />
-                        <div v-for="filter in filter_toolbar" :key="filter.title">
+                        <Input
+                            class="max-w-sm"
+                            placeholder="Filter name..."
+                            :model-value="(table.getColumn('name')?.getFilterValue() as string) ?? ''"
+                            @update:model-value="(value: string) => table.getColumn('name')?.setFilterValue(value)"
+                        />                        <div v-for="filter in filter_toolbar" :key="filter.title">
                             <Filter :column="table.getColumn(filter.column)" :title="filter.title" :options="filter.data"></Filter>
                         </div>
                     </div>
@@ -317,9 +321,10 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 <DropdownMenuCheckboxItem v-for="column in
                                 table.getAllColumns().filter((column) => column.getCanHide())"
                                                           :key="column.id" class="capitalize"
-                                                          :checked="column.getIsVisible()" @update:checked="(value) => {
-                                          column.toggleVisibility(!!value)
-                                        }">
+                                                          :checked="column.getIsVisible()"
+                                                          @update:checked="(value: boolean | 'indeterminate') => {
+                                                          column.toggleVisibility(!!value)
+                                                        }">
                                     {{ column.id }}
                                 </DropdownMenuCheckboxItem>
                             </DropdownMenuContent>
