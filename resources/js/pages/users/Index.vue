@@ -300,8 +300,11 @@ const breadcrumbs: BreadcrumbItem[] = [
                             class="max-w-sm"
                             placeholder="Filter name..."
                             :model-value="(table.getColumn('name')?.getFilterValue() as string) ?? ''"
-                            @update:model-value="(value: string) => table.getColumn('name')?.setFilterValue(value)"
-                        />                        <div v-for="filter in filter_toolbar" :key="filter.title">
+                            @update:model-value="(value: string | number) => {
+                                table.getColumn('name')?.setFilterValue(value)
+                            }"
+                        />
+                        <div v-for="filter in filter_toolbar" :key="filter.title">
                             <Filter :column="table.getColumn(filter.column)" :title="filter.title" :options="filter.data"></Filter>
                         </div>
                     </div>
