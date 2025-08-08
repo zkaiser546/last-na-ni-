@@ -52,8 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
     filter: () => []
 })
 
-
-import type { Table } from '@tanstack/vue-table'
+import type { Table, Row, Column } from '@tanstack/vue-table'
 type RowData = any
 const data = props.data.data; // Now safe to access directly
 const columns = [
@@ -61,12 +60,12 @@ const columns = [
         id: 'select',
         header: ({ table }: { table: Table<RowData> }) => h(Checkbox, {
             'checked': table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate'),
-            'onUpdate:checked': value => table.toggleAllPageRowsSelected(!!value),
+            'onUpdate:checked': (value:boolean) => table.toggleAllPageRowsSelected(!!value),
             'ariaLabel': 'Select all',
         }),
-        cell: ({ row }) => h(Checkbox, {
+        cell: ({ row }: { row: Row<RowData> }) => h(Checkbox, {
             'checked': row.getIsSelected(),
-            'onUpdate:checked': value => row.toggleSelected(!!value),
+            'onUpdate:checked': (value: boolean) => row.toggleSelected(!!value),
             'ariaLabel': 'Select row',
         }),
         enableSorting: false,
@@ -74,28 +73,28 @@ const columns = [
     },
     {
         accessorKey: 'name',
-        header: ({ column }) => {
+        header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
                 onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
             }, () => ['Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }) => h('div', { class: 'lowercase' }, row.getValue('name')),
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('name')),
     },
     {
         accessorKey: 'title',
-        header: ({ column }) => {
+        header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
                 onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
             }, () => ['Title', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }) => h('div', { class: 'lowercase' }, row.getValue('title')),
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('title')),
     },
     {
         accessorKey: 'price',
         header: () => h('div', { class: 'text-right' }, 'Price'),
-        cell: ({ row }) => {
+        cell: ({ row }: { row: Row<RowData> }) => {
             const amount = Number.parseFloat(row.getValue('price'))
 
             // Format the amount as a dollar amount
@@ -110,7 +109,7 @@ const columns = [
     {
         accessorKey: 'is_active',
         header: 'Status',
-        cell: ({ row }) => {
+        cell: ({ row }: { row: Row<RowData> }) => {
             const status = row.getValue('is_active');
 
             if (status) {
@@ -123,7 +122,7 @@ const columns = [
     {
         id: 'actions',
         enableHiding: false,
-        cell: ({ row }) => {
+        cell: ({ row }: { row: Row<RowData> }) => {
             const payment = row.original
 
             return h('div', { class: 'relative' }, h(DropdownAction, {
