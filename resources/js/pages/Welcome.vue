@@ -69,7 +69,7 @@ defineProps({
         </Alert>
 
         <header class="flex justify-between items-center w-full p-4 px-8 text-sm not-has-[nav]:hidden">
-            <Link :href="route('home')" class="relative z-20 flex items-center text-lg font-medium">
+            <Link :href="route('home')" class="relative z-20 flex items-center text-lg font-medium dark:text-foreground">
                 <AppLogoIcon class="mr-2 size-8 fill-current text-white" />
                 {{ name }}
             </Link>
