@@ -180,7 +180,7 @@ const table = useVueTable({
             pagination.value = updater;
         }
         router.get(
-            route('product.index'),
+            route('users.index'),
             {
                 page: pagination.value.pageIndex + 1,
                 per_page: pagination.value.pageSize,
@@ -204,7 +204,7 @@ const table = useVueTable({
             }, {} as Record<string, any>)
         }
         router.get(
-            route('product.index'),
+            route('users.index'),
             {
                 page: pagination.value.pageIndex + 1,
                 per_page: pagination.value.pageSize,
@@ -229,7 +229,7 @@ const table = useVueTable({
             }, {})
         }
         router.get(
-            route('product.index'),
+            route('users.index'),
             {
                 page: pagination.value.pageIndex + 1,
                 per_page: pagination.value.pageSize,
@@ -313,9 +313,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <Input
                             class="max-w-sm"
                             placeholder="Filter name..."
-                            :model-value="(table.getColumn('name')?.getFilterValue() as string) ?? ''"
+                            :model-value="(table.getColumn('first_name')?.getFilterValue() as string) ?? ''"
                             @update:model-value="(value: string | number) => {
-                                table.getColumn('name')?.setFilterValue(value)
+                                table.getColumn('first_name')?.setFilterValue(value)
                             }"
                         />
                         <div v-for="filter in filter_toolbar" :key="filter.title">
