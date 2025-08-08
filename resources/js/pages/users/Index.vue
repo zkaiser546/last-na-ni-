@@ -114,19 +114,14 @@ const columns: ColumnDef<RowData>[] = [
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('last_name')),
     },
     {
-        accessorKey: 'price',
-        header: () => h('div', { class: 'text-right' }, 'Price'),
-        cell: ({ row }: { row: Row<RowData> }) => {
-            const amount = Number.parseFloat(row.getValue('price'))
-
-            // Format the amount as a dollar amount
-            const formatted = new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-            }).format(amount)
-
-            return h('div', { class: 'text-right font-medium' }, formatted)
+        accessorKey: 'sex',
+        header: ({ column }: { column: Column<RowData, any> }) => {
+            return h(Button, {
+                variant: 'ghost',
+                onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+            }, () => ['Sex', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('sex')),
     },
     {
         accessorKey: 'is_active',
