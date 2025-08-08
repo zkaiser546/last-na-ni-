@@ -44,12 +44,16 @@ import { useForm } from '@inertiajs/vue3';
 import { toast } from 'vue-sonner'
 
 interface Props {
-    data?: { data: any[] }  // or whatever your actual data structure is
+    data?: { data: any[] }
     filter?: any[]
 }
 
-const props = defineProps<Props>()
-const data = props.data?.data || [];
+const props = withDefaults(defineProps<Props>(), {
+    data: () => ({ data: [] }),
+    filter: () => []
+})
+
+const data = props.data.data; // Now safe to access directly
 const columns = [
     {
         id: 'select',
