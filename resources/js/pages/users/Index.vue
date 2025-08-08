@@ -43,12 +43,13 @@ import { Plus } from 'lucide-vue-next'
 import { useForm } from '@inertiajs/vue3';
 import { toast } from 'vue-sonner'
 
-//Props Data
-const props = defineProps({
-    data: Array,
-    filter: Array,
-})
-const data = props.data.data;
+interface Props {
+    data?: { data: any[] }  // or whatever your actual data structure is
+    filter?: any[]
+}
+
+const props = defineProps<Props>()
+const data = props.data?.data || [];
 const columns = [
     {
         id: 'select',
