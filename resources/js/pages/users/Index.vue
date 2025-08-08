@@ -187,10 +187,10 @@ const table = useVueTable({
         }
         let filters: Record<string, any> = {};
         if (columnFilters.value) {
-            filters = columnFilters.value.reduce((acc, filter) => {
+            filters = columnFilters.value.reduce((acc: Record<string, any>, filter) => {
                 acc[filter.id] = filter.value
                 return acc
-            }, {})
+            }, {} as Record<string, any>)
         }
         router.get(
             route('product.index'),
@@ -210,7 +210,7 @@ const table = useVueTable({
         } else {
             columnFilters.value = updaterOrValue
         }
-        let filters = {};
+        let filters: Record<string, any> = {}
         if (columnFilters.value) {
             filters = columnFilters.value.reduce((acc: Record<string, any>, filter) => {
                 acc[filter.id] = filter.value
