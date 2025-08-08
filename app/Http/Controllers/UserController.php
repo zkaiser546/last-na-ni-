@@ -20,7 +20,9 @@ class UserController extends Controller
         $user_type_id = $request->input('user_type_id', null);
         $sortField = $request->input('sort_field', 'last_name');
         $sortDirection = $request->input('sort_direction', 'desc');
+
         $filters = [];
+
         if (!empty($user_type_id)) {
             $filters[] = [
                 'id' => 'user_type_id',
@@ -28,13 +30,31 @@ class UserController extends Controller
             ];
         }
 
-        $users = User::query()->with('userType')->when($user_type_id, function ($query, $user_type_id) {
-            if (is_array($user_type_id) && !empty($user_type_id)) {
-                $query->whereIn('user_type_id', $user_type_id);
-            } elseif (!empty($user_type_id)) {
-                $query->where('user_type_id', $user_type_id);
-            }
-        })->orderBy($sortField, $sortDirection)->paginate(perPage: $perPage);
+        // Capture the search text from the request
+        $firstName = $request->input('first_name');
+
+        if (!empty($firstName)) {
+            $filters[] = [
+                'id' => 'first_name',
+                'value' => $firstName
+            ];
+        }
+
+        $users = User::query()
+            ->with('userType')
+            ->when($user_type_id, function ($query, $user_type_id) {
+                if (is_array($user_type_id) && !empty($user_type_id)) {
+                    $query->whereIn('user_type_id', $user_type_id);
+                } elseif (!empty($user_type_id)) {
+                    $query->where('user_type_id', $user_type_id);
+                }
+            })
+            // Add search filter
+            ->when($firstName, function ($query, $firstName) {
+                $query->where('first_name', 'like', '%' . $firstName . '%');
+            })
+            ->orderBy($sortField, $sortDirection)
+            ->paginate(perPage: $perPage);
 
         return Inertia::render('users/Index', [
             'data' => $users,
