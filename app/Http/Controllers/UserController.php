@@ -37,6 +37,11 @@ class UserController extends Controller
             ];
         }
 
+        // Get all user types for filter dropdown
+        $userTypes = UserType::select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
         $users = User::query()
             ->with('userType')
             ->when($user_type_id, function ($query, $user_type_id) {
@@ -61,6 +66,7 @@ class UserController extends Controller
         return Inertia::render('users/Index', [
             'data' => $users,
             'filter' => $filters,
+            'userTypes' => $userTypes, // Pass user types to frontend
             // Pass current sort state to frontend
             'currentSortField' => $sortField,
             'currentSortDirection' => $sortDirection,

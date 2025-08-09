@@ -49,13 +49,15 @@ interface Props {
     filter?: any[]
     currentSortField?: string
     currentSortDirection?: string
+    userTypes?: any[] // Add userTypes prop for dynamic filter options
 }
 
 const props = withDefaults(defineProps<Props>(), {
     data: () => ({ data: [], current_page: 1, per_page: 10, last_page: 1 }),
     filter: () => [],
     currentSortField: undefined,
-    currentSortDirection: 'asc'
+    currentSortDirection: 'asc',
+    userTypes: () => []
 })
 
 import type { Table, Row, Column, SortingState, ColumnFiltersState, ColumnDef } from '@tanstack/vue-table'
@@ -335,32 +337,25 @@ const clearFilter = () => {
 }
 
 import {
-    CheckCircledIcon,
-    MinusCircledIcon,
+    PersonIcon,
 } from "@radix-icons/vue";
 import Filter from './Filter.vue'
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
-//Filter
-const filter_status = {
-    title: 'Filter Status',
-    column: 'is_active',
-    data: [
-        {
-            value: "1",
-            label: "Active",
-            icon: h(CheckCircledIcon),
-        },
-        {
-            value: "0",
-            label: "Inactive",
-            icon: h(MinusCircledIcon),
-        },
-    ]
+
+//Filter - Updated to use User Types
+const filter_user_type = {
+    title: 'Filter User Type',
+    column: 'user_type_id',
+    data: props.userTypes.map(userType => ({
+        value: userType.id.toString(),
+        label: userType.name,
+        icon: h(PersonIcon), // You can customize icons per user type if needed
+    }))
 }
 
 const filter_toolbar = [
-    filter_status,
+    filter_user_type,
 ];
 
 const showDialog = ref(false);
