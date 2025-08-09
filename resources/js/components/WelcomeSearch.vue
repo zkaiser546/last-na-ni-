@@ -3,6 +3,7 @@ import { Search } from "lucide-vue-next"
 import { Input } from "@/components/ui/input"
 import { router, useForm } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
+import WelcomeSearchDialog from '@/components/WelcomeSearchDialog.vue';
 
 const props = defineProps({
     search_result: Object,
@@ -72,19 +73,8 @@ const clearSearch = () => {
     <Transition name="fade" mode="out-in">
         <div v-if="search_result?.data?.length" class="max-w-md results-container">
             <TransitionGroup name="result-item" tag="div" class="grid gap-y-1">
-                <div v-for="result in search_result?.data" :key="result.id" class="result-item">
-                    <div class="flex gap-4 w-full">
-                        <div class="items-center flex">
-                            <div class="font-medium leading-tight">{{ result.accession_number }}</div>
-                        </div>
-                        <div class="result-content w-full">
-                            <div class="text-md font-semibold leading-tight truncate w-sm  0">{{ result.title }}</div>
-                            <div class="flex justify-between">
-                                <div class="text-sm text-gray-600 leading-tight">{{ result.book.authors }}</div>
-                                <div class="text-sm text-gray-500 leading-tight">{{ result.book.publication_year }}</div>
-                            </div>
-                        </div>
-                    </div>
+                <div v-for="result in search_result?.data" :key="result.id" class="result-item ">
+                    <WelcomeSearchDialog :record="result" />
                 </div>
             </TransitionGroup>
         </div>
