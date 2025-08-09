@@ -148,23 +148,23 @@ const columns: ColumnDef<RowData>[] = [
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('date_received')),
     },
     {
-        accessorKey: 'last_name',
+        accessorKey: 'books.authors',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
                 onClick: () => {
                     const currentSort = column.getIsSorted();
                     if (currentSort === false) {
-                        column.toggleSorting(false);
+                        column.toggleSorting(false); // asc
                     } else if (currentSort === 'asc') {
-                        column.toggleSorting(true);
+                        column.toggleSorting(true);  // desc
                     } else {
-                        column.clearSorting();
+                        column.clearSorting();       // none
                     }
                 },
-            }, () => ['Last Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Authors', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('last_name')),
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('books.authors')),
     },
     {
         accessorKey: 'sex',
