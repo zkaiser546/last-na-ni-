@@ -32,9 +32,16 @@ class WelcomeController extends Controller
                 $search_term = $request->search;
 
                 $search_result = Record::with('book')
+                    ->select('records.*', DB::raw('(SELECT COUNT(*) FROM records r2 WHERE r2.title = records.title AND r2.deleted_at IS NULL) as copy_count'))
                     ->where(function($query) use ($search_term) {
                         $query->where('accession_number', 'LIKE', '%' . $search_term . '%')
                             ->orWhere('title', 'LIKE', '%' . $search_term . '%');
+                    })
+                    ->whereIn('id', function($subQuery) {
+                        $subQuery->select(DB::raw('MIN(id)'))
+                            ->from('records')
+                            ->whereNull('deleted_at')
+                            ->groupBy('title');
                     })
                     ->paginate(5);
 
