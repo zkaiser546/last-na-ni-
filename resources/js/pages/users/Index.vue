@@ -336,8 +336,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <div class="flex gap-2">
                         <div class="relative">
                             <Input
-                                class="max-w-sm pr-8"
-                                placeholder="Search ..."
+                                class="w-[320px] pr-8"
+                                placeholder="Search by lib id, first name, or last name ..."
                                 v-model="filterInput"
                                 @keyup.enter="applyFilter"
                                 @blur="applyFilter"
