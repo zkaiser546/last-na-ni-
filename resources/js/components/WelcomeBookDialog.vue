@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 
 const getCoverUrl = (path: string) => {
     return path ? `/storage/uploads/book-covers/${path}` : `/storage/placeholders/sample1.png`;
@@ -56,9 +57,8 @@ defineProps({
                                             {{ record?.status }}
                                         </span>
                                     </div>
-                                    <div class="flex gap-2 items-center">
-                                        <span class="text-xs text-muted-foreground">Copies</span>
-                                        <span class="font-medium">{{ record?.copy_count }}</span>
+                                    <div v-if="record?.copy_count > 1" class="flex gap-2 items-center">
+                                        <Badge v-if="record?.copy_count > 1">{{ record?.copy_count }} copies</Badge>
                                     </div>
                                 </div>
                             </div>
@@ -90,7 +90,10 @@ defineProps({
             <div class="space-y-6 overflow-y-auto">
                 <div>
                     <h2 class="text-2xl font-bold">{{ record?.title }}</h2>
-                    <p class="text-muted-foreground">{{ record?.accession_number }}</p>
+                    <div class="flex my-4 gap-2">
+                        <p class="text-muted-foreground">{{ record?.accession_number }}</p>
+                        <Badge v-if="record?.copy_count > 1">{{ record?.copy_count }} copies</Badge>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
