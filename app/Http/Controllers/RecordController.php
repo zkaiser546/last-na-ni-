@@ -13,7 +13,7 @@ class RecordController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): \Inertia\Response
+    public function index(Request $request): \Inertia\Response
     {
         $perPage = $request->input('per_page', 10);
         $user_type_id = $request->input('user_type_id', null);
@@ -44,8 +44,8 @@ class RecordController extends Controller
             ->orderBy('name')
             ->get();
 
-        $users = User::query()
-            ->with('userType')
+        $users = Record::query()
+            ->with('book')
             ->when($user_type_id, function ($query, $user_type_id) {
                 // Handle both single values and arrays
                 if (is_array($user_type_id) && !empty($user_type_id)) {
