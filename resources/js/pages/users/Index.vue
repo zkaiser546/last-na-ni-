@@ -69,7 +69,7 @@ const columns: ColumnDef<RowData>[] = [
         // This is a virtual column for searching, not displayed
         accessorFn: (row) => `${row.first_name} ${row.last_name}`,
         enableSorting: false,
-        enableHiding: true,
+        enableHiding: false,
     },
     {
         id: 'select',
@@ -200,6 +200,7 @@ const columns: ColumnDef<RowData>[] = [
                 return h('div', h(Badge, { variant: 'outline' }, 'No User Type'))
             }
         },
+        enableHiding: false,
     },
     {
         id: 'actions',
