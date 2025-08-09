@@ -84,17 +84,24 @@ defineProps({
 
             <CardHeader class="">
                 <CardTitle>{{ record?.title }}</CardTitle>
-                <CardDescription class="flex justify-between">
+                <CardDescription class="flex flex-col gap-1">
                     <div>{{ record?.accession_number }}</div>
+                    <div>{{ record?.subject_headings }}</div>
                     <div>{{ record?.book.authors }}</div>
+                    <div>{{ record?.book.editors }}</div>
+                    <div>ISBN: {{ record?.book.isbn }}</div>
+                    <div>Year: {{ record?.book.publication_year }}</div>
+                    <div>Call number: {{ record?.book.call_number }}</div>
+                    <div>Publisher: {{ record?.book.publisher }}</div>
+                    <div>Status: {{ record?.book.status }}</div>
+                    <div>Volume: {{ record?.book.volume }}</div>
+                    <div>Publication place: {{ record?.book.publication_place }}</div>
+                    <div>DDC class ID: {{ record?.book.ddc_class_id }}</div>
+                    <div>Physical location ID: {{ record?.book.physical_location_id }}</div>
+                    <div>Table of contents: {{ record?.book.table_of_contents }}</div>
                 </CardDescription>
             </CardHeader>
 
-            <!--
-        isbn: {{ record?.book.isbn }}
-        year: {{ record?.book.publication_year }}
-        cover: {{ record?.book.cover_image }}
-        -->
         </DialogContent>
     </Dialog>
 </template>
