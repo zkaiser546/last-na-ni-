@@ -44,7 +44,7 @@ class RecordController extends Controller
             ->orderBy('name')
             ->get();
 
-        $users = Record::query()
+        $records = Record::query()
             ->with('book')
             ->when($user_type_id, function ($query, $user_type_id) {
                 // Handle both single values and arrays
@@ -70,8 +70,8 @@ class RecordController extends Controller
             })
             ->paginate(perPage: $perPage);
 
-        return Inertia::render('users/Index', [
-            'data' => $users,
+        return Inertia::render('records/Index', [
+            'data' => $records,
             'filter' => $filters,
             'userTypes' => $userTypes,
             'currentSortField' => $sortField,

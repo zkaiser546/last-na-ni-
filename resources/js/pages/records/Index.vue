@@ -87,7 +87,7 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: 'library_id',
+        accessorKey: 'accession_number',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
@@ -104,9 +104,9 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();       // Clear sorting
                     }
                 },
-            }, () => ['Library ID ', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Accession Number', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('library_id')),
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('accession_number')),
         enableHiding: false,
     },
     {
