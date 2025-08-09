@@ -89,6 +89,7 @@ const columns: ColumnDef<RowData>[] = [
             }, () => ['Library ID ', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('library_id')),
+        enableHiding: false,
     },
     {
         accessorKey: 'first_name',
