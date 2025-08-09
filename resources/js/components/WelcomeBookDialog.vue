@@ -40,18 +40,26 @@ defineProps({
                             </div>
 
                             <div class="mt-4 border-t pt-4">
-                                <span
-                                    class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-                                    :class="{
-                                        'bg-green-100 text-green-800': record?.status === 'Available',
-                                        'bg-red-100 text-red-800': record?.status === 'Checked Out',
-                                        'bg-yellow-100 text-yellow-800': record?.status === 'Reserved',
-                                        'bg-gray-100 text-gray-800':
-                                            !record?.status || !['Available', 'Checked Out', 'Reserved'].includes(record?.status),
-                                    }"
-                                >
-                                    {{ record?.status }}
-                                </span>
+                                <div class="grid grid-cols-2 items-center gap-4 text-sm">
+                                    <div class="flex justify-start">
+                                        <span
+                                            class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+                                            :class="{
+                                                'bg-green-100 text-green-800': record?.status === 'Available',
+                                                'bg-red-100 text-red-800': record?.status === 'Checked Out',
+                                                'bg-yellow-100 text-yellow-800': record?.status === 'Reserved',
+                                                'bg-gray-100 text-gray-800':
+                                                    !record?.status || !['Available', 'Checked Out', 'Reserved'].includes(record?.status),
+                                            }"
+                                        >
+                                            {{ record?.status }}
+                                        </span>
+                                    </div>
+                                    <div class="flex gap-2 items-center">
+                                        <span class="text-xs text-muted-foreground">Copies</span>
+                                        <span class="font-medium">{{ record?.copy_count }}</span>
+                                    </div>
+                                </div>
                             </div>
                         </CardContent>
                     </div>
