@@ -132,7 +132,7 @@ const columns: ColumnDef<RowData>[] = [
                 onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
             }, () => ['Sex', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('sex')),
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('sex')),
     },
     {
         accessorKey: 'user_type_id',
