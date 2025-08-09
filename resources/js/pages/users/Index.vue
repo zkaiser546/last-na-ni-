@@ -383,8 +383,8 @@ const showDialogCreate = () => {
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Records',
-        href: '/records',
+        title: 'Users',
+        href: '/users',
     },
 ];
 
