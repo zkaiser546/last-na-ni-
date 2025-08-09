@@ -47,11 +47,15 @@ interface Props {
         last_page?: number
     }
     filter?: any[]
+    currentSortField?: string
+    currentSortDirection?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
     data: () => ({ data: [], current_page: 1, per_page: 10, last_page: 1 }),
-    filter: () => []
+    filter: () => [],
+    currentSortField: undefined,
+    currentSortDirection: 'asc'
 })
 
 import type { Table, Row, Column, SortingState, ColumnFiltersState, ColumnDef } from '@tanstack/vue-table'
@@ -85,7 +89,19 @@ const columns: ColumnDef<RowData>[] = [
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
-                onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+                onClick: () => {
+                    // Get current sort state
+                    const currentSort = column.getIsSorted();
+
+                    // Cycle through: none -> asc -> desc -> none
+                    if (currentSort === false) {
+                        column.toggleSorting(false); // Set to ascending
+                    } else if (currentSort === 'asc') {
+                        column.toggleSorting(true);  // Set to descending
+                    } else {
+                        column.clearSorting();       // Clear sorting
+                    }
+                },
             }, () => ['Library ID ', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('library_id')),
@@ -96,7 +112,16 @@ const columns: ColumnDef<RowData>[] = [
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
-                onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+                onClick: () => {
+                    const currentSort = column.getIsSorted();
+                    if (currentSort === false) {
+                        column.toggleSorting(false); // asc
+                    } else if (currentSort === 'asc') {
+                        column.toggleSorting(true);  // desc
+                    } else {
+                        column.clearSorting();       // none
+                    }
+                },
             }, () => ['First Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('first_name')),
@@ -106,7 +131,16 @@ const columns: ColumnDef<RowData>[] = [
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
-                onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+                onClick: () => {
+                    const currentSort = column.getIsSorted();
+                    if (currentSort === false) {
+                        column.toggleSorting(false);
+                    } else if (currentSort === 'asc') {
+                        column.toggleSorting(true);
+                    } else {
+                        column.clearSorting();
+                    }
+                },
             }, () => ['M.I', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => {
@@ -119,7 +153,16 @@ const columns: ColumnDef<RowData>[] = [
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
-                onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+                onClick: () => {
+                    const currentSort = column.getIsSorted();
+                    if (currentSort === false) {
+                        column.toggleSorting(false);
+                    } else if (currentSort === 'asc') {
+                        column.toggleSorting(true);
+                    } else {
+                        column.clearSorting();
+                    }
+                },
             }, () => ['Last Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('last_name')),
@@ -129,10 +172,19 @@ const columns: ColumnDef<RowData>[] = [
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
-                onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+                onClick: () => {
+                    const currentSort = column.getIsSorted();
+                    if (currentSort === false) {
+                        column.toggleSorting(false);
+                    } else if (currentSort === 'asc') {
+                        column.toggleSorting(true);
+                    } else {
+                        column.clearSorting();
+                    }
+                },
             }, () => ['Sex', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('sex')),
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('sex')),
     },
     {
         accessorKey: 'user_type_id',
@@ -161,7 +213,12 @@ const columns: ColumnDef<RowData>[] = [
     },
 ]
 
-const sorting = ref<SortingState>([])
+const sorting = ref<SortingState>(
+    props.currentSortField ? [{
+        id: props.currentSortField,
+        desc: props.currentSortDirection === 'desc'
+    }] : []
+)
 const columnFilters = ref<ColumnFiltersState>(props.filter ?? [])
 const columnVisibility = ref<VisibilityState>({
     search: false, // Hide the search column by default
@@ -219,7 +276,7 @@ const table = useVueTable({
         router.get(
             route('users.index'),
             {
-                page: pagination.value.pageIndex + 1,
+                page: 1, // Reset to first page when sorting changes
                 per_page: pagination.value.pageSize,
                 sort_field: sorting.value[0]?.id,
                 sort_direction: sorting.value.length == 0 ? undefined : (sorting.value[0]?.desc ? "desc" : "asc"),
@@ -244,12 +301,11 @@ const table = useVueTable({
         router.get(
             route('users.index'),
             {
-                page: pagination.value.pageIndex + 1,
+                page: 1, // Reset to first page when filtering
                 per_page: pagination.value.pageSize,
-                sort_field: sorting.value[0]?.id,
-                sort_direction: sorting.value.length == 0 ? undefined : (sorting.value[0]?.desc ? "desc" : "asc"),
+                sort_field: sorting.value[0]?.id, // Include current sort field
+                sort_direction: sorting.value.length == 0 ? undefined : (sorting.value[0]?.desc ? "desc" : "asc"), // Include current sort direction
                 ...filters
-
             },
             { preserveState: false, preserveScroll: true }
         );

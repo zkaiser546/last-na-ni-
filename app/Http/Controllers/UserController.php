@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Models\User;
 use App\Models\UserType;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -18,8 +15,8 @@ class UserController extends Controller
     {
         $perPage = $request->input('per_page', 10);
         $user_type_id = $request->input('user_type_id', null);
-        $sortField = $request->input('sort_field', 'last_name');
-        $sortDirection = $request->input('sort_direction', 'desc');
+        $sortField = $request->input('sort_field', null);
+        $sortDirection = $request->input('sort_direction', 'asc');
 
         $filters = [];
 
@@ -31,7 +28,7 @@ class UserController extends Controller
         }
 
         // Capture search parameters
-        $searchTerm = $request->input('search'); // For combined search
+        $searchTerm = $request->input('search');
 
         if (!empty($searchTerm)) {
             $filters[] = [
@@ -49,7 +46,6 @@ class UserController extends Controller
                     $query->where('user_type_id', $user_type_id);
                 }
             })
-            // Combined search (searches both first_name and last_name)
             ->when($searchTerm, function ($query, $searchTerm) {
                 $query->where(function ($q) use ($searchTerm) {
                     $q->where('first_name', 'like', '%' . $searchTerm . '%')
@@ -57,12 +53,17 @@ class UserController extends Controller
                         ->orWhere('library_id', 'like', '%' . $searchTerm . '%');
                 });
             })
-            ->orderBy($sortField, $sortDirection)
+            ->when($sortField, function ($query, $sortField) use ($sortDirection) {
+                $query->orderBy($sortField, $sortDirection);
+            })
             ->paginate(perPage: $perPage);
 
         return Inertia::render('users/Index', [
             'data' => $users,
-            'filter' => $filters
+            'filter' => $filters,
+            // Pass current sort state to frontend
+            'currentSortField' => $sortField,
+            'currentSortDirection' => $sortDirection,
         ]);
     }
 
