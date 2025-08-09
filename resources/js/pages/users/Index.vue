@@ -394,10 +394,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Welcome" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-
-        <template #title>
-            Product Page
-        </template>
         <div class="p-4">
             <div class="w-full">
                 <div class="flex gap-2 items-center justify-between py-4">
