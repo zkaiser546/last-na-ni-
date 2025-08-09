@@ -22,7 +22,6 @@ Route::post('/logger', [LibraryVisitController::class, 'store'])->name('logger.s
 
 // Routes that require authentication and verification
 Route::middleware(['auth', 'verified'])->group(function () {
-
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('users.index');
@@ -35,10 +34,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/faculties/create', [FacultyController::class, 'create'])->name('faculties.create');
         Route::post('/faculties', [FacultyController::class, 'store'])->name('faculties.store');
     });
-    Route::get('/records', [RecordController::class, 'index'])->name('records.index');
-    Route::get('/records/books/import', [BookController::class, 'import'])->name('books.import');
-    Route::post('/records/books/import', [BookController::class, 'importStore'])->name('books.import.store');
-
+    Route::prefix('records')->group(function () {
+        Route::get('/', [RecordController::class, 'index'])->name('records.index');
+        Route::get('/books/import', [BookController::class, 'import'])->name('books.import');
+        Route::post('/books/import', [BookController::class, 'importStore'])->name('books.import.store');
+    });
     Route::get('/borrowings', [BorrowingTransactionController::class, 'index'])->name('borrowings.index');
     Route::get('/borrowings/create', [BorrowingTransactionController::class, 'create'])->name('borrowings.create');
     Route::post('/borrowings', [BorrowingTransactionController::class, 'store'])->name('borrowings.store');
