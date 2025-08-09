@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 
 const getCoverUrl = (path: string) => {
     return path ? `/storage/uploads/book-covers/${path}` : `/storage/placeholders/sample1.png`;
@@ -16,13 +17,13 @@ defineProps({
         <DialogTrigger as-child>
             <div class="flex gap-4 w-full">
                 <div class="items-center flex">
-                    <div class="font-medium leading-tight">{{ record.accession_number }}</div>
+                    <div class="font-medium leading-tight">{{ record?.accession_number }}</div>
                 </div>
                 <div class="record-content w-full">
-                    <div class="text-md font-semibold leading-tight truncate w-sm  0">{{ record.title }}</div>
+                    <div class="text-md font-semibold leading-tight truncate w-sm  0">{{ record?.title }}</div>
                     <div class="flex justify-between">
-                        <div class="text-sm text-gray-600 leading-tight">{{ record.book.authors }}</div>
-                        <div class="text-sm text-gray-500 leading-tight">{{ record.book.publication_year }}</div>
+                        <div class="text-sm text-gray-600 leading-tight">{{ record?.book.authors }}</div>
+                        <div class="text-sm text-gray-500 leading-tight">{{ record?.book.publication_year }}</div>
                     </div>
                 </div>
             </div>
@@ -38,9 +39,10 @@ defineProps({
             </div>
 
             <div class="space-y-6 overflow-y-auto">
-                <div>
-                    <h2 class="text-2xl font-bold">{{ record?.title }}</h2>
+                <h2 class="text-2xl font-bold">{{ record?.title }}</h2>
+                <div class="flex my-4 gap-2">
                     <p class="text-muted-foreground">{{ record?.accession_number }}</p>
+                    <Badge v-if="record?.copy_count > 1">{{ record?.copy_count }} copies</Badge>
                 </div>
 
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
