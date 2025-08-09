@@ -222,7 +222,9 @@ const sorting = ref<SortingState>(
         desc: props.currentSortDirection === 'desc'
     }] : []
 )
-const columnFilters = ref<ColumnFiltersState>(props.filter ?? [])
+const columnFilters = ref<ColumnFiltersState>(
+    props.filter ? props.filter.map(f => ({ id: f.id, value: f.value })) : []
+)
 const columnVisibility = ref<VisibilityState>({
     search: false, // Hide the search column by default
 })
@@ -269,13 +271,20 @@ const table = useVueTable({
         } else {
             sorting.value = updaterOrValue
         }
-        let filters: Record<string, any> = {};
-        if (columnFilters.value) {
+
+        // Build filters object (same logic as above)
+        let filters: Record<string, any> = {}
+        if (columnFilters.value && columnFilters.value.length > 0) {
             filters = columnFilters.value.reduce((acc: Record<string, any>, filter) => {
-                acc[filter.id] = filter.value
+                if (Array.isArray(filter.value) && filter.value.length > 0) {
+                    acc[filter.id] = filter.value
+                } else if (!Array.isArray(filter.value) && filter.value !== '' && filter.value !== null && filter.value !== undefined) {
+                    acc[filter.id] = filter.value
+                }
                 return acc
-            }, {} as Record<string, any>)
+            }, {})
         }
+
         router.get(
             route('users.index'),
             {
@@ -294,20 +303,28 @@ const table = useVueTable({
         } else {
             columnFilters.value = updaterOrValue
         }
+
+        // Build filters object
         let filters: Record<string, any> = {}
-        if (columnFilters.value) {
+        if (columnFilters.value && columnFilters.value.length > 0) {
             filters = columnFilters.value.reduce((acc: Record<string, any>, filter) => {
-                acc[filter.id] = filter.value
+                // Handle array values (for multi-select filters)
+                if (Array.isArray(filter.value) && filter.value.length > 0) {
+                    acc[filter.id] = filter.value
+                } else if (!Array.isArray(filter.value) && filter.value !== '' && filter.value !== null && filter.value !== undefined) {
+                    acc[filter.id] = filter.value
+                }
                 return acc
             }, {})
         }
+
         router.get(
             route('users.index'),
             {
                 page: 1, // Reset to first page when filtering
                 per_page: pagination.value.pageSize,
-                sort_field: sorting.value[0]?.id, // Include current sort field
-                sort_direction: sorting.value.length == 0 ? undefined : (sorting.value[0]?.desc ? "desc" : "asc"), // Include current sort direction
+                sort_field: sorting.value[0]?.id,
+                sort_direction: sorting.value.length == 0 ? undefined : (sorting.value[0]?.desc ? "desc" : "asc"),
                 ...filters
             },
             { preserveState: false, preserveScroll: true }

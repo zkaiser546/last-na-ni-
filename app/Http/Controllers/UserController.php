@@ -20,6 +20,7 @@ class UserController extends Controller
 
         $filters = [];
 
+        // Handle user_type_id filter (can be single value or array)
         if (!empty($user_type_id)) {
             $filters[] = [
                 'id' => 'user_type_id',
@@ -29,7 +30,6 @@ class UserController extends Controller
 
         // Capture search parameters
         $searchTerm = $request->input('search');
-
         if (!empty($searchTerm)) {
             $filters[] = [
                 'id' => 'search',
@@ -45,10 +45,15 @@ class UserController extends Controller
         $users = User::query()
             ->with('userType')
             ->when($user_type_id, function ($query, $user_type_id) {
+                // Handle both single values and arrays
                 if (is_array($user_type_id) && !empty($user_type_id)) {
-                    $query->whereIn('user_type_id', $user_type_id);
+                    // Convert string values to integers if needed
+                    $userTypeIds = array_map('intval', array_filter($user_type_id));
+                    if (!empty($userTypeIds)) {
+                        $query->whereIn('user_type_id', $userTypeIds);
+                    }
                 } elseif (!empty($user_type_id)) {
-                    $query->where('user_type_id', $user_type_id);
+                    $query->where('user_type_id', intval($user_type_id));
                 }
             })
             ->when($searchTerm, function ($query, $searchTerm) {
@@ -66,8 +71,7 @@ class UserController extends Controller
         return Inertia::render('users/Index', [
             'data' => $users,
             'filter' => $filters,
-            'userTypes' => $userTypes, // Pass user types to frontend
-            // Pass current sort state to frontend
+            'userTypes' => $userTypes,
             'currentSortField' => $sortField,
             'currentSortDirection' => $sortDirection,
         ]);
