@@ -30,13 +30,29 @@ class UserController extends Controller
             ];
         }
 
-        // Capture the search text from the request
+        // Capture search parameters
         $firstName = $request->input('first_name');
+        $lastName = $request->input('last_name');
+        $searchTerm = $request->input('search'); // For combined search
 
         if (!empty($firstName)) {
             $filters[] = [
                 'id' => 'first_name',
                 'value' => $firstName
+            ];
+        }
+
+        if (!empty($lastName)) {
+            $filters[] = [
+                'id' => 'last_name',
+                'value' => $lastName
+            ];
+        }
+
+        if (!empty($searchTerm)) {
+            $filters[] = [
+                'id' => 'search',
+                'value' => $searchTerm
             ];
         }
 
@@ -49,9 +65,19 @@ class UserController extends Controller
                     $query->where('user_type_id', $user_type_id);
                 }
             })
-            // Add search filter
+            // Individual field searches
             ->when($firstName, function ($query, $firstName) {
                 $query->where('first_name', 'like', '%' . $firstName . '%');
+            })
+            ->when($lastName, function ($query, $lastName) {
+                $query->where('last_name', 'like', '%' . $lastName . '%');
+            })
+            // Combined search (searches both first_name and last_name)
+            ->when($searchTerm, function ($query, $searchTerm) {
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('first_name', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('last_name', 'like', '%' . $searchTerm . '%');
+                });
             })
             ->orderBy($sortField, $sortDirection)
             ->paginate(perPage: $perPage);

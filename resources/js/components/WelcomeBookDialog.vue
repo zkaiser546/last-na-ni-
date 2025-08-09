@@ -9,6 +9,7 @@ const getCoverUrl = (path: string) => {
 defineProps({
     record: Object,
 });
+
 </script>
 
 <template>

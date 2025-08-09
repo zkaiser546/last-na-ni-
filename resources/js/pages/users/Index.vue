@@ -11,8 +11,8 @@ import {
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
-    useVueTable,
-} from '@tanstack/vue-table'
+    useVueTable, VisibilityState
+} from '@tanstack/vue-table';
 import { ArrowUpDown, ChevronDown, X } from 'lucide-vue-next'
 
 import { h, ref } from 'vue'
@@ -58,6 +58,13 @@ import type { Table, Row, Column, SortingState, ColumnFiltersState, ColumnDef } 
 type RowData = any
 const data = props.data.data; // Now safe to access directly
 const columns: ColumnDef<RowData>[] = [
+    {
+        id: 'search',
+        // This is a virtual column for searching, not displayed
+        accessorFn: (row) => `${row.first_name} ${row.last_name}`,
+        enableSorting: false,
+        enableHiding: true,
+    },
     {
         id: 'select',
         header: ({ table }: { table: Table<RowData> }) => h(Checkbox, {
@@ -155,7 +162,9 @@ const columns: ColumnDef<RowData>[] = [
 
 const sorting = ref<SortingState>([])
 const columnFilters = ref<ColumnFiltersState>(props.filter ?? [])
-const columnVisibility = ref({})
+const columnVisibility = ref<VisibilityState>({
+    search: false, // Hide the search column by default
+})
 const rowSelection = ref({})
 const expanded = ref({})
 const pageSizes = [1, 2, 3, 5, 10, 15, 30, 40, 50, 100,];
@@ -258,15 +267,14 @@ const table = useVueTable({
 })
 
 // Local state for the input
-const filterInput = ref<string>((table.getColumn('first_name')?.getFilterValue() as string) ?? '')
-// Function to apply the filter
+const filterInput = ref<string>((table.getColumn('search')?.getFilterValue() as string) ?? '')// Function to apply the filter
 const applyFilter = () => {
-    table.getColumn('first_name')?.setFilterValue(filterInput.value)
+    table.getColumn('search')?.setFilterValue(filterInput.value)
 }
 
 const clearFilter = () => {
     filterInput.value = ''
-    table.getColumn('first_name')?.setFilterValue('')
+    table.getColumn('search')?.setFilterValue('')
 }
 
 import {
@@ -328,7 +336,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <div class="relative">
                             <Input
                                 class="max-w-sm pr-8"
-                                placeholder="Filter name..."
+                                placeholder="Search ..."
                                 v-model="filterInput"
                                 @keyup.enter="applyFilter"
                                 @blur="applyFilter"
