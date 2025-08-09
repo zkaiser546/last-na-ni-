@@ -77,7 +77,7 @@ defineProps({
                 </div>
             </Card>
         </DialogTrigger>
-        <DialogContent class="grid gap-6 sm:grid-cols-2 sm:max-w-4xl justify-between">
+        <DialogContent class="grid gap-6 h-full max-h-9/10 sm:grid-cols-2 sm:max-w-4xl justify-between">
             <div class="flex items-center justify-center">
                 <img
                     class="max-w-xs rounded-lg shadow-md"
@@ -87,7 +87,7 @@ defineProps({
                 />
             </div>
 
-            <div class="space-y-6">
+            <div class="space-y-6 overflow-y-auto">
                 <div>
                     <h2 class="text-2xl font-bold">{{ record?.title }}</h2>
                     <p class="text-muted-foreground">{{ record?.accession_number }}</p>
