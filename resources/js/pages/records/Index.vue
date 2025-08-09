@@ -110,7 +110,7 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: 'first_name',
+        accessorKey: 'title',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
@@ -124,31 +124,28 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();       // none
                     }
                 },
-            }, () => ['First Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Title', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('first_name')),
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('title')),
     },
     {
-        accessorKey: 'middle_initial',
+        accessorKey: 'date_received',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
                 onClick: () => {
                     const currentSort = column.getIsSorted();
                     if (currentSort === false) {
-                        column.toggleSorting(false);
+                        column.toggleSorting(false); // asc
                     } else if (currentSort === 'asc') {
-                        column.toggleSorting(true);
+                        column.toggleSorting(true);  // desc
                     } else {
-                        column.clearSorting();
+                        column.clearSorting();       // none
                     }
                 },
-            }, () => ['M.I', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Date Received', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => {
-            const middleInitial = row.getValue('middle_initial');
-            return h('div', { class: 'capitalize' }, middleInitial ? middleInitial + '.' : '');
-        },
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('date_received')),
     },
     {
         accessorKey: 'last_name',
