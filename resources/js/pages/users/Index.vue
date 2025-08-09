@@ -391,7 +391,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 </script>
 
 <template>
-    {{ console.log(data)}}
     <Head title="Welcome" />
 
     <AppLayout :breadcrumbs="breadcrumbs">

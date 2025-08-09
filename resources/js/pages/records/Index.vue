@@ -255,7 +255,7 @@ const table = useVueTable({
             pagination.value = updater;
         }
         router.get(
-            route('users.index'),
+            route('records.index'),
             {
                 page: pagination.value.pageIndex + 1,
                 per_page: pagination.value.pageSize,
@@ -286,7 +286,7 @@ const table = useVueTable({
         }
 
         router.get(
-            route('users.index'),
+            route('records.index'),
             {
                 page: 1, // Reset to first page when sorting changes
                 per_page: pagination.value.pageSize,
@@ -319,7 +319,7 @@ const table = useVueTable({
         }
 
         router.get(
-            route('users.index'),
+            route('records.index'),
             {
                 page: 1, // Reset to first page when filtering
                 per_page: pagination.value.pageSize,
@@ -383,15 +383,14 @@ const showDialogCreate = () => {
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Users',
-        href: '/users',
+        title: 'Records',
+        href: '/records',
     },
 ];
 
 </script>
 
 <template>
-    {{ console.log(data)}}
     <Head title="Welcome" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
