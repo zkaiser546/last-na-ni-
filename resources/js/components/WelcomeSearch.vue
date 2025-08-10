@@ -10,19 +10,31 @@ const props = defineProps({
     search_result: Object,
     search_term: String,
     search_button: Boolean,
+    record_type: String,
 });
 
 const form = useForm({
     search: props.search_term,
+    record_type: props.record_type || 'all',
 });
 
 const search = () => {
-    router.get(route('home'), { search: form.search, search_button: true }, { preserveState: true });
+    router.get(route('home'), {
+        search: form.search,
+        search_button: true,
+        record_type: form.record_type, }, { preserveState: true });
 };
 
 const clearSearch = () => {
     form.search = ''; // Clear the search input
-    router.get(route('home'), { search: '' }, { preserveState: true }); // Update the route
+    form.record_type = 'all';
+    router.get(route('home'), { search: '', record_type: 'all' }, { preserveState: true }); // Update the route
+};
+
+const onRecordTypeChange = (value: string) => {
+    form.record_type = value;
+    // trigger search automatically when record type changes
+    search();
 };
 
 </script>
@@ -30,9 +42,10 @@ const clearSearch = () => {
 <template>
     <form @submit.prevent="search" class="search-form">
         <div class="flex items-center gap-2">
-
-            <WelcomeSelect />
-
+            <WelcomeSelect
+                :model-value="form.record_type"
+                @update:model-value="onRecordTypeChange"
+            />
             <!-- Search Input Container -->
             <div class="relative flex-1 search-input-container">
                 <Input
@@ -48,7 +61,6 @@ const clearSearch = () => {
                     <Search class="size-6 text-muted-foreground" />
                 </span>
             </div>
-
             <!-- Button Container -->
             <div class="flex gap-2 flex-shrink-0 button-container">
                 <Button
