@@ -25,7 +25,7 @@ defineProps<{
         </div>
         <div class="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
             <div class="absolute inset-0 bg-[url(/storage/images/eagle.jpg)] bg-cover bg-right" />
-            <div class="absolute inset-0 bg-gradient-to-t from-gray-900/70 to-gray-200/5" />
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 to-gray-200/0 to-30%" />
             <Link :href="route('home')" class="relative z-20 flex items-center text-lg font-medium">
                 <AppLogoIcon class="mr-2 size-8 fill-current text-white" />
                 {{ name }}
