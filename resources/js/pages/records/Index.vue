@@ -148,7 +148,7 @@ const columns: ColumnDef<RowData>[] = [
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('date_received')),
     },
     {
-        accessorKey: 'books.authors',
+        accessorKey: 'authors',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
@@ -164,7 +164,16 @@ const columns: ColumnDef<RowData>[] = [
                 },
             }, () => ['Authors', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('books.authors')),
+        cell: ({ row }: { row: Row<RowData> }) => {
+            const userType = row.original.book;
+
+            if (userType) {
+                return h('div', h(Badge, userType.authors || 'Unknown'))
+            } else {
+                return h('div', h(Badge, { variant: 'outline' }, 'No User Type'))
+            }
+        },
+        enableHiding: false,
     },
     {
         accessorKey: 'sex',
@@ -212,6 +221,8 @@ const columns: ColumnDef<RowData>[] = [
         },
     },
 ]
+
+console.log(data);
 
 const sorting = ref<SortingState>(
     props.currentSortField ? [{
