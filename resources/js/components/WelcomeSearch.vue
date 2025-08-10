@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input"
 import { router, useForm } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
 import WelcomeSearchDialog from '@/components/WelcomeSearchDialog.vue';
+import WelcomeSelect from '@/components/WelcomeSelect.vue';
 
 const props = defineProps({
     search_result: Object,
@@ -29,6 +30,9 @@ const clearSearch = () => {
 <template>
     <form @submit.prevent="search" class="search-form">
         <div class="flex items-center gap-2">
+
+            <WelcomeSelect />
+
             <!-- Search Input Container -->
             <div class="relative flex-1 search-input-container">
                 <Input
@@ -37,7 +41,7 @@ const clearSearch = () => {
                     id="search"
                     type="search"
                     placeholder="Search accession, title..."
-                    class="pl-10 search-input w-sm"
+                    class="pl-10 search-input w-80"
                     autocomplete="off"
                 />
                 <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2 search-icon">
