@@ -192,13 +192,13 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: 'user_type_id',
-        header: 'User Type',
+        accessorKey: 'ddc_class',
+        header: 'DDC Class',
         cell: ({ row }: { row: Row<RowData> }) => {
-            const userType = row.original.user_type;
+            const ddcClass = row.original.user_type;
 
-            if (userType) {
-                return h('div', h(Badge, userType.name || 'Unknown'))
+            if (ddcClass) {
+                return h('div', h(Badge, ddcClass.name || 'Unknown'))
             } else {
                 return h('div', h(Badge, { variant: 'outline' }, 'No User Type'))
             }
