@@ -165,13 +165,7 @@ const columns: ColumnDef<RowData>[] = [
             }, () => ['Authors', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => {
-            const userType = row.original.book;
-
-            if (userType) {
-                return h('div', h(Badge, userType.authors || 'Unknown'))
-            } else {
-                return h('div', h(Badge, { variant: 'outline' }, 'No User Type'))
-            }
+            return h('div', row.original.book.authors || '')
         },
         enableHiding: false,
     },
