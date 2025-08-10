@@ -104,7 +104,7 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();       // Clear sorting
                     }
                 },
-            }, () => ['Accession Number', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Acc. No.', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('accession_number')),
         enableHiding: false,
@@ -129,25 +129,6 @@ const columns: ColumnDef<RowData>[] = [
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('title')),
     },
     {
-        accessorKey: 'date_received',
-        header: ({ column }: { column: Column<RowData, any> }) => {
-            return h(Button, {
-                variant: 'ghost',
-                onClick: () => {
-                    const currentSort = column.getIsSorted();
-                    if (currentSort === false) {
-                        column.toggleSorting(false); // asc
-                    } else if (currentSort === 'asc') {
-                        column.toggleSorting(true);  // desc
-                    } else {
-                        column.clearSorting();       // none
-                    }
-                },
-            }, () => ['Date Received', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
-        },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('date_received')),
-    },
-    {
         accessorKey: 'authors',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
@@ -168,6 +149,25 @@ const columns: ColumnDef<RowData>[] = [
             return h('div', row.original.book.authors || '')
         },
         enableHiding: false,
+    },
+    {
+        accessorKey: 'date_received',
+        header: ({ column }: { column: Column<RowData, any> }) => {
+            return h(Button, {
+                variant: 'ghost',
+                onClick: () => {
+                    const currentSort = column.getIsSorted();
+                    if (currentSort === false) {
+                        column.toggleSorting(false); // asc
+                    } else if (currentSort === 'asc') {
+                        column.toggleSorting(true);  // desc
+                    } else {
+                        column.clearSorting();       // none
+                    }
+                },
+            }, () => ['Date Received', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+        },
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('date_received')),
     },
     {
         accessorKey: 'sex',
