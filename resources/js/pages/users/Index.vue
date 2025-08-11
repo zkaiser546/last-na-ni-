@@ -49,7 +49,7 @@ interface Props {
     filter?: any[]
     currentSortField?: string
     currentSortDirection?: string
-    userTypes?: any[] // Add userTypes prop for dynamic filter options
+    userTypes?: any[]
 }
 
 const props = withDefaults(defineProps<Props>(), {

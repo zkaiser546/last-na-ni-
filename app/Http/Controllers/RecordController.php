@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DdcClassification;
 use App\Models\Record;
 use App\Models\User;
 use App\Models\UserType;
@@ -16,17 +17,16 @@ class RecordController extends Controller
     public function index(Request $request): \Inertia\Response
     {
         $perPage = $request->input('per_page', 10);
-        $user_type_id = $request->input('user_type_id', null);
+        $ddc_class_id = $request->input('ddc_class_id', null);
         $sortField = $request->input('sort_field', null);
         $sortDirection = $request->input('sort_direction', 'asc');
 
         $filters = [];
 
-        // Handle user_type_id filter (can be single value or array)
-        if (!empty($user_type_id)) {
+        if (!empty($ddc_class_id)) {
             $filters[] = [
-                'id' => 'user_type_id',
-                'value' => $user_type_id
+                'id' => 'ddc_class_id',
+                'value' => $ddc_class_id
             ];
         }
 
@@ -39,23 +39,23 @@ class RecordController extends Controller
             ];
         }
 
-        // Get all user types for filter dropdown
-        $userTypes = UserType::select('id', 'name')
+        // Get all DDC classes for filter dropdown
+        $ddcClasses = DdcClassification::select('id', 'name')
             ->orderBy('name')
             ->get();
 
         $records = Record::query()
             ->with('book')
-            ->when($user_type_id, function ($query, $user_type_id) {
+            ->when($ddc_class_id, function ($query, $ddc_class_id) {
                 // Handle both single values and arrays
-                if (is_array($user_type_id) && !empty($user_type_id)) {
+                if (is_array($ddc_class_id) && !empty($ddc_class_id)) {
                     // Convert string values to integers if needed
-                    $userTypeIds = array_map('intval', array_filter($user_type_id));
-                    if (!empty($userTypeIds)) {
-                        $query->whereIn('user_type_id', $userTypeIds);
+                    $ddcClassIds = array_map('intval', array_filter($ddc_class_id));
+                    if (!empty($ddcClassIds)) {
+                        $query->whereIn('ddc_class_id', $ddcClassIds);
                     }
-                } elseif (!empty($user_type_id)) {
-                    $query->where('user_type_id', intval($user_type_id));
+                } elseif (!empty($ddc_class_id)) {
+                    $query->where('ddc_class_id', (int)$ddc_class_id);
                 }
             })
             ->when($searchTerm, function ($query, $searchTerm) {
@@ -73,7 +73,7 @@ class RecordController extends Controller
         return Inertia::render('records/Index', [
             'data' => $records,
             'filter' => $filters,
-            'userTypes' => $userTypes,
+            'ddcClasses' => $ddcClasses,
             'currentSortField' => $sortField,
             'currentSortDirection' => $sortDirection,
         ]);

@@ -49,7 +49,7 @@ interface Props {
     filter?: any[]
     currentSortField?: string
     currentSortDirection?: string
-    userTypes?: any[] // Add userTypes prop for dynamic filter options
+    ddcClasses?: any[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -57,7 +57,7 @@ const props = withDefaults(defineProps<Props>(), {
     filter: () => [],
     currentSortField: undefined,
     currentSortDirection: 'asc',
-    userTypes: () => []
+    ddcClasses: () => []
 })
 
 import type { Table, Row, Column, SortingState, ColumnFiltersState, ColumnDef } from '@tanstack/vue-table'
@@ -192,10 +192,10 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: 'ddc_class',
+        accessorKey: 'ddc_class_id',
         header: 'DDC Class',
         cell: ({ row }: { row: Row<RowData> }) => {
-            const ddcClass = row.original.user_type;
+            const ddcClass = row.original.ddc_class;
 
             if (ddcClass) {
                 return h('div', h(Badge, ddcClass.name || 'Unknown'))
@@ -368,11 +368,11 @@ import type { BreadcrumbItem } from '@/types';
 
 //Filter - Updated to use User Types
 const filter_user_type = {
-    title: 'Filter User Type',
-    column: 'user_type_id',
-    data: props.userTypes.map(userType => ({
-        value: userType.id.toString(),
-        label: userType.name,
+    title: 'Filter DDC Classes',
+    column: 'ddc_class_id',
+    data: props.ddcClasses.map(ddcClass => ({
+        value: ddcClass.id.toString(),
+        label: ddcClass.name,
         icon: h(PersonIcon), // You can customize icons per user type if needed
     }))
 }
@@ -399,6 +399,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Welcome" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
+        {{ console.log(ddcClasses) }}
         <div class="p-4">
             <div class="w-full">
                 <div class="flex gap-2 items-center justify-between py-4">
