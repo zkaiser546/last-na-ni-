@@ -265,7 +265,7 @@ const table = useVueTable({
         }
 
         router.get(
-            route('records.index'),
+            route('borrowings.index'),
             {
                 page: pagination.value.pageIndex + 1,
                 per_page: pagination.value.pageSize,
@@ -297,7 +297,7 @@ const table = useVueTable({
         }
 
         router.get(
-            route('records.index'),
+            route('borrowings.index'),
             {
                 page: 1, // Reset to first page when sorting changes
                 per_page: pagination.value.pageSize,
@@ -330,7 +330,7 @@ const table = useVueTable({
         }
 
         router.get(
-            route('records.index'),
+            route('borrowings.index'),
             {
                 page: 1, // Reset to first page when filtering
                 per_page: pagination.value.pageSize,
@@ -397,15 +397,15 @@ const showDialogCreate = () => {
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Records',
-        href: '/records',
+        title: 'Borrowings',
+        href: '/borrowings',
     },
 ];
 
 </script>
 
 <template>
-    <Head title="Welcome" />
+    <Head title="Borrowings" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-4">
@@ -415,7 +415,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <div class="relative">
                             <Input
                                 class="w-[320px] pr-8"
-                                placeholder="Search by acc. no., title ..."
+                                placeholder="Search by t.n. client, book ..."
                                 v-model="filterInput"
                                 @keyup.enter="applyFilter"
                                 @blur="applyFilter"
