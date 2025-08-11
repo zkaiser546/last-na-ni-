@@ -127,6 +127,7 @@ const columns: ColumnDef<RowData>[] = [
             }, () => ['Title', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize truncate max-w-sm' }, row.getValue('title')),
+        enableHiding: false,
     },
     {
         accessorKey: 'authors',
@@ -148,7 +149,7 @@ const columns: ColumnDef<RowData>[] = [
         cell: ({ row }: { row: Row<RowData> }) => {
             return h('div', { class: 'capitalize truncate max-w-40' }, row.original.book.authors || '')
         },
-        enableHiding: false,
+        enableHiding: true,
     },
     {
         accessorKey: 'date_received',
@@ -168,6 +169,7 @@ const columns: ColumnDef<RowData>[] = [
             }, () => ['Date Received', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('date_received')),
+        enableHiding: true,
     },
     {
         accessorKey: 'call_number',
@@ -189,7 +191,7 @@ const columns: ColumnDef<RowData>[] = [
         cell: ({ row }: { row: Row<RowData> }) => {
             return h('div', { class: 'truncate max-w-40' }, row.original.book.call_number || '')
         },
-        enableHiding: false,
+        enableHiding: true,
     },
     {
         accessorKey: 'ddc_class_id',
@@ -202,7 +204,7 @@ const columns: ColumnDef<RowData>[] = [
                 return h('div', 'No DDC Class')
             }
         },
-        enableHiding: false,
+        enableHiding: true,
     },
     {
         id: 'actions',
@@ -350,7 +352,13 @@ const table = useVueTable({
             { preserveState: false, preserveScroll: true }
         );
     },
-    onColumnVisibilityChange: updaterOrValue => valueUpdater(updaterOrValue, columnVisibility),
+    onColumnVisibilityChange: updaterOrValue => {
+        if (typeof updaterOrValue === 'function') {
+            columnVisibility.value = updaterOrValue(columnVisibility.value)
+        } else {
+            columnVisibility.value = updaterOrValue
+        }
+    },
     onRowSelectionChange: updaterOrValue => valueUpdater(updaterOrValue, rowSelection),
     onExpandedChange: updaterOrValue => valueUpdater(updaterOrValue, expanded),
     state: {
