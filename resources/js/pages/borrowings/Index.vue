@@ -374,7 +374,6 @@ const clearFilter = () => {
 import Filter from './Filter.vue'
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
-import { Badge } from '@/components/ui/badge';
 
 //Filter - Updated to use DDC Class
 const filter_ddc_class = {
