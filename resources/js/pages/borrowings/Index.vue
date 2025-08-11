@@ -105,7 +105,7 @@ const columns: ColumnDef<RowData>[] = [
                 },
             }, () => ['T.N.', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('transaction_number')),
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'max-w-48 whitespace-normal break-words' }, row.getValue('transaction_number')),
         enableHiding: false,
     },
     {
@@ -136,7 +136,7 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: 'date_received',
+        accessorKey: 'book',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
@@ -150,10 +150,17 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();       // none
                     }
                 },
-            }, () => ['Date Received', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Book', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('date_received')),
-        enableHiding: true,
+        cell: ({ row }: { row: Row<RowData> }) => {
+            const book = row.original.record;
+            if (book) {
+                return h('div', { class: 'max-w-64 truncate' }, book.accession_number + '---' +book.title || 'Unknown')
+            } else {
+                return h('div', '(borrowed inside)')
+            }
+        },
+        enableHiding: false,
     },
     {
         id: 'actions',
