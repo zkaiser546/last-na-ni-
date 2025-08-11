@@ -63,9 +63,12 @@ class RecordController extends Controller
             })
             ->when($searchTerm, function ($query, $searchTerm) {
                 $query->where(function ($q) use ($searchTerm) {
-                    $q->where('first_name', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('last_name', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('library_id', 'like', '%' . $searchTerm . '%');
+                    $q->where('accession_number', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('title', 'like', '%' . $searchTerm . '%')
+                        ->orWhereHas('book', function ($bookQuery) use ($searchTerm) {
+                            // Simple LIKE search on the JSON column as text
+                            $bookQuery->where('authors', 'like', '%' . $searchTerm . '%');
+                        });
                 });
             })
             ->when($sortField, function ($query, $sortField) use ($sortDirection) {

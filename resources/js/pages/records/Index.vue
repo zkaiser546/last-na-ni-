@@ -67,7 +67,7 @@ const columns: ColumnDef<RowData>[] = [
     {
         id: 'search',
         // This is a virtual column for searching, not displayed
-        accessorFn: (row) => `${row.first_name} ${row.last_name}`,
+        accessorFn: (row) => `${row.accession_number} ${row.title}`,
         enableSorting: false,
         enableHiding: false,
     },
@@ -405,7 +405,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <div class="relative">
                             <Input
                                 class="w-[320px] pr-8"
-                                placeholder="Search by lib id, first name, or last name ..."
+                                placeholder="Search by acc. no., title ..."
                                 v-model="filterInput"
                                 @keyup.enter="applyFilter"
                                 @blur="applyFilter"
