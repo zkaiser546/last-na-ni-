@@ -105,7 +105,8 @@ const columns: ColumnDef<RowData>[] = [
                 },
             }, () => ['T.N.', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'max-w-48 whitespace-normal break-words' }, row.getValue('transaction_number')),
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'max-w-48 whitespace-normal break-words' },
+            row.getValue('transaction_number')),
         enableHiding: false,
     },
     {
@@ -187,6 +188,12 @@ const columns: ColumnDef<RowData>[] = [
             return h('div', { class: 'max-w-64 truncate' }, date)
         },
         enableHiding: false,
+    },
+    {
+        accessorKey: 'transaction_type',
+        header: 'Transaction Type',
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'max-w-48 whitespace-normal break-words' },
+            row.getValue('transaction_type')),
     },
     {
         id: 'actions',
@@ -367,6 +374,7 @@ const clearFilter = () => {
 import Filter from './Filter.vue'
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
+import { Badge } from '@/components/ui/badge';
 
 //Filter - Updated to use DDC Class
 const filter_ddc_class = {
