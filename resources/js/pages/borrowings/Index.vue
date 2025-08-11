@@ -18,7 +18,6 @@ import { ArrowUpDown, ChevronDown, ListFilter, X } from 'lucide-vue-next';
 import { h, ref } from 'vue'
 import DropdownAction from './DataTableDemoColumn.vue'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Badge } from '@/components/ui/badge'
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -87,7 +86,7 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: 'accession_number',
+        accessorKey: 'transaction_number',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
@@ -104,13 +103,13 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();       // Clear sorting
                     }
                 },
-            }, () => ['Acc.', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['T.N.', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('accession_number')),
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('transaction_number')),
         enableHiding: false,
     },
     {
-        accessorKey: 'title',
+        accessorKey: 'client',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
@@ -124,9 +123,16 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();       // none
                     }
                 },
-            }, () => ['Title', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Client', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize truncate max-w-sm' }, row.getValue('title')),
+        cell: ({ row }: { row: Row<RowData> }) => {
+            const user = row.original.user;
+            if (user) {
+                return h('div', user.first_name + ' ' + user.last_name  || 'Unknown')
+            } else {
+                return h('div', '(borrowed inside)')
+            }
+        },
         enableHiding: false,
     },
     {
