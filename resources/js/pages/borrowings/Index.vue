@@ -164,7 +164,7 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: 'date',
+        accessorKey: 'checkout_date',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
@@ -181,12 +181,10 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();       // Clear sorting
                     }
                 },
-            }, () => ['Date', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Checkout Date', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => {
-            const date = row.original.return_date ?? row.original.checkout_date;
-            return h('div', { class: 'max-w-64 truncate' }, date)
-        },
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'max-w-48 whitespace-normal break-words' },
+            row.getValue('checkout_date')),
         enableHiding: false,
     },
     {
@@ -376,18 +374,21 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
 
 //Filter - Updated to use DDC Class
-const filter_ddc_class = {
+const filter_transaction_types = {
     title: 'Filter Transaction Type',
     column: 'transaction_type',
-    data: props.ddcClasses.map(ddcClass => ({
-        value: ddcClass.id.toString(),
-        label: ddcClass.name,
-        icon: h(ListFilter),
-    }))
+    data: [
+        { value: "borrow-inside", label: "Borrow Inside", icon: h(ListFilter) },
+        { value: "checkout", label: "Checkout", icon: h(ListFilter) },
+        { value: "checkin", label: "Checkin", icon: h(ListFilter) },
+        { value: "renewal", label: "Renewal", icon: h(ListFilter) },
+        { value: "lost", label: "Lost", icon: h(ListFilter) },
+        { value: "damaged", label: "Damaged", icon: h(ListFilter) }
+    ]
 }
 
 const filter_toolbar = [
-    filter_ddc_class,
+    filter_transaction_types,
 ];
 
 const showDialog = ref(false);
