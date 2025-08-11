@@ -377,8 +377,8 @@ import type { BreadcrumbItem } from '@/types';
 
 //Filter - Updated to use DDC Class
 const filter_ddc_class = {
-    title: 'Filter DDC Classes',
-    column: 'ddc_class_id',
+    title: 'Filter Transaction Type',
+    column: 'transaction_type',
     data: props.ddcClasses.map(ddcClass => ({
         value: ddcClass.id.toString(),
         label: ddcClass.name,
