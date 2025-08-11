@@ -39,11 +39,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/books/import', [BookController::class, 'import'])->name('books.import');
         Route::post('/books/import', [BookController::class, 'importStore'])->name('books.import.store');
     });
-    Route::get('/borrowings', [BorrowingTransactionController::class, 'index'])->name('borrowings.index');
-    Route::get('/borrowings/create', [BorrowingTransactionController::class, 'create'])->name('borrowings.create');
-    Route::post('/borrowings', [BorrowingTransactionController::class, 'store'])->name('borrowings.store');
-    Route::get('/borrowings/users/search', [BorrowingTransactionController::class, 'searchUser'])->name('borrowings.users.search');
-    Route::post('/borrowings/borrow', [BorrowingTransactionController::class, 'borrow'])->name('borrowings.borrow');
+    Route::prefix('borrowings')->group(function () {
+        Route::get('/', [BorrowingTransactionController::class, 'index'])->name('borrowings.index');
+        Route::post('/', [BorrowingTransactionController::class, 'store'])->name('borrowings.store');
+        Route::get('/create', [BorrowingTransactionController::class, 'create'])->name('borrowings.create');
+        Route::get('/users/search', [BorrowingTransactionController::class, 'searchUser'])->name('borrowings.users.search');
+        Route::post('/borrow', [BorrowingTransactionController::class, 'borrow'])->name('borrowings.borrow');
+    });
 });
 
 Route::middleware(['auth'])->group(function () {

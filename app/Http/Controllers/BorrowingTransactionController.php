@@ -18,14 +18,14 @@ class BorrowingTransactionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): \Inertia\Response
+    public function index(Request $request): \Inertia\Response
     {
         $latest_transactions = BorrowingTransaction::with('user')
             ->with('record')
             ->latest()->paginate(10);
 
         return Inertia::render('borrowings/Index', [
-            'latest_transactions' => $latest_transactions
+            'data' => $latest_transactions
         ]);
     }
 
