@@ -13,7 +13,7 @@ import {
     getSortedRowModel,
     useVueTable, VisibilityState
 } from '@tanstack/vue-table';
-import { ArrowUpDown, ChevronDown, X } from 'lucide-vue-next'
+import { ArrowUpDown, ChevronDown, ListFilter, X } from 'lucide-vue-next';
 
 import { h, ref } from 'vue'
 import DropdownAction from './DataTableDemoColumn.vue'
@@ -374,9 +374,6 @@ const clearFilter = () => {
     table.getColumn('search')?.setFilterValue('')
 }
 
-import {
-    PersonIcon,
-} from "@radix-icons/vue";
 import Filter from './Filter.vue'
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
@@ -388,7 +385,7 @@ const filter_ddc_class = {
     data: props.ddcClasses.map(ddcClass => ({
         value: ddcClass.id.toString(),
         label: ddcClass.name,
-        icon: h(PersonIcon),
+        icon: h(ListFilter),
     }))
 }
 
