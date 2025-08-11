@@ -104,7 +104,7 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();       // Clear sorting
                     }
                 },
-            }, () => ['Acc. No.', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Acc.', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('accession_number')),
         enableHiding: false,
@@ -126,7 +126,7 @@ const columns: ColumnDef<RowData>[] = [
                 },
             }, () => ['Title', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('title')),
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize truncate max-w-sm' }, row.getValue('title')),
     },
     {
         accessorKey: 'authors',
@@ -146,7 +146,7 @@ const columns: ColumnDef<RowData>[] = [
             }, () => ['Authors', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => {
-            return h('div', row.original.book.authors || '')
+            return h('div', { class: 'capitalize truncate max-w-40' }, row.original.book.authors || '')
         },
         enableHiding: false,
     },
@@ -187,7 +187,7 @@ const columns: ColumnDef<RowData>[] = [
             }, () => ['Call Number', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => {
-            return h('div', row.original.book.call_number || '')
+            return h('div', { class: 'truncate max-w-40' }, row.original.book.call_number || '')
         },
         enableHiding: false,
     },
@@ -197,7 +197,7 @@ const columns: ColumnDef<RowData>[] = [
         cell: ({ row }: { row: Row<RowData> }) => {
             const ddcClass = row.original.book.ddc_classification;
             if (ddcClass) {
-                return h('div', h(Badge, { variant: 'outline' }, ddcClass.name || 'Unknown'))
+                return h('div', h(Badge, ddcClass.name || 'Unknown'))
             } else {
                 return h('div', 'No DDC Class')
             }
@@ -398,7 +398,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Welcome" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        {{ console.log(data) }}
         <div class="p-4">
             <div class="w-full">
                 <div class="flex gap-2 items-center justify-between py-4">
