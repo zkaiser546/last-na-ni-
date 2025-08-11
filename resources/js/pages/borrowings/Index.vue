@@ -163,6 +163,32 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
     },
     {
+        accessorKey: 'date',
+        header: ({ column }: { column: Column<RowData, any> }) => {
+            return h(Button, {
+                variant: 'ghost',
+                onClick: () => {
+                    // Get current sort state
+                    const currentSort = column.getIsSorted();
+
+                    // Cycle through: none -> asc -> desc -> none
+                    if (currentSort === false) {
+                        column.toggleSorting(false); // Set to ascending
+                    } else if (currentSort === 'asc') {
+                        column.toggleSorting(true);  // Set to descending
+                    } else {
+                        column.clearSorting();       // Clear sorting
+                    }
+                },
+            }, () => ['Date', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+        },
+        cell: ({ row }: { row: Row<RowData> }) => {
+            const date = row.original.return_date ?? row.original.checkout_date;
+            return h('div', { class: 'max-w-64 truncate' }, date)
+        },
+        enableHiding: false,
+    },
+    {
         id: 'actions',
         enableHiding: false,
         cell: ({ row }: { row: Row<RowData> }) => {
