@@ -5,13 +5,14 @@ import { AlertCircle, X } from 'lucide-vue-next'
 import { ref, onMounted } from 'vue'
 import WelcomeBookDialog from '@/components/WelcomeBookDialog.vue';
 import WelcomeSearch from '@/components/WelcomeSearch.vue';
-import AppLogo from '@/components/AppLogo.vue';
 import AppearanceTabs from '@/components/AppearanceTabs.vue';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import AppLogoIcon from '@/components/AppLogoIcon.vue';
 
 // for alert
 const page = usePage()
+const name = page.props.name;
 const showAlert = ref(true)
 onMounted(() => {
     if (page.props.flash.error) {
@@ -68,7 +69,10 @@ defineProps({
         </Alert>
 
         <header class="flex justify-between items-center w-full p-4 px-8 text-sm not-has-[nav]:hidden">
-            <AppLogo />
+            <Link :href="route('home')" class="relative z-20 flex items-center text-lg font-medium dark:text-foreground">
+                <AppLogoIcon class="mr-2 size-8 fill-current text-white" />
+                {{ name }}
+            </Link>
             <nav class="flex items-center justify-end gap-4">
                 <AppearanceTabs />
                 <Link

@@ -5,21 +5,75 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\UserType;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    public function index(): \Inertia\Response
+    public function index(Request $request): \Inertia\Response
     {
-        $users = User::with('userType')
-            ->latest()->paginate(10);
+        $perPage = $request->input('per_page', 10);
+        $user_type_id = $request->input('user_type_id', null);
+        $sortField = $request->input('sort_field', null);
+        $sortDirection = $request->input('sort_direction', 'asc');
+
+        $filters = [];
+
+        // Handle user_type_id filter (can be single value or array)
+        if (!empty($user_type_id)) {
+            $filters[] = [
+                'id' => 'user_type_id',
+                'value' => $user_type_id
+            ];
+        }
+
+        // Capture search parameters
+        $searchTerm = $request->input('search');
+        if (!empty($searchTerm)) {
+            $filters[] = [
+                'id' => 'search',
+                'value' => $searchTerm
+            ];
+        }
+
+        // Get all user types for filter dropdown
+        $userTypes = UserType::select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
+        $users = User::query()
+            ->with('userType')
+            ->when($user_type_id, function ($query, $user_type_id) {
+                // Handle both single values and arrays
+                if (is_array($user_type_id) && !empty($user_type_id)) {
+                    // Convert string values to integers if needed
+                    $userTypeIds = array_map('intval', array_filter($user_type_id));
+                    if (!empty($userTypeIds)) {
+                        $query->whereIn('user_type_id', $userTypeIds);
+                    }
+                } elseif (!empty($user_type_id)) {
+                    $query->where('user_type_id', intval($user_type_id));
+                }
+            })
+            ->when($searchTerm, function ($query, $searchTerm) {
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('first_name', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('last_name', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('library_id', 'like', '%' . $searchTerm . '%');
+                });
+            })
+            ->when($sortField, function ($query, $sortField) use ($sortDirection) {
+                $query->orderBy($sortField, $sortDirection);
+            })
+            ->paginate(perPage: $perPage);
 
         return Inertia::render('users/Index', [
-            'users' => $users
+            'data' => $users,
+            'filter' => $filters,
+            'userTypes' => $userTypes,
+            'currentSortField' => $sortField,
+            'currentSortDirection' => $sortDirection,
         ]);
     }
 

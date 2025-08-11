@@ -3,24 +3,38 @@ import { Search } from "lucide-vue-next"
 import { Input } from "@/components/ui/input"
 import { router, useForm } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
+import WelcomeSearchDialog from '@/components/WelcomeSearchDialog.vue';
+import WelcomeSelect from '@/components/WelcomeSelect.vue';
 
 const props = defineProps({
     search_result: Object,
     search_term: String,
     search_button: Boolean,
+    record_type: String,
 });
 
 const form = useForm({
     search: props.search_term,
+    record_type: props.record_type || 'all',
 });
 
 const search = () => {
-    router.get(route('home'), { search: form.search, search_button: true }, { preserveState: true });
+    router.get(route('home'), {
+        search: form.search,
+        search_button: true,
+        record_type: form.record_type, }, { preserveState: true });
 };
 
 const clearSearch = () => {
     form.search = ''; // Clear the search input
-    router.get(route('home'), { search: '' }, { preserveState: true }); // Update the route
+    form.record_type = 'all';
+    router.get(route('home'), { search: '', record_type: 'all' }, { preserveState: true }); // Update the route
+};
+
+const onRecordTypeChange = (value: string) => {
+    form.record_type = value;
+    // trigger search automatically when record type changes
+    search();
 };
 
 </script>
@@ -28,6 +42,10 @@ const clearSearch = () => {
 <template>
     <form @submit.prevent="search" class="search-form">
         <div class="flex items-center gap-2">
+            <WelcomeSelect
+                :model-value="form.record_type"
+                @update:model-value="onRecordTypeChange"
+            />
             <!-- Search Input Container -->
             <div class="relative flex-1 search-input-container">
                 <Input
@@ -36,14 +54,13 @@ const clearSearch = () => {
                     id="search"
                     type="search"
                     placeholder="Search accession, title..."
-                    class="pl-10 search-input w-sm"
+                    class="pl-10 search-input w-80"
                     autocomplete="off"
                 />
                 <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2 search-icon">
                     <Search class="size-6 text-muted-foreground" />
                 </span>
             </div>
-
             <!-- Button Container -->
             <div class="flex gap-2 flex-shrink-0 button-container">
                 <Button
@@ -72,19 +89,8 @@ const clearSearch = () => {
     <Transition name="fade" mode="out-in">
         <div v-if="search_result?.data?.length" class="max-w-md results-container">
             <TransitionGroup name="result-item" tag="div" class="grid gap-y-1">
-                <div v-for="result in search_result?.data" :key="result.id" class="result-item">
-                    <div class="flex gap-4 w-full">
-                        <div class="items-center flex">
-                            <div class="font-medium leading-tight">{{ result.accession_number }}</div>
-                        </div>
-                        <div class="result-content w-full">
-                            <div class="text-md font-semibold leading-tight truncate w-sm  0">{{ result.title }}</div>
-                            <div class="flex justify-between">
-                                <div class="text-sm text-gray-600 leading-tight">{{ result.book.authors }}</div>
-                                <div class="text-sm text-gray-500 leading-tight">{{ result.book.publication_year }}</div>
-                            </div>
-                        </div>
-                    </div>
+                <div v-for="result in search_result?.data" :key="result.id" class="result-item ">
+                    <WelcomeSearchDialog :record="result" />
                 </div>
             </TransitionGroup>
         </div>

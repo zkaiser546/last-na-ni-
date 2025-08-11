@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\GradSchoolStudentController;
 use App\Http\Controllers\LibraryVisitController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
@@ -21,7 +22,6 @@ Route::post('/logger', [LibraryVisitController::class, 'store'])->name('logger.s
 
 // Routes that require authentication and verification
 Route::middleware(['auth', 'verified'])->group(function () {
-
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('users.index');
@@ -34,15 +34,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/faculties/create', [FacultyController::class, 'create'])->name('faculties.create');
         Route::post('/faculties', [FacultyController::class, 'store'])->name('faculties.store');
     });
-    Route::get('/records', [RecordController::class, 'index'])->name('records.index');
-    Route::get('/records/books/import', [BookController::class, 'import'])->name('books.import');
-    Route::post('/records/books/import', [BookController::class, 'importStore'])->name('books.import.store');
-
+    Route::prefix('records')->group(function () {
+        Route::get('/', [RecordController::class, 'index'])->name('records.index');
+        Route::get('/books/import', [BookController::class, 'import'])->name('books.import');
+        Route::post('/books/import', [BookController::class, 'importStore'])->name('books.import.store');
+    });
     Route::get('/borrowings', [BorrowingTransactionController::class, 'index'])->name('borrowings.index');
     Route::get('/borrowings/create', [BorrowingTransactionController::class, 'create'])->name('borrowings.create');
     Route::post('/borrowings', [BorrowingTransactionController::class, 'store'])->name('borrowings.store');
     Route::get('/borrowings/users/search', [BorrowingTransactionController::class, 'searchUser'])->name('borrowings.users.search');
     Route::post('/borrowings/borrow', [BorrowingTransactionController::class, 'borrow'])->name('borrowings.borrow');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('products')->group(function () {
+        Route::get('/', [ProductController::class, 'index'])->name('product.index');
+        Route::post('/', [ProductController::class, 'store'])->name('product.store');  //with POST
+        Route::get('/{product}', [ProductController::class, 'edit'])->name('product.edit');  //with GET
+        Route::put('/{product}', [ProductController::class, 'update'])->name('product.update');  //with GET
+    });
 });
 
 // Test routes (no middleware)
