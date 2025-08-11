@@ -20,7 +20,6 @@ class RecordController extends Controller
         $ddc_class_id = $request->input('ddc_class_id', null);
         $sortField = $request->input('sort_field', null);
         $sortDirection = $request->input('sort_direction', 'asc');
-
         $filters = [];
 
         if (!empty($ddc_class_id)) {
@@ -45,17 +44,21 @@ class RecordController extends Controller
             ->get();
 
         $records = Record::query()
-            ->with('book')
+            ->with(['book.ddcClassification']) // Load nested relationship
             ->when($ddc_class_id, function ($query, $ddc_class_id) {
                 // Handle both single values and arrays
                 if (is_array($ddc_class_id) && !empty($ddc_class_id)) {
                     // Convert string values to integers if needed
                     $ddcClassIds = array_map('intval', array_filter($ddc_class_id));
                     if (!empty($ddcClassIds)) {
-                        $query->whereIn('ddc_class_id', $ddcClassIds);
+                        $query->whereHas('book', function ($bookQuery) use ($ddcClassIds) {
+                            $bookQuery->whereIn('ddc_class_id', $ddcClassIds);
+                        });
                     }
                 } elseif (!empty($ddc_class_id)) {
-                    $query->where('ddc_class_id', (int)$ddc_class_id);
+                    $query->whereHas('book', function ($bookQuery) use ($ddc_class_id) {
+                        $bookQuery->where('ddc_class_id', (int)$ddc_class_id);
+                    });
                 }
             })
             ->when($searchTerm, function ($query, $searchTerm) {

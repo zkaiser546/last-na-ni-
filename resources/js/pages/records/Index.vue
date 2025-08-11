@@ -195,12 +195,11 @@ const columns: ColumnDef<RowData>[] = [
         accessorKey: 'ddc_class_id',
         header: 'DDC Class',
         cell: ({ row }: { row: Row<RowData> }) => {
-            const ddcClass = row.original.book.ddc_class_id;
-
+            const ddcClass = row.original.book.ddc_classification;
             if (ddcClass) {
-                return h('div', h(Badge, ddcClass || 'Unknown'))
+                return h('div', h(Badge, { variant: 'outline' }, ddcClass.name || 'Unknown'))
             } else {
-                return h('div', h(Badge, { variant: 'outline' }, 'No DDC Class'))
+                return h('div', 'No DDC Class')
             }
         },
         enableHiding: false,
