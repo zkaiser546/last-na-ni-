@@ -252,12 +252,27 @@ const table = useVueTable({
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
+    // Replace your onPaginationChange handler with this:
     onPaginationChange: updater => {
         if (typeof updater === 'function') {
             pagination.value = updater(pagination.value);
         } else {
             pagination.value = updater;
         }
+
+        // Build filters object (same logic as in onColumnFiltersChange)
+        let filters: Record<string, any> = {}
+        if (columnFilters.value && columnFilters.value.length > 0) {
+            filters = columnFilters.value.reduce((acc: Record<string, any>, filter) => {
+                if (Array.isArray(filter.value) && filter.value.length > 0) {
+                    acc[filter.id] = filter.value
+                } else if (!Array.isArray(filter.value) && filter.value !== '' && filter.value !== null && filter.value !== undefined) {
+                    acc[filter.id] = filter.value
+                }
+                return acc
+            }, {})
+        }
+
         router.get(
             route('records.index'),
             {
@@ -265,6 +280,7 @@ const table = useVueTable({
                 per_page: pagination.value.pageSize,
                 sort_field: sorting.value[0]?.id,
                 sort_direction: sorting.value.length == 0 ? undefined : (sorting.value[0]?.desc ? "desc" : "asc"),
+                ...filters // Include current filters
             },
             { preserveState: false, preserveScroll: true }
         );
