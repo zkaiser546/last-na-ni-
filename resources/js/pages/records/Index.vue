@@ -195,12 +195,12 @@ const columns: ColumnDef<RowData>[] = [
         accessorKey: 'ddc_class_id',
         header: 'DDC Class',
         cell: ({ row }: { row: Row<RowData> }) => {
-            const ddcClass = row.original.ddc_class;
+            const ddcClass = row.original.book.ddc_class_id;
 
             if (ddcClass) {
-                return h('div', h(Badge, ddcClass.name || 'Unknown'))
+                return h('div', h(Badge, ddcClass || 'Unknown'))
             } else {
-                return h('div', h(Badge, { variant: 'outline' }, 'No User Type'))
+                return h('div', h(Badge, { variant: 'outline' }, 'No DDC Class'))
             }
         },
         enableHiding: false,
@@ -366,19 +366,19 @@ import Filter from './Filter.vue'
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
 
-//Filter - Updated to use User Types
-const filter_user_type = {
+//Filter - Updated to use DDC Class
+const filter_ddc_class = {
     title: 'Filter DDC Classes',
     column: 'ddc_class_id',
     data: props.ddcClasses.map(ddcClass => ({
         value: ddcClass.id.toString(),
         label: ddcClass.name,
-        icon: h(PersonIcon), // You can customize icons per user type if needed
+        icon: h(PersonIcon),
     }))
 }
 
 const filter_toolbar = [
-    filter_user_type,
+    filter_ddc_class,
 ];
 
 const showDialog = ref(false);
@@ -399,7 +399,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Welcome" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        {{ console.log(ddcClasses) }}
+        {{ console.log(data) }}
         <div class="p-4">
             <div class="w-full">
                 <div class="flex gap-2 items-center justify-between py-4">
