@@ -137,7 +137,7 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: 'book',
+        accessorKey: 'entry_time',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
@@ -151,16 +151,10 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();       // none
                     }
                 },
-            }, () => ['Book', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Entry Time', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => {
-            const book = row.original.record;
-            if (book) {
-                return h('div', { class: 'max-w-64 truncate' }, book.accession_number + '---' +book.title || 'Unknown')
-            } else {
-                return h('div', '(borrowed inside)')
-            }
-        },
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'max-w-48 whitespace-normal break-words' },
+            row.getValue('entry_time')),
         enableHiding: false,
     },
     {
