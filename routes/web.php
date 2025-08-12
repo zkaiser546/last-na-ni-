@@ -16,9 +16,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
-Route::get('/logger', [LibraryVisitController::class, 'index'])->name('logger.index');
 Route::get('/logger/create', [LibraryVisitController::class, 'create'])->name('logger.create');
-Route::post('/logger', [LibraryVisitController::class, 'store'])->name('logger.store');
 
 // Routes that require authentication and verification
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -46,8 +44,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/users/search', [BorrowingTransactionController::class, 'searchUser'])->name('borrowings.users.search');
         Route::post('/borrow', [BorrowingTransactionController::class, 'borrow'])->name('borrowings.borrow');
     });
+    Route::prefix('logger')->group(function () {
+        Route::get('/', [LibraryVisitController::class, 'index'])->name('logger.index');
+        Route::post('/', [LibraryVisitController::class, 'store'])->name('logger.store');
+    });
+
 });
 
+// For testing only
 Route::middleware(['auth'])->group(function () {
     Route::prefix('products')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('product.index');
