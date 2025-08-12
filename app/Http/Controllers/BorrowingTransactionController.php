@@ -34,6 +34,15 @@ class BorrowingTransactionController extends Controller
             ];
         }
 
+        // Capture transaction type filter
+        $transactionTypes = $request->input('transaction_type');
+        if (!empty($transactionTypes)) {
+            $filters[] = [
+                'id' => 'transaction_type',
+                'value' => is_array($transactionTypes) ? $transactionTypes : [$transactionTypes]
+            ];
+        }
+
         $latest_transactions = BorrowingTransaction::with('user')
             ->with('record')
             ->when($searchTerm, function ($query, $searchTerm) {
@@ -51,6 +60,11 @@ class BorrowingTransactionController extends Controller
                                 ->orWhere('accession_number', 'like', '%' . $searchTerm . '%');
                         });
                 });
+            })
+            ->when($transactionTypes, function ($query, $transactionTypes) {
+                // Handle both single values and arrays
+                $types = is_array($transactionTypes) ? $transactionTypes : [$transactionTypes];
+                $query->whereIn('transaction_type', $types);
             })
             ->when($sortField, function ($query, $sortField) use ($sortDirection) {
                 $query->orderBy($sortField, $sortDirection);
