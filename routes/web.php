@@ -17,6 +17,7 @@ use Inertia\Inertia;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 Route::get('/logger/create', [LibraryVisitController::class, 'create'])->name('logger.create');
+Route::post('/', [LibraryVisitController::class, 'store'])->name('logger.store');
 
 // Routes that require authentication and verification
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -46,7 +47,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
     Route::prefix('logger')->group(function () {
         Route::get('/', [LibraryVisitController::class, 'index'])->name('logger.index');
-        Route::post('/', [LibraryVisitController::class, 'store'])->name('logger.store');
     });
 
 });
