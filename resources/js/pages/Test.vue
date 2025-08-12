@@ -9,6 +9,6 @@
     <Head title="Welcome" />
 
     <AppLayout>
-        hi po
+        hi po, hello, padayon!
     </AppLayout>
 </template>
