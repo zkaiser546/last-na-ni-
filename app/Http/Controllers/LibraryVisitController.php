@@ -14,13 +14,44 @@ class LibraryVisitController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): \Inertia\Response
     {
-        $visits = LibraryVisit::with('user')
-            ->with('visitPurpose')->latest()->paginate(10);
+        $perPage = $request->input('per_page', 10);
+        $sortField = $request->input('sort_field', null);
+        $sortDirection = $request->input('sort_direction', 'desc');
+        $filters = [];
+
+        // Capture search parameters
+        $searchTerm = $request->input('search');
+        if (!empty($searchTerm)) {
+            $filters[] = [
+                'id' => 'search',
+                'value' => $searchTerm
+            ];
+        }
+
+        $visits = LibraryVisit::with('user', 'visitPurpose')
+            ->when($searchTerm, function ($query, $searchTerm) {
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('id', 'like', '%' . $searchTerm . '%')
+                        ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
+                            $userQuery->where('first_name', 'like', '%' . $searchTerm . '%')
+                                ->orWhere('last_name', 'like', '%' . $searchTerm . '%');
+                        });
+                });
+            })
+            ->when($sortField, function ($query, $sortField) use ($sortDirection) {
+                $query->orderBy($sortField, $sortDirection);
+            }, function ($query) {
+                $query->latest();
+            })
+            ->paginate(perPage: $perPage);
 
         return Inertia::render('logger/Index', [
-            'data' => $visits
+            'data' => $visits,
+            'filter' => $filters,
+            'currentSortField' => $sortField,
+            'currentSortDirection' => $sortDirection,
         ]);
     }
 

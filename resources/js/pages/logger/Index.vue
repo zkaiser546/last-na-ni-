@@ -1,9 +1,7 @@
 <script setup lang="ts">
-// import Layout from './Layout'
 import { Head, router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import { Button } from '@/components/ui/button'
-// Layout
 import {
     FlexRender,
     getCoreRowModel,
@@ -14,7 +12,6 @@ import {
     useVueTable, VisibilityState
 } from '@tanstack/vue-table';
 import { ArrowUpDown, ChevronDown, ListFilter, X } from 'lucide-vue-next';
-
 import { h, ref } from 'vue'
 import DropdownAction from './DataTableDemoColumn.vue'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -35,7 +32,6 @@ import {
 import { valueUpdater } from '@/lib/utils'
 import { ChevronRightIcon, ChevronLeftIcon, DoubleArrowLeftIcon, DoubleArrowRightIcon } from "@radix-icons/vue";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
 import { Plus } from 'lucide-vue-next'
 
 interface Props {
@@ -61,12 +57,11 @@ const props = withDefaults(defineProps<Props>(), {
 
 import type { Table, Row, Column, SortingState, ColumnFiltersState, ColumnDef } from '@tanstack/vue-table'
 type RowData = any
-const data = props.data.data; // Now safe to access directly
+const data = props.data.data;
 const columns: ColumnDef<RowData>[] = [
     {
         id: 'search',
-        // This is a virtual column for searching, not displayed
-        accessorFn: (row) => `${row.accession_number} ${row.title}`,
+        accessorFn: (row) => `${row.id} ${row.user?.first_name} ${row.user?.last_name}`,
         enableSorting: false,
         enableHiding: false,
     },
@@ -91,16 +86,13 @@ const columns: ColumnDef<RowData>[] = [
             return h(Button, {
                 variant: 'ghost',
                 onClick: () => {
-                    // Get current sort state
                     const currentSort = column.getIsSorted();
-
-                    // Cycle through: none -> asc -> desc -> none
                     if (currentSort === false) {
-                        column.toggleSorting(false); // Set to ascending
+                        column.toggleSorting(false);
                     } else if (currentSort === 'asc') {
-                        column.toggleSorting(true);  // Set to descending
+                        column.toggleSorting(true);
                     } else {
-                        column.clearSorting();       // Clear sorting
+                        column.clearSorting();
                     }
                 },
             }, () => ['ID', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
@@ -110,18 +102,18 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: 'client',
+        accessorKey: 'user_id',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
                 onClick: () => {
                     const currentSort = column.getIsSorted();
                     if (currentSort === false) {
-                        column.toggleSorting(false); // asc
+                        column.toggleSorting(false);
                     } else if (currentSort === 'asc') {
-                        column.toggleSorting(true);  // desc
+                        column.toggleSorting(true);
                     } else {
-                        column.clearSorting();       // none
+                        column.clearSorting();
                     }
                 },
             }, () => ['Client', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
@@ -144,11 +136,11 @@ const columns: ColumnDef<RowData>[] = [
                 onClick: () => {
                     const currentSort = column.getIsSorted();
                     if (currentSort === false) {
-                        column.toggleSorting(false); // asc
+                        column.toggleSorting(false);
                     } else if (currentSort === 'asc') {
-                        column.toggleSorting(true);  // desc
+                        column.toggleSorting(true);
                     } else {
-                        column.clearSorting();       // none
+                        column.clearSorting();
                     }
                 },
             }, () => ['Entry Time', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
@@ -163,16 +155,13 @@ const columns: ColumnDef<RowData>[] = [
             return h(Button, {
                 variant: 'ghost',
                 onClick: () => {
-                    // Get current sort state
                     const currentSort = column.getIsSorted();
-
-                    // Cycle through: none -> asc -> desc -> none
                     if (currentSort === false) {
-                        column.toggleSorting(false); // Set to ascending
+                        column.toggleSorting(false);
                     } else if (currentSort === 'asc') {
-                        column.toggleSorting(true);  // Set to descending
+                        column.toggleSorting(true);
                     } else {
-                        column.clearSorting();       // Clear sorting
+                        column.clearSorting();
                     }
                 },
             }, () => ['Exit Time', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
@@ -198,7 +187,6 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
         cell: ({ row }: { row: Row<RowData> }) => {
             const payment = row.original
-
             return h('div', { class: 'relative' }, h(DropdownAction, {
                 payment,
                 onExpand: row.toggleExpanded,
@@ -217,11 +205,11 @@ const columnFilters = ref<ColumnFiltersState>(
     props.filter ? props.filter.map(f => ({ id: f.id, value: f.value })) : []
 )
 const columnVisibility = ref<VisibilityState>({
-    search: false, // Hide the search column by default
+    search: false,
 })
 const rowSelection = ref({})
 const expanded = ref({})
-const pageSizes = [1, 2, 3, 5, 10, 15, 30, 40, 50, 100,];
+const pageSizes = [1, 2, 3, 5, 10, 15, 30, 40, 50, 100];
 const pagination = ref({
     pageIndex: (props.data?.current_page ?? 1) - 1,
     pageSize: props.data?.per_page ?? 10,
@@ -239,7 +227,6 @@ const table = useVueTable({
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
-    // Replace your onPaginationChange handler with this:
     onPaginationChange: updater => {
         if (typeof updater === 'function') {
             pagination.value = updater(pagination.value);
@@ -247,7 +234,6 @@ const table = useVueTable({
             pagination.value = updater;
         }
 
-        // Build filters object (same logic as in onColumnFiltersChange)
         let filters: Record<string, any> = {}
         if (columnFilters.value && columnFilters.value.length > 0) {
             filters = columnFilters.value.reduce((acc: Record<string, any>, filter) => {
@@ -267,7 +253,7 @@ const table = useVueTable({
                 per_page: pagination.value.pageSize,
                 sort_field: sorting.value[0]?.id,
                 sort_direction: sorting.value.length == 0 ? undefined : (sorting.value[0]?.desc ? "desc" : "asc"),
-                ...filters // Include current filters
+                search: filters.search // Send search term explicitly
             },
             { preserveState: false, preserveScroll: true }
         );
@@ -279,7 +265,6 @@ const table = useVueTable({
             sorting.value = updaterOrValue
         }
 
-        // Build filters object (same logic as above)
         let filters: Record<string, any> = {}
         if (columnFilters.value && columnFilters.value.length > 0) {
             filters = columnFilters.value.reduce((acc: Record<string, any>, filter) => {
@@ -295,11 +280,11 @@ const table = useVueTable({
         router.get(
             route('logger.index'),
             {
-                page: 1, // Reset to first page when sorting changes
+                page: 1,
                 per_page: pagination.value.pageSize,
                 sort_field: sorting.value[0]?.id,
                 sort_direction: sorting.value.length == 0 ? undefined : (sorting.value[0]?.desc ? "desc" : "asc"),
-                ...filters
+                search: filters.search
             },
             { preserveState: false, preserveScroll: true }
         );
@@ -311,11 +296,9 @@ const table = useVueTable({
             columnFilters.value = updaterOrValue
         }
 
-        // Build filters object
         let filters: Record<string, any> = {}
         if (columnFilters.value && columnFilters.value.length > 0) {
             filters = columnFilters.value.reduce((acc: Record<string, any>, filter) => {
-                // Handle array values (for multi-select filters)
                 if (Array.isArray(filter.value) && filter.value.length > 0) {
                     acc[filter.id] = filter.value
                 } else if (!Array.isArray(filter.value) && filter.value !== '' && filter.value !== null && filter.value !== undefined) {
@@ -328,11 +311,11 @@ const table = useVueTable({
         router.get(
             route('logger.index'),
             {
-                page: 1, // Reset to first page when filtering
+                page: 1,
                 per_page: pagination.value.pageSize,
                 sort_field: sorting.value[0]?.id,
                 sort_direction: sorting.value.length == 0 ? undefined : (sorting.value[0]?.desc ? "desc" : "asc"),
-                ...filters
+                search: filters.search
             },
             { preserveState: false, preserveScroll: true }
         );
@@ -356,12 +339,10 @@ const table = useVueTable({
     },
 })
 
-// Local state for the input
-const filterInput = ref<string>((table.getColumn('search')?.getFilterValue() as string) ?? '')// Function to apply the filter
+const filterInput = ref<string>((table.getColumn('search')?.getFilterValue() as string) ?? '')
 const applyFilter = () => {
     table.getColumn('search')?.setFilterValue(filterInput.value)
 }
-
 const clearFilter = () => {
     filterInput.value = ''
     table.getColumn('search')?.setFilterValue('')
@@ -371,24 +352,7 @@ import Filter from './Filter.vue'
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
 
-//Filter - Updated to use DDC Class
-const filter_transaction_types = {
-    title: 'Filter Transaction Type',
-    column: 'transaction_type',
-    data: [
-        { value: "borrow-inside", label: "Borrow Inside", icon: h(ListFilter) },
-        { value: "checkout", label: "Checkout", icon: h(ListFilter) },
-        { value: "checkin", label: "Checkin", icon: h(ListFilter) },
-        { value: "renewal", label: "Renewal", icon: h(ListFilter) },
-        { value: "lost", label: "Lost", icon: h(ListFilter) },
-        { value: "damaged", label: "Damaged", icon: h(ListFilter) }
-    ]
-}
-
-const filter_toolbar = [
-    filter_transaction_types,
-];
-
+const filter_toolbar = [];
 const showDialog = ref(false);
 const showDialogCreate = () => {
     showDialog.value = true
@@ -400,12 +364,10 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/logger',
     },
 ];
-
 </script>
 
 <template>
     <Head title="Borrowings" />
-
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-4">
             <div class="w-full">
@@ -414,7 +376,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <div class="relative">
                             <Input
                                 class="w-[320px] pr-8"
-                                placeholder="Search by t.n. client, book ..."
+                                placeholder="Search by ID or Client..."
                                 v-model="filterInput"
                                 @keyup.enter="applyFilter"
                                 @blur="applyFilter"
@@ -482,7 +444,6 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     </TableRow>
                                 </template>
                             </template>
-
                             <TableRow v-else>
                                 <TableCell :colspan="columns.length" class="h-24 text-center">
                                     No results.
@@ -524,11 +485,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 <DoubleArrowRightIcon class="h-4 w-4" />
                             </Button>
                         </div>
-
                     </div>
                 </div>
             </div>
-            <!-- Dialog -->
         </div>
     </AppLayout>
 </template>
