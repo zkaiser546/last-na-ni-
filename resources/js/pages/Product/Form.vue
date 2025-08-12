@@ -1,3 +1,0 @@
-<template>
-    Form Create
-</template>

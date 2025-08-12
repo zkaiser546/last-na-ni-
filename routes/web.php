@@ -51,16 +51,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 });
 
-// For testing only
-Route::middleware(['auth'])->group(function () {
-    Route::prefix('products')->group(function () {
-        Route::get('/', [ProductController::class, 'index'])->name('product.index');
-        Route::post('/', [ProductController::class, 'store'])->name('product.store');  //with POST
-        Route::get('/{product}', [ProductController::class, 'edit'])->name('product.edit');  //with GET
-        Route::put('/{product}', [ProductController::class, 'update'])->name('product.update');  //with GET
-    });
-});
-
 // Test routes (no middleware)
 Route::get('/test', function () {
     return Inertia::render('Test');
