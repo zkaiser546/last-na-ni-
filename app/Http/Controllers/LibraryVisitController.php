@@ -14,12 +14,12 @@ class LibraryVisitController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $visits = LibraryVisit::latest()->paginate(10);
 
         return Inertia::render('logger/Index', [
-            'visits' => $visits
+            'data' => $visits
         ]);
     }
 

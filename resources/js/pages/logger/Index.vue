@@ -86,7 +86,7 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: 'transaction_number',
+        accessorKey: 'id',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
@@ -103,10 +103,10 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();       // Clear sorting
                     }
                 },
-            }, () => ['T.N.', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['ID', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'max-w-48 whitespace-normal break-words' },
-            row.getValue('transaction_number')),
+            row.getValue('id')),
         enableHiding: false,
     },
     {
@@ -263,7 +263,7 @@ const table = useVueTable({
         }
 
         router.get(
-            route('borrowings.index'),
+            route('logger.index'),
             {
                 page: pagination.value.pageIndex + 1,
                 per_page: pagination.value.pageSize,
@@ -295,7 +295,7 @@ const table = useVueTable({
         }
 
         router.get(
-            route('borrowings.index'),
+            route('logger.index'),
             {
                 page: 1, // Reset to first page when sorting changes
                 per_page: pagination.value.pageSize,
@@ -328,7 +328,7 @@ const table = useVueTable({
         }
 
         router.get(
-            route('borrowings.index'),
+            route('logger.index'),
             {
                 page: 1, // Reset to first page when filtering
                 per_page: pagination.value.pageSize,

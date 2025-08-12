@@ -26,7 +26,7 @@ const mainNavItems: NavItem[] = [
         icon: Library,
     },
     {
-        title: 'Borrowing',
+        title: 'Borrowings',
         href: '/borrowings',
         icon: BookOpenCheck,
     },
