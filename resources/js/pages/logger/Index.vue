@@ -131,7 +131,7 @@ const columns: ColumnDef<RowData>[] = [
             if (user) {
                 return h('div', user.first_name + ' ' + user.last_name  || 'Unknown')
             } else {
-                return h('div', '(borrowed inside)')
+                return h('div', 'no user')
             }
         },
         enableHiding: false,
@@ -182,10 +182,16 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: 'transaction_type',
-        header: 'Transaction Type',
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'max-w-48 whitespace-normal break-words' },
-            row.getValue('transaction_type')),
+        accessorKey: 'visit_purpose_id',
+        header: 'Purpose',
+        cell: ({ row }: { row: Row<RowData> }) => {
+            const purpose = row.original.visit_purpose;
+            if (purpose) {
+                return h('div', purpose.name || 'Unknown')
+            } else {
+                return h('div', 'not specified')
+            }
+        },
     },
     {
         id: 'actions',
@@ -200,8 +206,6 @@ const columns: ColumnDef<RowData>[] = [
         },
     },
 ]
-
-console.log(data);
 
 const sorting = ref<SortingState>(
     props.currentSortField ? [{

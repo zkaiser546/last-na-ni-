@@ -207,8 +207,6 @@ const columns: ColumnDef<RowData>[] = [
     },
 ]
 
-console.log(data);
-
 const sorting = ref<SortingState>(
     props.currentSortField ? [{
         id: props.currentSortField,

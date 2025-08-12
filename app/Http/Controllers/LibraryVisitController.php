@@ -16,7 +16,8 @@ class LibraryVisitController extends Controller
      */
     public function index(Request $request)
     {
-        $visits = LibraryVisit::with('user')->latest()->paginate(10);
+        $visits = LibraryVisit::with('user')
+            ->with('visitPurpose')->latest()->paginate(10);
 
         return Inertia::render('logger/Index', [
             'data' => $visits

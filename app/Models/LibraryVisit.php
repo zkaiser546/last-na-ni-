@@ -12,4 +12,9 @@ class LibraryVisit extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function visitPurpose(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(VisitPurpose::class);
+    }
 }
