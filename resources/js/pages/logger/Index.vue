@@ -158,7 +158,7 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: 'checkout_date',
+        accessorKey: 'exit_time',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
@@ -175,10 +175,10 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();       // Clear sorting
                     }
                 },
-            }, () => ['Checkout Date', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Exit Time', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'max-w-48 whitespace-normal break-words' },
-            row.getValue('checkout_date')),
+            row.getValue('exit_time')),
         enableHiding: false,
     },
     {
