@@ -45,6 +45,7 @@ interface Props {
     currentSortField?: string
     currentSortDirection?: string
     ddcClasses?: any[]
+    availablePurposes?: { value: string, label: string }[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -52,7 +53,8 @@ const props = withDefaults(defineProps<Props>(), {
     filter: () => [],
     currentSortField: undefined,
     currentSortDirection: 'asc',
-    ddcClasses: () => []
+    ddcClasses: () => [],
+    availablePurposes: () => []
 })
 
 import type { Table, Row, Column, SortingState, ColumnFiltersState, ColumnDef } from '@tanstack/vue-table'
@@ -69,7 +71,7 @@ const columns: ColumnDef<RowData>[] = [
         id: 'select',
         header: ({ table }: { table: Table<RowData> }) => h(Checkbox, {
             'checked': table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate'),
-            'onUpdate:checked': (value:boolean) => table.toggleAllPageRowsSelected(!!value),
+            'onUpdate:checked': (value: boolean) => table.toggleAllPageRowsSelected(!!value),
             'ariaLabel': 'Select all',
         }),
         cell: ({ row }: { row: Row<RowData> }) => h(Checkbox, {
@@ -102,7 +104,7 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: 'user_id',
+        accessorKey: 'client',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
@@ -121,7 +123,7 @@ const columns: ColumnDef<RowData>[] = [
         cell: ({ row }: { row: Row<RowData> }) => {
             const user = row.original.user;
             if (user) {
-                return h('div', user.first_name + ' ' + user.last_name  || 'Unknown')
+                return h('div', user.first_name + ' ' + user.last_name || 'Unknown')
             } else {
                 return h('div', 'no user')
             }
@@ -253,7 +255,8 @@ const table = useVueTable({
                 per_page: pagination.value.pageSize,
                 sort_field: sorting.value[0]?.id,
                 sort_direction: sorting.value.length == 0 ? undefined : (sorting.value[0]?.desc ? "desc" : "asc"),
-                search: filters.search // Send search term explicitly
+                search: filters.search,
+                visit_purpose_id: filters.visit_purpose_id
             },
             { preserveState: false, preserveScroll: true }
         );
@@ -284,7 +287,8 @@ const table = useVueTable({
                 per_page: pagination.value.pageSize,
                 sort_field: sorting.value[0]?.id,
                 sort_direction: sorting.value.length == 0 ? undefined : (sorting.value[0]?.desc ? "desc" : "asc"),
-                search: filters.search
+                search: filters.search,
+                visit_purpose_id: filters.visit_purpose_id
             },
             { preserveState: false, preserveScroll: true }
         );
@@ -315,7 +319,8 @@ const table = useVueTable({
                 per_page: pagination.value.pageSize,
                 sort_field: sorting.value[0]?.id,
                 sort_direction: sorting.value.length == 0 ? undefined : (sorting.value[0]?.desc ? "desc" : "asc"),
-                search: filters.search
+                search: filters.search,
+                visit_purpose_id: filters.visit_purpose_id
             },
             { preserveState: false, preserveScroll: true }
         );
@@ -352,7 +357,21 @@ import Filter from './Filter.vue'
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
 
-const filter_toolbar = [];
+// Filter for visit purpose
+const filter_purposes = {
+    title: 'Filter Purpose',
+    column: 'visit_purpose_id',
+    data: props.availablePurposes.map(purpose => ({
+        value: purpose.value,
+        label: purpose.label,
+        icon: h(ListFilter)
+    }))
+}
+
+const filter_toolbar = [
+    filter_purposes,
+];
+
 const showDialog = ref(false);
 const showDialogCreate = () => {
     showDialog.value = true

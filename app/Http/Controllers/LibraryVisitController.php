@@ -30,6 +30,15 @@ class LibraryVisitController extends Controller
             ];
         }
 
+        // Capture purpose filter
+        $visitPurposes = $request->input('visit_purpose_id');
+        if (!empty($visitPurposes)) {
+            $filters[] = [
+                'id' => 'visit_purpose_id',
+                'value' => is_array($visitPurposes) ? $visitPurposes : [$visitPurposes]
+            ];
+        }
+
         $visits = LibraryVisit::with('user', 'visitPurpose')
             ->when($searchTerm, function ($query, $searchTerm) {
                 $query->where(function ($q) use ($searchTerm) {
@@ -40,6 +49,10 @@ class LibraryVisitController extends Controller
                         });
                 });
             })
+            ->when($visitPurposes, function ($query, $visitPurposes) {
+                $purposes = is_array($visitPurposes) ? $visitPurposes : [$visitPurposes];
+                $query->whereIn('visit_purpose_id', $purposes);
+            })
             ->when($sortField, function ($query, $sortField) use ($sortDirection) {
                 $query->orderBy($sortField, $sortDirection);
             }, function ($query) {
@@ -47,11 +60,20 @@ class LibraryVisitController extends Controller
             })
             ->paginate(perPage: $perPage);
 
+        // Fetch available purposes for the filter dropdown
+        $availablePurposes = VisitPurpose::select('id', 'name')->get()->map(function ($purpose) {
+            return [
+                'value' => (string) $purpose->id, // Cast to string for frontend compatibility
+                'label' => $purpose->name,
+            ];
+        })->toArray();
+
         return Inertia::render('logger/Index', [
             'data' => $visits,
             'filter' => $filters,
             'currentSortField' => $sortField,
             'currentSortDirection' => $sortDirection,
+            'availablePurposes' => $availablePurposes,
         ]);
     }
 
