@@ -193,9 +193,24 @@ class AdminController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
 
-        return redirect()->back()->with('success', 'Admin deleted successfully');
+            // Force a complete page reload to ensure fresh data
+            $queryParams = request()->only(['per_page', 'sort_field', 'sort_direction', 'user_type_id', 'search', 'page']);
+            $url = route('admins.index', $queryParams);
+
+            // Add success message to session
+            session()->flash('success', 'Admin deleted successfully');
+
+            return \Inertia\Inertia::location($url);
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return back()->with('error', 'Admin not found.');
+        } catch (\Exception $e) {
+            \Log::error('Error deleting admin: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred while deleting the admin.');
+        }
     }
 }

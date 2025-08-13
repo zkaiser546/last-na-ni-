@@ -368,7 +368,6 @@ const clearFilter = () => {
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
 import Layout from '@/layouts/users/Layout.vue';
-import { AlertDialog, AlertDialogFooter, AlertDialogHeader } from '@/components/ui/alert-dialog';
 import DeleteDialog from '@/components/DeleteDialog.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -391,9 +390,22 @@ const selectedUserId = ref(null);
 
 const handleDelete = (id) => {
     console.log('Deleting user with ID:', id);
-    router.delete(route('admins.destroy', id));
-    showDeleteAlert.value = false; // Close the dialog after deletion
-    selectedUserId.value = null; // Clear the stored ID
+
+    router.delete(route('admins.destroy', id), {
+        preserveState: false,  // Important: Don't preserve state so fresh data is fetched
+        preserveScroll: true,  // Keep scroll position
+        onSuccess: () => {
+            console.log('Delete successful');
+            // Optional: Force reload if still having issues
+            // router.reload({ only: ['data'] });
+        },
+        onError: (errors) => {
+            console.error('Delete failed:', errors);
+        }
+    });
+
+    showDeleteAlert.value = false;
+    selectedUserId.value = null;
 };
 
 </script>
