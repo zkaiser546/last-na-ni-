@@ -9,6 +9,10 @@ const sidebarNavItems: NavItem[] = [
         title: 'Staff Admins',
         href: '/users/admins',
     },
+    {
+        title: 'Faculties',
+        href: '/users/faculties',
+    },
 ];
 
 const rightNavItems: NavItem[] = [
