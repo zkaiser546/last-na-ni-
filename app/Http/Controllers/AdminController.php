@@ -105,7 +105,7 @@ class AdminController extends Controller
                 'first_name' => 'required|string|max:50',
                 'middle_initial' => 'nullable|string|max:1',
                 'last_name' => 'required|string|max:50',
-                'sex' => 'required|in:male,female',
+                'sex' => 'required|in:m,f',
                 'contact_number' => 'required|string|max:20',
                 'role_title' => 'required|string|max:100',
                 'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
@@ -116,30 +116,48 @@ class AdminController extends Controller
             throw $e; // Re-throw to let Laravel handle the redirect with errors
         }
 
-        $adminType = UserType::where('key', 'staff_admin')->firstOrFail();
-        $user = User::create([
-            'library_id' => $request->library_id,
-            'first_name' => $request->first_name,
-            'middle_initial' => $request->middle_initial,
-            'last_name' => $request->last_name,
-            'sex' => $request->sex,
-            'contact_number' => $request->contact_number,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'user_type_id' => $adminType->id,
-        ]);
+        try {
+            // Database operations that could fail
+            $adminType = UserType::where('key', 'staff_admin')->firstOrFail();
 
-        $user->admin()->create([
-            'admin_permissions' => ['manage_records'],
-            'role_title' => $request->role_title, // Use the submitted role title instead of hardcoded
-        ]);
+            $user = User::create([
+                'library_id' => $request->library_id,
+                'first_name' => $request->first_name,
+                'middle_initial' => $request->middle_initial,
+                'last_name' => $request->last_name,
+                'sex' => $request->sex,
+                'contact_number' => $request->contact_number,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'user_type_id' => $adminType->id,
+            ]);
 
-        // event(new Registered($user));
-        // i trigger ana ang mailler
+            $user->admin()->create([
+                'admin_permissions' => ['manage_records'],
+                'role_title' => $request->role_title,
+            ]);
 
-        dd($user);
+            // event(new Registered($user));
+            // i trigger ana ang mailler
 
-        return to_route('users.index')->with('success', 'You successfully created a new Admin');
+            dd($user);
+
+            return to_route('users.index')->with('success', 'You successfully created a new Admin');
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return back()->withInput()->with('error', 'Admin user type not found. Please contact system administrator.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Handle database constraint violations, connection issues, etc.
+            return back()->withInput()->with('error', 'Database error occurred while creating the admin. Please try again.');
+        } catch (\Exception $e) {
+            // Handle any other unexpected errors
+            \Log::error('Error creating admin user: ' . $e->getMessage(), [
+                'request_data' => $request->except(['password', 'password_confirmation']),
+                'exception' => $e
+            ]);
+
+            return back()->withInput()->with('error', 'An unexpected error occurred. Please try again or contact support.');
+        }
     }
 
     /**
