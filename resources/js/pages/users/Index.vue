@@ -360,6 +360,7 @@ import {
 import Filter from './Filter.vue'
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
+import Layout from '@/pages/users/Layout.vue';
 
 //Filter - Updated to use User Types
 const filter_user_type = {
@@ -394,7 +395,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Welcome" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="p-4">
+        <Layout>
             <div class="w-full">
                 <div class="flex gap-2 items-center justify-between py-4">
                     <div class="flex gap-2">
@@ -515,7 +516,6 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </div>
                 </div>
             </div>
-            <!-- Dialog -->
-        </div>
+        </Layout>
     </AppLayout>
 </template>

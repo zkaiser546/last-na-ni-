@@ -7,8 +7,8 @@ import { Link, usePage } from '@inertiajs/vue3';
 
 const sidebarNavItems: NavItem[] = [
     {
-        title: 'Profile',
-        href: '/test',
+        title: 'Admins',
+        href: '/users/admins',
     },
     {
         title: 'Password',
@@ -27,10 +27,7 @@ const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.locati
 
 <template>
     <div class="px-4 py-6">
-
-        Users
-
-        <div class="flex flex-col space-y-6 ">
+        <div class="flex flex-col space-y-2 ">
             <!-- Header Navigation -->
             <header class="w-full">
                 <nav class="flex flex-wrap items-center gap-1">
@@ -52,7 +49,7 @@ const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.locati
 
             <!-- Main Content Area -->
             <main class="flex justify-center">
-                <section class="w-full max-w-2xl space-y-12">
+                <section class="w-full">
                     <slot />
                 </section>
             </main>
