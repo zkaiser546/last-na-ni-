@@ -18,11 +18,16 @@ class AdminController extends Controller
     public function index(Request $request): \Inertia\Response
     {
         $perPage = $request->input('per_page', 10);
-        $user_type_id = $request->input('user_type_id', null);
         $sortField = $request->input('sort_field', null);
         $sortDirection = $request->input('sort_direction', 'asc');
-
         $filters = [];
+
+        // Get the admin user type ID by key
+        $adminUserType = UserType::where('key', 'staff')->first();
+        $adminUserTypeId = $adminUserType ? $adminUserType->id : null;
+
+        // Set default filter to admin user type, or use request parameter
+        $user_type_id = $request->input('user_type_id', $adminUserTypeId);
 
         // Handle user_type_id filter (can be single value or array)
         if (!empty($user_type_id)) {
