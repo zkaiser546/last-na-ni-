@@ -26,7 +26,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::redirect('/', '/users/admins')->name('users.index');
         Route::get('/import', [UserController::class, 'import'])->name('users.import');
         Route::post('/import', [UserController::class, 'importStore'])->name('users.import.store');
-        Route::get('/admins',[AdminController::class, 'index'])->name('admins.index');
+        Route::get('/admins',[AdminController::class, 'index'])->name('admins.index')
+            ->middleware('can:viewAny, App\Models\User');
         Route::get('/admins/create', [AdminController::class, 'create'])->name('admins.create');
         Route::post('/admins', [AdminController::class, 'store'])->name('admins.store');
         Route::delete('/admins/{id}', [AdminController::class, 'destroy'])->name('admins.destroy');
