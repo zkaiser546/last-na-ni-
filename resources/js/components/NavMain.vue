@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { type NavItem } from '@/types';
+import { type NavItem, type User } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
 
 defineProps<{
@@ -8,11 +8,13 @@ defineProps<{
 }>();
 
 const page = usePage();
+const user = page.props.auth.user as User;
+
 </script>
 
 <template>
     <SidebarGroup class="px-2 py-0">
-        <SidebarGroupLabel>Super Admin Menu</SidebarGroupLabel>
+        <SidebarGroupLabel> {{ user.user_type.name }} Menu</SidebarGroupLabel>
         <SidebarMenu>
             <SidebarMenuItem v-for="item in items" :key="item.title">
                 <SidebarMenuButton as-child :is-active="page.url.startsWith(item.href)" :tooltip="item.title">

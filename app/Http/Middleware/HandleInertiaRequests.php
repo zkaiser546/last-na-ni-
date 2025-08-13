@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\UserType;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 
@@ -46,7 +47,7 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
-                'user' => $request->user(),
+                'user' => Auth::user()?->load('userType'),
             ],
             'ziggy' => [
                 ...(new Ziggy)->toArray(),
