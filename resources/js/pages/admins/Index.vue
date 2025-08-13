@@ -16,7 +16,7 @@ import {
 import { ArrowUpDown, ChevronDown, X } from 'lucide-vue-next'
 
 import { h, ref } from 'vue'
-import DropdownAction from './DataTableDemoColumn.vue'
+import DropdownAction from '../users/DataTableDemoColumn.vue'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -361,15 +361,10 @@ const clearFilter = () => {
 import {
     PersonIcon,
 } from "@radix-icons/vue";
-import Filter from './Filter.vue'
+import Filter from '../users/Filter.vue'
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
-import Layout from '@/pages/users/Layout.vue';
-
-const showDialog = ref(false);
-const showDialogCreate = () => {
-    showDialog.value = true
-}
+import Layout from '@/layouts/users/Layout.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -381,6 +376,10 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/users/admins',
     },
 ];
+
+const createNewStaffAdmin = () => {
+    router.get(route('admins.create'));
+}
 
 </script>
 
@@ -411,7 +410,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <Button variant="outline" @click="showDialogCreate">
+                        <Button variant="outline" @click="createNewStaffAdmin">
                             <Plus class="h-4"></Plus>
                             Create New
                         </Button>

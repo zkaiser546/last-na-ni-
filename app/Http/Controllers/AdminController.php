@@ -77,7 +77,7 @@ class AdminController extends Controller
             })
             ->paginate(perPage: $perPage);
 
-        return Inertia::render('users/AdminsIndex', [
+        return Inertia::render('admins/Index', [
             'data' => $users,
             'filter' => $filters,
             'userTypes' => $userTypes,

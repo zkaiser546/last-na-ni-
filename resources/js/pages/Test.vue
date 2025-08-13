@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { Head } from '@inertiajs/vue3'
   import AppLayout from '@/layouts/AppLayout.vue';
-  import Layout from '@/pages/users/Layout.vue';
+  import Layout from '@/layouts/users/Layout.vue';
 
   defineProps<{}>()
 </script>
