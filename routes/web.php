@@ -26,11 +26,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::redirect('/', '/users/admins')->name('users.index');
         Route::get('/import', [UserController::class, 'import'])->name('users.import');
         Route::post('/import', [UserController::class, 'importStore'])->name('users.import.store');
-        Route::get('/admins',[AdminController::class, 'index'])->name('admins.index')
-            ->middleware('can:viewAny, App\Models\User');
-        Route::get('/admins/create', [AdminController::class, 'create'])->name('admins.create');
-        Route::post('/admins', [AdminController::class, 'store'])->name('admins.store');
-        Route::delete('/admins/{id}', [AdminController::class, 'destroy'])->name('admins.destroy');
+        Route::group(['middleware' => ['can:viewAny, App\Models\User']], function () {
+            Route::get('/admins',[AdminController::class, 'index'])->name('admins.index');
+            Route::get('/admins/create', [AdminController::class, 'create'])->name('admins.create');
+            Route::post('/admins', [AdminController::class, 'store'])->name('admins.store');
+            Route::delete('/admins/{id}', [AdminController::class, 'destroy'])->name('admins.destroy');
+        });
         Route::get('/faculties', [FacultyController::class, 'index'])->name('faculties.index');
         Route::get('/faculties/create', [FacultyController::class, 'create'])->name('faculties.create');
         Route::post('/faculties', [FacultyController::class, 'store'])->name('faculties.store');
