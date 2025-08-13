@@ -23,7 +23,7 @@ class AdminController extends Controller
         $filters = [];
 
         // Get the admin user type ID by key
-        $adminUserType = UserType::where('key', 'staff')->first();
+        $adminUserType = UserType::where('key', 'staff_admin')->first();
         $adminUserTypeId = $adminUserType ? $adminUserType->id : null;
 
         // Set default filter to admin user type, or use request parameter
