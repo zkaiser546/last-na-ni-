@@ -21,7 +21,7 @@ const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.locati
 </script>
 
 <template>
-    <div class="px-4 py-6">
+    <div class="p-4">
         <div class="flex flex-col space-y-2 ">
             <!-- Header Navigation -->
             <header class="w-full">
