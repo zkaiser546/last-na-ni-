@@ -91,7 +91,7 @@ onBeforeUnmount(() => {
                     v-model="searchQuery"
                     id="search"
                     type="search"
-                    placeholder="Search accession, title..."
+                    placeholder="Search accession, title... "
                     class="pl-10 w-full"
                     @focus="searchQuery && (showSuggestions = true)"
                 />
