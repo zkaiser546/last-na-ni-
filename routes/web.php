@@ -23,7 +23,8 @@ Route::post('/', [LibraryVisitController::class, 'store'])->name('logger.store')
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::prefix('users')->group(function () {
-        Route::get('/admins', [UserController::class, 'index'])->name('users.index');
+        Route::redirect('/', '/users/admins');
+        Route::get('/admins',[AdminController::class, 'index'])->name('admins.index');
         Route::get('/import', [UserController::class, 'import'])->name('users.import');
         Route::post('/import', [UserController::class, 'importStore'])->name('users.import.store');
         Route::get('/admins/create', [AdminController::class, 'create'])->name('admins.create');
