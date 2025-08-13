@@ -51,97 +51,118 @@ const submit = () => {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <Layout>
-            <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-                <form @submit.prevent="submit" class="flex flex-col gap-6">
-                    <div class="grid grid-cols-4 gap-6">
+            <div class="flex h-full flex-1 flex-col gap-6 p-6 bg-white rounded-xl shadow-sm overflow-x-auto">
+                <form @submit.prevent="submit" class="flex flex-col gap-8 max-w-4xl mx-auto">
+                    <!-- Personal Information Section -->
+                    <div class="space-y-6">
+                        <h2 class="text-lg font-semibold text-gray-900">Personal Information</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div class="grid gap-2">
+                                <Label for="library_id" class="text-sm font-medium">Library ID</Label>
+                                <Input id="library_id" type="text" required :tabindex="1" v-model="form.library_id" placeholder="Library ID" class="h-10" />
+                                <InputError :message="form.errors.library_id" />
+                            </div>
 
-                        <div class="grid gap-2">
-                            <Label for="library_id">Library ID</Label>
-                            <Input id="library_id" type="text" required :tabindex="1" v-model="form.library_id" placeholder="Library ID" />
-                            <InputError :message="form.errors.library_id" />
+                            <div class="grid gap-2">
+                                <Label for="first_name" class="text-sm font-medium">First Name</Label>
+                                <Input id="first_name" type="text" required autofocus :tabindex="2" autocomplete="given-name" v-model="form.first_name" placeholder="First name" class="h-10" />
+                                <InputError :message="form.errors.first_name" />
+                            </div>
+
+                            <div class="grid gap-2">
+                                <Label for="middle_initial" class="text-sm font-medium">Middle Initial</Label>
+                                <Input id="middle_initial" type="text" :tabindex="3" v-model="form.middle_initial" placeholder="Middle Initial" maxlength="1" class="h-10" />
+                                <InputError :message="form.errors.middle_initial" />
+                            </div>
+
+                            <div class="grid gap-2">
+                                <Label for="last_name" class="text-sm font-medium">Last Name</Label>
+                                <Input id="last_name" type="text" required :tabindex="4" autocomplete="family-name" v-model="form.last_name" placeholder="Last name" class="h-10" />
+                                <InputError :message="form.errors.last_name" />
+                            </div>
+
+                            <div class="grid gap-2">
+                                <Label for="sex" class="text-sm font-medium">Sex</Label>
+                                <Select v-model="form.sex" required>
+                                    <SelectTrigger id="sex" :tabindex="5" class="h-10">
+                                        <SelectValue placeholder="Select sex" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="male">Male</SelectItem>
+                                        <SelectItem value="female">Female</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <InputError :message="form.errors.sex" />
+                            </div>
                         </div>
+                    </div>
 
-                        <div class="grid gap-2">
-                            <Label for="first_name">First name</Label>
-                            <Input id="first_name" type="text" required autofocus :tabindex="2" autocomplete="name" v-model="form.first_name" placeholder="First name" />
-                            <InputError :message="form.errors.first_name" />
+                    <!-- Contact Information Section -->
+                    <div class="space-y-6">
+                        <h2 class="text-lg font-semibold text-gray-900">Contact Information</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="grid gap-2">
+                                <Label for="contact_number" class="text-sm font-medium">Contact Number</Label>
+                                <Input id="contact_number" type="tel" required :tabindex="6" v-model="form.contact_number" placeholder="Contact Number" class="h-10" />
+                                <InputError :message="form.errors.contact_number" />
+                            </div>
+
+                            <div class="grid gap-2">
+                                <Label for="email" class="text-sm font-medium">Email Address</Label>
+                                <Input id="email" type="email" required :tabindex="7" autocomplete="email" v-model="form.email" placeholder="email@example.com" class="h-10" />
+                                <InputError :message="form.errors.email" />
+                            </div>
                         </div>
+                    </div>
 
-                        <div class="grid gap-2">
-                            <Label for="middle_initial">Middle Initial</Label>
-                            <Input id="middle_initial" type="text" :tabindex="3" v-model="form.middle_initial" placeholder="Middle Initial" maxlength="1" />
-                            <InputError :message="form.errors.middle_initial" />
+                    <!-- Account Information Section -->
+                    <div class="space-y-6">
+                        <h2 class="text-lg font-semibold text-gray-900">Account Information</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="grid gap-2">
+                                <Label for="role_title" class="text-sm font-medium">Role Title</Label>
+                                <Input id="role_title" type="text" required :tabindex="8" v-model="form.role_title" placeholder="Role Title" class="h-10" />
+                                <InputError :message="form.errors.role_title" />
+                            </div>
                         </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="grid gap-2">
+                                <Label for="password" class="text-sm font-medium">Password</Label>
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    required
+                                    :tabindex="9"
+                                    autocomplete="new-password"
+                                    v-model="form.password"
+                                    placeholder="Password"
+                                    class="h-10"
+                                />
+                                <InputError :message="form.errors.password" />
+                            </div>
 
-                        <div class="grid gap-2">
-                            <Label for="last_name">Last name</Label>
-                            <Input id="last_name" type="text" required :tabindex="4" autocomplete="name" v-model="form.last_name" placeholder="Last name" />
-                            <InputError :message="form.errors.last_name" />
+                            <div class="grid gap-2">
+                                <Label for="password_confirmation" class="text-sm font-medium">Confirm Password</Label>
+                                <Input
+                                    id="password_confirmation"
+                                    type="password"
+                                    required
+                                    :tabindex="10"
+                                    autocomplete="new-password"
+                                    v-model="form.password_confirmation"
+                                    placeholder="Confirm password"
+                                    class="h-10"
+                                />
+                                <InputError :message="form.errors.password_confirmation" />
+                            </div>
                         </div>
+                    </div>
 
-                        <div class="grid gap-2">
-                            <Label for="sex">Sex</Label>
-                            <Select v-model="form.sex" required>
-                                <SelectTrigger id="sex" :tabindex="5">
-                                    <SelectValue placeholder="Select sex" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="male">Male</SelectItem>
-                                    <SelectItem value="female">Female</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <InputError :message="form.errors.sex" />
-                        </div>
-
-                        <div class="grid gap-2">
-                            <Label for="contact_number">Contact Number</Label>
-                            <Input id="contact_number" type="tel" required :tabindex="6" v-model="form.contact_number" placeholder="Contact Number" />
-                            <InputError :message="form.errors.contact_number" />
-                        </div>
-
-                        <div class="grid gap-2">
-                            <Label for="role_title">Role Title</Label>
-                            <Input id="role_title" type="text" required :tabindex="7" v-model="form.role_title" placeholder="Role Title" />
-                            <InputError :message="form.errors.role_title" />
-                        </div>
-
-                        <div class="grid gap-2">
-                            <Label for="email">Email address</Label>
-                            <Input id="email" type="email" required :tabindex="8" autocomplete="email" v-model="form.email" placeholder="email@example.com" />
-                            <InputError :message="form.errors.email" />
-                        </div>
-
-                        <div class="grid gap-2">
-                            <Label for="password">Password</Label>
-                            <Input
-                                id="password"
-                                type="password"
-                                required
-                                :tabindex="9"
-                                autocomplete="new-password"
-                                v-model="form.password"
-                                placeholder="Password"
-                            />
-                            <InputError :message="form.errors.password" />
-                        </div>
-
-                        <div class="grid gap-2">
-                            <Label for="password_confirmation">Confirm password</Label>
-                            <Input
-                                id="password_confirmation"
-                                type="password"
-                                required
-                                :tabindex="10"
-                                autocomplete="new-password"
-                                v-model="form.password_confirmation"
-                                placeholder="Confirm password"
-                            />
-                            <InputError :message="form.errors.password_confirmation" />
-                        </div>
-
-                        <Button type="submit" class="mt-2 w-full" tabindex="11" :disabled="form.processing">
-                            <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-                            Create account
+                    <!-- Submit Button -->
+                    <div class="flex justify-end">
+                        <Button type="submit" class="w-full md:w-auto px-8 py-2" tabindex="11" :disabled="form.processing">
+                            <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin mr-2" />
+                            Create Account
                         </Button>
                     </div>
                 </form>
