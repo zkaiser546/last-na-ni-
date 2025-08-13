@@ -210,14 +210,26 @@ const columns: ColumnDef<RowData>[] = [
         id: 'actions',
         enableHiding: false,
         cell: ({ row }: { row: Row<RowData> }) => {
-            const payment = row.original
+            const user = row.original
 
             return h('div', { class: 'relative' }, h(DropdownAction, {
-                payment,
+                user,
                 onExpand: row.toggleExpanded,
+                onEdit: (id) => {
+                    // Handle edit functionality
+                    console.log('Edit clicked for ID:', id);
+                    // Add your edit logic here
+                    // For example: router.get(route('admins.edit', id));
+                },
+                onDelete: (id) => {
+                    // Show simple alert for now
+                    alert(`Delete clicked for user with ID: ${id}`);
+                    // Later, you can replace this with a confirmation dialog
+                    // and actual delete functionality
+                }
             }))
         },
-    },
+    }
 ]
 
 const sorting = ref<SortingState>(
