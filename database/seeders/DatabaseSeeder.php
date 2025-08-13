@@ -17,6 +17,5 @@ class DatabaseSeeder extends Seeder
         $this->call(AcademicPeriodSeeder::class);
         $this->call(StatusSeeder::class);
         $this->call(BorrowingPolicySeeder::class);
-        $this->call(ProductSeeder::class);
     }
 }

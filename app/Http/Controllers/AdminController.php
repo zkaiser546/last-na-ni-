@@ -101,8 +101,13 @@ class AdminController extends Controller
     {
         try {
             $request->validate([
+                'library_id' => 'required|string|max:20|unique:users,library_id',
                 'first_name' => 'required|string|max:50',
+                'middle_initial' => 'nullable|string|max:1',
                 'last_name' => 'required|string|max:50',
+                'sex' => 'required|in:male,female',
+                'contact_number' => 'required|string|max:20',
+                'role_title' => 'required|string|max:100',
                 'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
             ]);
@@ -111,10 +116,14 @@ class AdminController extends Controller
             throw $e; // Re-throw to let Laravel handle the redirect with errors
         }
 
-        $adminType = UserType::where('name', 'staff-admin')->firstOrFail();
+        $adminType = UserType::where('key', 'staff_admin')->firstOrFail();
         $user = User::create([
+            'library_id' => $request->library_id,
             'first_name' => $request->first_name,
+            'middle_initial' => $request->middle_initial,
             'last_name' => $request->last_name,
+            'sex' => $request->sex,
+            'contact_number' => $request->contact_number,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'user_type_id' => $adminType->id,
@@ -122,11 +131,13 @@ class AdminController extends Controller
 
         $user->admin()->create([
             'admin_permissions' => ['manage_records'],
-            'role_title' => 'Library Staff',
+            'role_title' => $request->role_title, // Use the submitted role title instead of hardcoded
         ]);
 
-//        event(new Registered($user));
+        // event(new Registered($user));
         // i trigger ana ang mailler
+
+        dd($user);
 
         return to_route('users.index')->with('success', 'You successfully created a new Admin');
     }
