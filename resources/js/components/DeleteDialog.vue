@@ -9,6 +9,13 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+
+defineProps<{
+    userId: number | null; // Accept the userId as a prop
+}>();
+
+const emit = defineEmits(['confirm-delete']);
+
 </script>
 
 <template>
@@ -23,7 +30,9 @@ import {
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction>Continue</AlertDialogAction>
+                <AlertDialogAction @click="emit('confirm-delete', userId)">
+                    Continue
+                </AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>

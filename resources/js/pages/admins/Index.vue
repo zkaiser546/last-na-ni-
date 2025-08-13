@@ -220,7 +220,7 @@ const columns: ColumnDef<RowData>[] = [
                 },
                 onDelete: (id) => {
                     showDeleteAlert.value = true;
-                    // router.delete(route('admins.destroy', id));
+                    selectedUserId.value = id;
                 }
             }))
         },
@@ -387,6 +387,14 @@ const createNewStaffAdmin = () => {
 }
 
 const showDeleteAlert = ref(false);
+const selectedUserId = ref(null);
+
+const handleDelete = (id) => {
+    console.log('Deleting user with ID:', id);
+    router.delete(route('admins.destroy', id));
+    showDeleteAlert.value = false; // Close the dialog after deletion
+    selectedUserId.value = null; // Clear the stored ID
+};
 
 </script>
 
@@ -512,7 +520,11 @@ const showDeleteAlert = ref(false);
                     </div>
                 </div>
             </div>
-            <DeleteDialog v-model:open="showDeleteAlert" />
+            <DeleteDialog
+                v-model:open="showDeleteAlert"
+                :userId="selectedUserId"
+                @confirm-delete="handleDelete"
+            />
         </Layout>
     </AppLayout>
 </template>
