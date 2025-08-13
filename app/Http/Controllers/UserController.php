@@ -5,15 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\UserType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    public function index(Request $request): \Inertia\Response
+    public function index(Request $request)
     {
-        //
+        if (Gate::denies('viewAny', User::class)) {
+            return to_route('faculties.index');
+        }
+
+        return to_route('admins.index');
     }
 
     public function import()

@@ -27,6 +27,7 @@ const rightNavItems: NavItem[] = [
 ];
 
 const page = usePage();
+// v-if="$page.props.auth.permissions.can_view_any_users"
 
 const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.location).pathname : '';
 </script>
