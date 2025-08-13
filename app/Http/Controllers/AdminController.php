@@ -106,7 +106,6 @@ class AdminController extends Controller
                 'middle_initial' => 'nullable|string|max:1',
                 'last_name' => 'required|string|max:50',
                 'sex' => 'required|in:m,f',
-                'contact_number' => 'required|string|max:20',
                 'role_title' => 'required|string|max:100',
                 'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
@@ -133,20 +132,25 @@ class AdminController extends Controller
             ]);
 
             $user->admin()->create([
-                'admin_permissions' => ['manage_records'],
                 'role_title' => $request->role_title,
             ]);
 
             // event(new Registered($user));
             // i trigger ana ang mailler
 
-            dd($user);
-
             return to_route('users.index')->with('success', 'You successfully created a new Admin');
 
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            \Log::error('Error creating admin user: ' . $e->getMessage(), [
+                'request_data' => $request->except(['password', 'password_confirmation']),
+                'exception' => $e
+            ]);
             return back()->withInput()->with('error', 'Admin user type not found. Please contact system administrator.');
         } catch (\Illuminate\Database\QueryException $e) {
+            \Log::error('Error creating admin user: ' . $e->getMessage(), [
+                'request_data' => $request->except(['password', 'password_confirmation']),
+                'exception' => $e
+            ]);
             // Handle database constraint violations, connection issues, etc.
             return back()->withInput()->with('error', 'Database error occurred while creating the admin. Please try again.');
         } catch (\Exception $e) {
