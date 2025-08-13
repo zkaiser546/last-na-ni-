@@ -1,9 +1,7 @@
 <script setup lang="ts">
-// import Layout from './Layout'
 import { Head, router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import { Button } from '@/components/ui/button'
-// Layout
 import {
     FlexRender,
     getCoreRowModel,
@@ -18,7 +16,6 @@ import { ArrowUpDown, ChevronDown, X } from 'lucide-vue-next'
 import { h, ref } from 'vue'
 import DropdownAction from '../users/DataTableDemoColumn.vue'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Badge } from '@/components/ui/badge'
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -370,10 +367,6 @@ const clearFilter = () => {
     table.getColumn('search')?.setFilterValue('')
 }
 
-import {
-    PersonIcon,
-} from "@radix-icons/vue";
-import Filter from '../users/Filter.vue'
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
 import Layout from '@/layouts/users/Layout.vue';
