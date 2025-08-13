@@ -27,16 +27,18 @@ const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.locati
 
 <template>
     <div class="px-4 py-6">
-        <Heading title="Users" description="Manage users and patrons" />
 
-        <div class="flex flex-col space-y-8 md:space-y-0 lg:flex-row lg:space-y-0 lg:space-x-12">
-            <aside class="w-full max-w-xl lg:w-48">
-                <nav class="flex flex-col space-y-1 space-x-0">
+        Users
+
+        <div class="flex flex-col space-y-6 ">
+            <!-- Header Navigation -->
+            <header class="w-full">
+                <nav class="flex flex-wrap items-center gap-1">
                     <Button
                         v-for="item in sidebarNavItems"
                         :key="item.href"
                         variant="ghost"
-                        :class="['w-full justify-start', { 'bg-muted': currentPath === item.href }]"
+                        :class="['justify-start', { 'bg-muted': currentPath === item.href }]"
                         as-child
                     >
                         <Link :href="item.href">
@@ -44,15 +46,16 @@ const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.locati
                         </Link>
                     </Button>
                 </nav>
-            </aside>
+            </header>
 
-            <Separator class="my-6 md:hidden" />
+            <Separator />
 
-            <div class="flex-1 md:max-w-2xl">
-                <section class="max-w-xl space-y-12">
+            <!-- Main Content Area -->
+            <main class="flex justify-center">
+                <section class="w-full max-w-2xl space-y-12">
                     <slot />
                 </section>
-            </div>
+            </main>
         </div>
     </div>
 </template>
