@@ -29,6 +29,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/admins',[AdminController::class, 'index'])->name('admins.index');
         Route::get('/admins/create', [AdminController::class, 'create'])->name('admins.create');
         Route::post('/admins', [AdminController::class, 'store'])->name('admins.store');
+        Route::delete('/admins/{id}', [AdminController::class, 'destroy'])->name('admins.destroy');
         Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
         Route::post('/students', [StudentController::class, 'store'])->name('students.store');
         Route::get('/faculties/create', [FacultyController::class, 'create'])->name('faculties.create');

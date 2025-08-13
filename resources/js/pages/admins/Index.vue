@@ -219,10 +219,8 @@ const columns: ColumnDef<RowData>[] = [
                     // For example: router.get(route('admins.edit', id));
                 },
                 onDelete: (id) => {
-                    // Show simple alert for now
-                    alert(`Delete clicked for user with ID: ${id}`);
-                    // Later, you can replace this with a confirmation dialog
-                    // and actual delete functionality
+                    showDeleteAlert.value = true;
+                    // router.delete(route('admins.destroy', id));
                 }
             }))
         },
@@ -371,6 +369,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
 import Layout from '@/layouts/users/Layout.vue';
 import { AlertDialog, AlertDialogFooter, AlertDialogHeader } from '@/components/ui/alert-dialog';
+import DeleteDialog from '@/components/DeleteDialog.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -386,6 +385,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 const createNewStaffAdmin = () => {
     router.get(route('admins.create'));
 }
+
+const showDeleteAlert = ref(false);
 
 </script>
 
@@ -511,26 +512,7 @@ const createNewStaffAdmin = () => {
                     </div>
                 </div>
             </div>
-            <AlertDialog>
-                <AlertDialogTrigger as-child>
-                    <Button variant="outline">
-                        Show Dialog
-                    </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete your
-                            account and remove your data from our servers.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction>Continue</AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+            <DeleteDialog v-model:open="showDeleteAlert" />
         </Layout>
     </AppLayout>
 </template>
