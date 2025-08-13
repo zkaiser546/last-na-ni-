@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BorrowingTransactionController;
+use App\Http\Controllers\ClearanceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\GradSchoolStudentController;
@@ -19,6 +20,8 @@ Route::get('/', [WelcomeController::class, 'index'])->name('home');
 Route::get('/logger', [LibraryVisitController::class, 'index'])->name('logger.index');
 Route::get('/logger/create', [LibraryVisitController::class, 'create'])->name('logger.create');
 Route::post('/logger', [LibraryVisitController::class, 'store'])->name('logger.store');
+Route::get('/clearance', [ClearanceController::class, 'index'])->name('clearance.index');
+Route::post('/clearance/export', [ClearanceController::class, 'export'])->name('clearance.export');
 
 // Routes that require authentication and verification
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -62,3 +65,9 @@ Route::get('/test', function () {
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
+
+// Catch-all route for 404 Not Found (must be last)
+use Illuminate\Http\Request;
+Route::fallback(function (Request $request) {
+    return Inertia::render('NotFound');
+});

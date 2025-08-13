@@ -35,6 +35,11 @@ const mainNavItems: NavItem[] = [
         href: '/logger',
         icon: FileClock ,
     },
+    {
+        title: 'Clearance',
+        href: '/clearance',
+        icon: Folder,
+    },
 
 ];
 
