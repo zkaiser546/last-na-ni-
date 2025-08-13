@@ -9,9 +9,16 @@ const sidebarNavItems: NavItem[] = [
         title: 'Staff Admins',
         href: '/users/admins',
     },
+];
+
+const rightNavItems: NavItem[] = [
     {
         title: 'Import',
         href: '/users/import',
+    },
+    {
+        title: 'Options',
+        href: '/users/options',
     },
 ];
 
@@ -24,10 +31,23 @@ const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.locati
     <div class="p-4">
         <div class="flex flex-col space-y-2 ">
             <!-- Header Navigation -->
-            <header class="w-full">
-                <nav class="flex flex-wrap items-center gap-1">
+            <header class="w-full flex justify-between">
+                <nav class="flex flex-wrap w-fit items-center gap-1">
                     <Button
                         v-for="item in sidebarNavItems"
+                        :key="item.href"
+                        variant="ghost"
+                        :class="['justify-start', { 'bg-muted': currentPath.startsWith(item.href) }]"
+                        as-child
+                    >
+                        <Link :href="item.href">
+                            {{ item.title }}
+                        </Link>
+                    </Button>
+                </nav>
+                <nav class="flex flex-wrap w-fit items-center gap-1">
+                    <Button
+                        v-for="item in rightNavItems"
                         :key="item.href"
                         variant="ghost"
                         :class="['justify-start', { 'bg-muted': currentPath.startsWith(item.href) }]"
