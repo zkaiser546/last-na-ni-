@@ -15,8 +15,12 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/users',
     },
     {
+        title: 'Staff admins',
+        href: '/users/admins',
+    },
+    {
         title: 'Create Admins',
-        href: '/admins/create',
+        href: '/users/admins/create',
     },
 ];
 
