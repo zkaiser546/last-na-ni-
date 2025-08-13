@@ -6,10 +6,6 @@ import { Link, usePage } from '@inertiajs/vue3';
 
 const sidebarNavItems: NavItem[] = [
     {
-        title: 'Staff Admins',
-        href: '/users/admins',
-    },
-    {
         title: 'Faculties',
         href: '/users/faculties',
     },
@@ -26,8 +22,16 @@ const rightNavItems: NavItem[] = [
     },
 ];
 
+
 const page = usePage();
-// v-if="$page.props.auth.permissions.can_view_any_users"
+
+if (page.props.auth.permissions.can_view_any_users)
+{
+    sidebarNavItems.unshift({
+        title: 'Staff Admins',
+        href: '/users/admins',
+    });
+}
 
 const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.location).pathname : '';
 </script>
