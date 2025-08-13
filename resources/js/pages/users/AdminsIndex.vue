@@ -49,15 +49,13 @@ interface Props {
     filter?: any[]
     currentSortField?: string
     currentSortDirection?: string
-    userTypes?: any[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
     data: () => ({ data: [], current_page: 1, per_page: 10, last_page: 1 }),
     filter: () => [],
     currentSortField: undefined,
-    currentSortDirection: 'asc',
-    userTypes: () => []
+    currentSortDirection: 'asc'
 })
 
 import type { Table, Row, Column, SortingState, ColumnFiltersState, ColumnDef } from '@tanstack/vue-table'
@@ -189,17 +187,23 @@ const columns: ColumnDef<RowData>[] = [
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('sex')),
     },
     {
-        accessorKey: 'user_type_id',
-        header: 'User Type',
-        cell: ({ row }: { row: Row<RowData> }) => {
-            const userType = row.original.user_type;
-
-            if (userType) {
-                return h('div', h(Badge, userType.name || 'Unknown'))
-            } else {
-                return h('div', h(Badge, { variant: 'outline' }, 'No User Type'))
-            }
+        accessorKey: 'email',
+        header: ({ column }: { column: Column<RowData, any> }) => {
+            return h(Button, {
+                variant: 'ghost',
+                onClick: () => {
+                    const currentSort = column.getIsSorted();
+                    if (currentSort === false) {
+                        column.toggleSorting(false);
+                    } else if (currentSort === 'asc') {
+                        column.toggleSorting(true);
+                    } else {
+                        column.clearSorting();
+                    }
+                },
+            }, () => ['Email', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('email')),
         enableHiding: false,
     },
     {
@@ -255,7 +259,7 @@ const table = useVueTable({
             pagination.value = updater;
         }
         router.get(
-            route('users.index'),
+            route('admins.index'),
             {
                 page: pagination.value.pageIndex + 1,
                 per_page: pagination.value.pageSize,
@@ -286,7 +290,7 @@ const table = useVueTable({
         }
 
         router.get(
-            route('users.index'),
+            route('admins.index'),
             {
                 page: 1, // Reset to first page when sorting changes
                 per_page: pagination.value.pageSize,
@@ -319,7 +323,7 @@ const table = useVueTable({
         }
 
         router.get(
-            route('users.index'),
+            route('admins.index'),
             {
                 page: 1, // Reset to first page when filtering
                 per_page: pagination.value.pageSize,
@@ -362,21 +366,6 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
 import Layout from '@/pages/users/Layout.vue';
 
-//Filter - Updated to use User Types
-const filter_user_type = {
-    title: 'Filter User Type',
-    column: 'user_type_id',
-    data: props.userTypes.map(userType => ({
-        value: userType.id.toString(),
-        label: userType.name,
-        icon: h(PersonIcon), // You can customize icons per user type if needed
-    }))
-}
-
-const filter_toolbar = [
-    filter_user_type,
-];
-
 const showDialog = ref(false);
 const showDialogCreate = () => {
     showDialog.value = true
@@ -415,9 +404,6 @@ const breadcrumbs: BreadcrumbItem[] = [
                             >
                                 <X class="h-4 w-4" />
                             </Button>
-                        </div>
-                        <div v-for="filter in filter_toolbar" :key="filter.title">
-                            <Filter :column="table.getColumn(filter.column)" :title="filter.title" :options="filter.data"></Filter>
                         </div>
                     </div>
                     <div class="flex gap-2">
