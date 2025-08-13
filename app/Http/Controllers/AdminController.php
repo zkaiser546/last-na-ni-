@@ -101,14 +101,19 @@ class AdminController extends Controller
     {
         try {
             $request->validate([
-                'library_id' => 'required|string|max:20|unique:users,library_id',
+                'library_id' => 'required|integer|digits_between:1,10|unique:users,library_id',
                 'first_name' => 'required|string|max:50',
                 'middle_initial' => 'nullable|string|max:1',
                 'last_name' => 'required|string|max:50',
                 'sex' => 'required|in:m,f',
                 'role_title' => 'required|string|max:100',
                 'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+                'password' => ['required', 'confirmed', Rules\Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+                    ->uncompromised()],
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             session()->flash('error', 'Please fix the validation errors below.');

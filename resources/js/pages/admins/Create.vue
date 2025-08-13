@@ -59,7 +59,7 @@ const submit = () => {
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             <div class="grid gap-2">
                                 <Label for="library_id" class="text-sm font-medium">Library ID</Label>
-                                <Input id="library_id" type="text" required :tabindex="1" v-model="form.library_id" placeholder="Library ID" class="h-10" />
+                                <Input id="library_id" type="number" required :tabindex="1" v-model="form.library_id" placeholder="Library ID" class="h-10" />
                                 <InputError :message="form.errors.library_id" />
                             </div>
 
