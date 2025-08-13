@@ -7,7 +7,7 @@ import { Link, usePage } from '@inertiajs/vue3';
 
 const sidebarNavItems: NavItem[] = [
     {
-        title: 'Admins',
+        title: 'Staff Admins',
         href: '/users/admins',
     },
     {

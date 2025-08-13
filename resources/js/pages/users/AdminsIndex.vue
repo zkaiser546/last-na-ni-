@@ -376,6 +376,10 @@ const breadcrumbs: BreadcrumbItem[] = [
         title: 'Users',
         href: '/users',
     },
+    {
+        title: 'Staff admins',
+        href: '/users/admins',
+    },
 ];
 
 </script>
