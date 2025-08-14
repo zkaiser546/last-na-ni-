@@ -273,13 +273,13 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/records',
     },
     {
-        title: 'Multimedia',
-        href: '/records/multimedia',
+        title: 'Magazines/Periodicals',
+        href: '/records/periodicals',
     },
 ];
 
-const createNewMultimedia = () => {
-    router.get(route('multimedia.create'));
+const createNewPeriodical = () => {
+    router.get(route('periodicals.create'));
 }
 
 const showDeleteAlert = ref(false);
@@ -308,7 +308,7 @@ const handleDelete = (id) => {
 </script>
 
 <template>
-    <Head title="Multimedia" />
+    <Head title="Magazines/Periodicals" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <RecordsLayout>
@@ -334,7 +334,7 @@ const handleDelete = (id) => {
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <Button variant="outline" @click="createNewMultimedia">
+                        <Button variant="outline" @click="createNewPeriodical">
                             <Plus class="h-4"></Plus>
                             Create New
                         </Button>
