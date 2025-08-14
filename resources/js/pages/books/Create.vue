@@ -10,44 +10,48 @@ import { Button } from '@/components/ui/button';
 import { LoaderCircle } from 'lucide-vue-next';
 import RecordsLayout from '@/layouts/records/Layout.vue';
 import { Textarea } from '@/components/ui/textarea';
-import AuthorsTagsInput from '@/components/AuthorsTagsInput.vue';
+import AuthorsTagsInput from '@/components/AuthorsTagsInput.vue'; // for authors[]
+import EditorsTagsInput from '@/components/EditorsTagsInput.vue'; // new dynamic editors[]
+import SubjectTagsInput from '@/components/SubjectTagsInput.vue'; // new dynamic subject_headings[]
 
-// Breadcrumbs
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Records', href: '/records' },
     { title: 'Books', href: '/records/books' },
     { title: 'Create Book', href: '/records/books/create' },
 ];
 
-// Form fields
 const form = useForm({
     accession_number: '',
     title: '',
     authors: [],
+    editors: [],
     publication_year: '',
     publisher: '',
-    place_of_publication: '',
+    publication_place: '',
     isbn: '',
-    additional_authors: '',
-    editor: '',
-    series_title: '',
-    ddc_classification: '',
     call_number: '',
-    physical_location: '',
-    location_symbol: '',
-    edition: '',
-    cover_type: '',
-    book_cover_image: null,
-    date_acquired: new Date().toISOString().split('T')[0],
+    ddc_class_id: '',
+    lc_class_id: '',
+    physical_location_id: '',
+    cover_image: null,
+    ics_number: '',
+    ics_date: '',
+    pr_number: '',
+    pr_date: '',
+    po_number: '',
+    po_date: '',
     source: '',
     purchase_amount: '',
+    lot_cost: '',
+    supplier: '',
+    donated_by: '',
+    cover_type: '',
     acquisition_status: '',
+    condition: '',
     table_of_contents: '',
-    summary_abstract: '',
-    additional_notes: ''
+    subject_headings: [],
 });
 
-// Submit handler
 const submit = () => {
     form.post(route('books.store'));
 };
@@ -62,27 +66,27 @@ const submit = () => {
 
                     <!-- Basic Information -->
                     <section class="space-y-6">
-                        <h2 class="text-lg font-semibold text-gray-900">Basic Information</h2>
+                        <h2 class="text-lg font-semibold">Basic Information</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="grid gap-2">
+                                <Label for="accession_number">Accession Number</Label>
+                                <Input id="accession_number" type="text" required v-model="form.accession_number" />
+                                <InputError :message="form.errors.accession_number" />
+                            </div>
                             <div class="grid gap-2">
                                 <Label for="title">Title</Label>
                                 <Input id="title" type="text" required v-model="form.title" />
                                 <InputError :message="form.errors.title" />
                             </div>
-                            <div class="grid gap-2">
-                                <div class="flex gap-2">
-                                <Label for="authors">Author/s</Label>
-                                <span class="text-sm text-gray-500">(Hit 'enter' for multiple authors)</span>
-                                </div>
+                            <div class="grid gap-2 col-span-2">
+                                <Label>Authors</Label>
                                 <AuthorsTagsInput v-model="form.authors" />
                                 <InputError :message="form.errors.authors" />
                             </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="grid gap-2">
-                                <Label for="accession_number">Accession Number</Label>
-                                <Input id="accession_number" type="number" required v-model="form.accession_number" />
-                                <InputError :message="form.errors.accession_number" />
+                            <div class="grid gap-2 col-span-2">
+                                <Label>Editors</Label>
+                                <EditorsTagsInput v-model="form.editors" />
+                                <InputError :message="form.errors.editors" />
                             </div>
                             <div class="grid gap-2">
                                 <Label for="publication_year">Publication Year</Label>
@@ -95,9 +99,9 @@ const submit = () => {
                                 <InputError :message="form.errors.publisher" />
                             </div>
                             <div class="grid gap-2">
-                                <Label for="place_of_publication">Place of Publication</Label>
-                                <Input id="place_of_publication" type="text" required v-model="form.place_of_publication" />
-                                <InputError :message="form.errors.place_of_publication" />
+                                <Label for="publication_place">Publication Place</Label>
+                                <Input id="publication_place" type="text" required v-model="form.publication_place" />
+                                <InputError :message="form.errors.publication_place" />
                             </div>
                             <div class="grid gap-2">
                                 <Label for="isbn">ISBN</Label>
@@ -107,76 +111,134 @@ const submit = () => {
                         </div>
                     </section>
 
-                    <!-- Additional Authors & Contributors -->
-                    <section class="space-y-6">
-                        <h2 class="text-lg font-semibold text-gray-900">Additional Authors & Contributors</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="grid gap-2">
-                                <Label for="additional_authors">Additional Authors</Label>
-                                <Input id="additional_authors" type="text" v-model="form.additional_authors" />
-                                <InputError :message="form.errors.additional_authors" />
-                            </div>
-                            <div class="grid gap-2">
-                                <Label for="editor">Editor</Label>
-                                <Input id="editor" type="text" v-model="form.editor" />
-                                <InputError :message="form.errors.editor" />
-                            </div>
-                            <div class="grid gap-2">
-                                <Label for="series_title">Series Title</Label>
-                                <Input id="series_title" type="text" v-model="form.series_title" />
-                                <InputError :message="form.errors.series_title" />
-                            </div>
-                        </div>
-                    </section>
-
                     <!-- Classification & Location -->
                     <section class="space-y-6">
-                        <h2 class="text-lg font-semibold text-gray-900">Classification & Location</h2>
+                        <h2 class="text-lg font-semibold">Classification & Location</h2>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div class="grid gap-2">
-                                <Label for="ddc_classification">DDC Classification</Label>
-                                <Select v-model="form.ddc_classification" required>
-                                    <SelectTrigger id="ddc_classification">
-                                        <SelectValue placeholder="Select classification" />
+                                <Label for="call_number">Call Number</Label>
+                                <Input id="call_number" type="text" v-model="form.call_number" />
+                            </div>
+                            <div v-if="!form.lc_class_id" class="grid gap-2">
+                                <Label for="ddc_class_id">DDC Classification</Label>
+                                <Select v-model="form.ddc_class_id">
+                                    <SelectTrigger id="ddc_class_id">
+                                        <SelectValue placeholder="Select DDC classification" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="000">000 – General Works</SelectItem>
-                                        <!-- More options -->
                                     </SelectContent>
                                 </Select>
-                                <InputError :message="form.errors.ddc_classification" />
+                            </div>
+                            <div v-if="!form.ddc_class_id" class="grid gap-2">
+                                <Label for="lc_class_id">LC Classification</Label>
+                                <Select v-model="form.lc_class_id">
+                                    <SelectTrigger id="lc_class_id">
+                                        <SelectValue placeholder="Select LC classification" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="A">A – General Works</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div class="grid gap-2">
-                                <Label for="call_number">Call Number</Label>
-                                <Input id="call_number" type="text" readonly v-model="form.call_number" />
-                            </div>
-                            <div class="grid gap-2">
-                                <Label for="physical_location">Physical Location</Label>
-                                <Select v-model="form.physical_location">
-                                    <SelectTrigger id="physical_location">
+                                <Label for="physical_location_id">Physical Location</Label>
+                                <Select v-model="form.physical_location_id" required>
+                                    <SelectTrigger id="physical_location_id">
                                         <SelectValue placeholder="Select location" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="main">Main Library</SelectItem>
-                                        <!-- More options -->
+                                        <SelectItem value="1">Main Library</SelectItem>
                                     </SelectContent>
                                 </Select>
-                            </div>
-                            <div class="grid gap-2">
-                                <Label for="location_symbol">Location Symbol</Label>
-                                <Input id="location_symbol" type="text" readonly v-model="form.location_symbol" />
                             </div>
                         </div>
                     </section>
 
                     <!-- Physical Description -->
                     <section class="space-y-6">
-                        <h2 class="text-lg font-semibold text-gray-900">Physical Description</h2>
+                        <h2 class="text-lg font-semibold">Physical Description</h2>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div class="grid gap-2">
-                                <Label for="edition">Edition</Label>
-                                <Input id="edition" type="text" v-model="form.edition" />
+                                <Label for="cover_image">Cover Image</Label>
+                                <Input id="cover_image" type="file" @change="e => form.cover_image = e.target.files[0]" />
                             </div>
+                        </div>
+                    </section>
+
+                    <!-- Administrative Information -->
+                    <section class="space-y-6">
+                        <h2 class="text-lg font-semibold">Administrative Information</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- ICS -->
+                            <div class="grid gap-2">
+                                <Label for="ics_number">ICS Number</Label>
+                                <Input id="ics_number" type="number" v-model="form.ics_number" />
+                            </div>
+                            <div v-if="form.ics_number" class="grid gap-2">
+                                <Label for="ics_date">ICS Date</Label>
+                                <Input id="ics_date" type="date" v-model="form.ics_date" />
+                            </div>
+
+                            <!-- PR -->
+                            <div class="grid gap-2">
+                                <Label for="pr_number">PR Number</Label>
+                                <Input id="pr_number" type="number" v-model="form.pr_number" />
+                            </div>
+                            <div v-if="form.pr_number" class="grid gap-2">
+                                <Label for="pr_date">PR Date</Label>
+                                <Input id="pr_date" type="date" v-model="form.pr_date" />
+                            </div>
+
+                            <!-- PO -->
+                            <div class="grid gap-2">
+                                <Label for="po_number">PO Number</Label>
+                                <Input id="po_number" type="number" v-model="form.po_number" />
+                            </div>
+                            <div v-if="form.po_number" class="grid gap-2">
+                                <Label for="po_date">PO Date</Label>
+                                <Input id="po_date" type="date" v-model="form.po_date" />
+                            </div>
+
+                            <!-- Source -->
+                            <div class="grid gap-2">
+                                <Label for="source">Source</Label>
+                                <Select v-model="form.source" required>
+                                    <SelectTrigger id="source">
+                                        <SelectValue placeholder="Select source" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="purchase">Purchase</SelectItem>
+                                        <SelectItem value="donation">Donation</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <!-- Purchase-specific -->
+                            <template v-if="form.source === 'purchase'">
+                                <div class="grid gap-2">
+                                    <Label for="purchase_amount">Purchase Amount</Label>
+                                    <Input id="purchase_amount" type="number" step="0.01" v-model="form.purchase_amount" />
+                                </div>
+                                <div class="grid gap-2">
+                                    <Label for="lot_cost">Lot Cost</Label>
+                                    <Input id="lot_cost" type="number" step="0.01" v-model="form.lot_cost" />
+                                </div>
+                                <div class="grid gap-2">
+                                    <Label for="supplier">Supplier</Label>
+                                    <Input id="supplier" type="text" v-model="form.supplier" />
+                                </div>
+                            </template>
+
+                            <!-- Donation-specific -->
+                            <template v-if="form.source === 'donation'">
+                                <div class="grid gap-2">
+                                    <Label for="donated_by">Donated By</Label>
+                                    <Input id="donated_by" type="text" v-model="form.donated_by" />
+                                </div>
+                            </template>
+
+                            <!-- Shared fields -->
                             <div class="grid gap-2">
                                 <Label for="cover_type">Cover Type</Label>
                                 <Select v-model="form.cover_type">
@@ -190,37 +252,6 @@ const submit = () => {
                                 </Select>
                             </div>
                             <div class="grid gap-2">
-                                <Label for="book_cover_image">Book Cover Image</Label>
-                                <Input id="book_cover_image" type="file" @change="e => form.book_cover_image = e.target.files[0]" />
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Administrative Information -->
-                    <section class="space-y-6">
-                        <h2 class="text-lg font-semibold text-gray-900">Administrative Information</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="grid gap-2">
-                                <Label for="date_acquired">Date Acquired</Label>
-                                <Input id="date_acquired" type="date" v-model="form.date_acquired" />
-                            </div>
-                            <div class="grid gap-2">
-                                <Label for="source">Source</Label>
-                                <Select v-model="form.source">
-                                    <SelectTrigger id="source">
-                                        <SelectValue placeholder="Select source" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="purchase">Purchase</SelectItem>
-                                        <SelectItem value="donation">Donation</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div class="grid gap-2">
-                                <Label for="purchase_amount">Purchase Amount</Label>
-                                <Input id="purchase_amount" type="number" step="0.01" v-model="form.purchase_amount" />
-                            </div>
-                            <div class="grid gap-2">
                                 <Label for="acquisition_status">Acquisition Status</Label>
                                 <Select v-model="form.acquisition_status">
                                     <SelectTrigger id="acquisition_status">
@@ -232,31 +263,41 @@ const submit = () => {
                                     </SelectContent>
                                 </Select>
                             </div>
+                            <div class="grid gap-2">
+                                <Label for="condition">Condition</Label>
+                                <Select v-model="form.condition">
+                                    <SelectTrigger id="condition">
+                                        <SelectValue placeholder="Select condition" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="new">New</SelectItem>
+                                        <SelectItem value="good">Good</SelectItem>
+                                        <SelectItem value="fair">Fair</SelectItem>
+                                        <SelectItem value="poor">Poor</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
                     </section>
 
                     <!-- Content Description -->
                     <section class="space-y-6">
-                        <h2 class="text-lg font-semibold text-gray-900">Content Description</h2>
-                        <div class="grid grid-cols-1 gap-6">
+                        <h2 class="text-lg font-semibold">Content Description</h2>
+                        <div class="grid gap-6">
                             <div class="grid gap-2">
                                 <Label for="table_of_contents">Table of Contents</Label>
-                                <Textarea id="table_of_contents" v-model="form.table_of_contents" />
+                                <Textarea id="table_of_contents" rows="4" v-model="form.table_of_contents" />
                             </div>
                             <div class="grid gap-2">
-                                <Label for="summary_abstract">Summary / Abstract</Label>
-                                <Textarea id="summary_abstract" v-model="form.summary_abstract" />
-                            </div>
-                            <div class="grid gap-2">
-                                <Label for="additional_notes">Additional Notes</Label>
-                                <Textarea id="additional_notes" v-model="form.additional_notes" />
+                                <Label>Subject Headings</Label>
+                                <SubjectTagsInput v-model="form.subject_headings" />
                             </div>
                         </div>
                     </section>
 
                     <!-- Submit -->
                     <div class="flex justify-end pt-4">
-                        <Button type="submit" class="w-full md:w-auto px-8 py-2" :disabled="form.processing">
+                        <Button type="submit" :disabled="form.processing">
                             <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin mr-2" />
                             Create Book Record
                         </Button>
