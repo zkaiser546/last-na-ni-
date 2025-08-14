@@ -104,14 +104,16 @@ class FacultyController extends Controller
      */
     public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
-        dd($request->all());
         $validator = Validator::make($request->all(), [
-            'first_name' => 'required|string|max:50',
-            'last_name' => 'required|string|max:50',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'faculty_id' => 'required|integer|unique:'.Faculty::class,
-            'department' =>  'required|string|max:50',
-            'title' =>   'required|string|max:50',
+            'library_id'     => 'required|integer|unique:' . User::class,
+            'first_name'     => 'required|string|max:50',
+            'middle_initial' => 'nullable|string|max:1',
+            'last_name'      => 'required|string|max:50',
+            'sex'            => 'required|in:m,f',
+            'contact_number' => 'nullable|string|max:20',
+            'role_title'     => 'required|string|max:50',
+            'email'          => 'required|string|lowercase|email|max:255|unique:' . User::class,
+            'office_id'      => 'required|exists:offices,id',
         ]);
 
         if ($validator->fails()) {
@@ -121,21 +123,27 @@ class FacultyController extends Controller
                 ->with('error', 'Please fix the validation errors below.');
         }
 
+        // Create the user
         $user = User::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'user_type' => 'faculty',
+            'library_id' => $request->library_id,
+            'first_name'     => $request->first_name,
+            'middle_initial' => $request->middle_initial,
+            'last_name'      => $request->last_name,
+            'sex'            => $request->sex,
+            'contact_number' => $request->contact_number,
+            'email'          => $request->email,
+            'user_type'      => 'faculty',
         ]);
 
+        // Create the faculty profile linked to the user
         $user->faculty()->create([
-            'faculty_id' => $request->faculty_id,
-            'department' => $request->department,
-            'title' => $request->title,
+            'role_title' => $request->role_title,
+            'office_id'  => $request->office_id,
         ]);
 
         return to_route('users.index')->with('success', 'You successfully created a new Faculty');
     }
+
 
     /**
      * Display the specified resource.
