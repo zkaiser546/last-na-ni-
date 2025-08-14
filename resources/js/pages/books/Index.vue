@@ -278,8 +278,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const createNewStaffAdmin = () => {
-    router.get(route('students.create'));
+const createNewBook = () => {
+    router.get(route('books.create'));
 }
 
 const showDeleteAlert = ref(false);
@@ -334,7 +334,7 @@ const handleDelete = (id) => {
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <Button variant="outline" @click="createNewStaffAdmin">
+                        <Button variant="outline" @click="createNewBook">
                             <Plus class="h-4"></Plus>
                             Create New
                         </Button>

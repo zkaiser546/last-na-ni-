@@ -63,6 +63,33 @@ class BookController extends Controller
         ]);
     }
 
+    public function create(): \Inertia\Response
+    {
+        $ddcClassifications = DdcClassification::select('id', 'name', 'code')
+            ->orderBy('name')
+            ->get();
+
+        $lcClassifications = LcClassification::select('id', 'code', 'name')
+            ->orderBy('name')
+            ->get();
+
+        $physicalLocations = PhysicalLocation::select('id', 'symbol', 'name')
+            ->orderBy('name')
+            ->get();
+
+        $coverTypes = CoverType::select('id', 'name')->orderBy('name')->get();
+
+        $sources = Source::select('id', 'name')->orderBy('name')->get();
+
+        return Inertia::render('books/Create', [
+            'ddcClassifications' => $ddcClassifications,
+            'lcClassifications'  => $lcClassifications,
+            'physicalLocations'  => $physicalLocations,
+            'coverTypes'         => $coverTypes,
+            'sources'         => $sources,
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
