@@ -6,36 +6,28 @@ import { Link, usePage } from '@inertiajs/vue3';
 
 const sidebarNavItems: NavItem[] = [
     {
-        title: 'Faculties',
-        href: '/users/faculties',
+        title: 'Books',
+        href: '/records/books',
     },
     {
-        title: 'Students',
-        href: '/users/students',
+        title: 'Multimedia Collections',
+        href: '/records/multimedia',
     },
 ];
 
 const rightNavItems: NavItem[] = [
     {
+        title: 'Import',
+        href: 'records//books/import',
+    },
+    {
         title: 'Options',
-        href: '/users/options',
+        href: '/records/options',
     },
 ];
 
 
 const page = usePage();
-
-if (page.props.auth.permissions.can_view_any_users)
-{
-    sidebarNavItems.unshift({
-        title: 'Staff Admins',
-        href: '/users/admins',
-    });
-    rightNavItems.unshift( {
-        title: 'Import',
-        href: '/users/import',
-    })
-}
 
 const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.location).pathname : '';
 </script>
