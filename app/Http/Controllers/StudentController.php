@@ -55,12 +55,6 @@ class StudentController extends Controller
             ->orderBy('name')
             ->get();
 
-        // --- ADDED: Load data for frontend filters ---
-        $programs = Program::select('id', 'code', 'name')->orderBy('name')->get();
-        $majors = Major::select('id', 'name')->orderBy('name')->get();
-        $colleges = College::select('id', 'code', 'name')->orderBy('name')->get();
-        // ---------------------------------------------
-
         $users = User::query()
             ->with('userType')
             ->when($user_type_id, function ($query, $user_type_id) {
@@ -89,9 +83,6 @@ class StudentController extends Controller
             'data' => $users,
             'filter' => $filters,
             'userTypes' => $userTypes,
-            'programs' => $programs, // Added prop
-            'majors' => $majors,     // Added prop
-            'colleges' => $colleges,   // Added prop
             'currentSortField' => $sortField,
             'currentSortDirection' => $sortDirection,
         ]);
@@ -100,10 +91,19 @@ class StudentController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): \Inertia\Response
     {
-        return Inertia::render('students/Create');
+        $programs = Program::select('id', 'code', 'name')->orderBy('name')->get();
+        $majors = Major::select('id', 'name')->orderBy('name')->get();
+        $colleges = College::select('id', 'code', 'name')->orderBy('name')->get();
+
+        return Inertia::render('students/Create', [
+            'programs' => $programs,
+            'majors' => $majors,
+            'colleges' => $colleges,
+        ]);
     }
+
 
     /**
      * Store a newly created resource in storage.
