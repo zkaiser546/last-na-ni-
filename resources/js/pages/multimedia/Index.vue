@@ -273,8 +273,8 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/records',
     },
     {
-        title: 'Books',
-        href: '/records/books',
+        title: 'Multimedia',
+        href: '/records/multimedia',
     },
 ];
 
@@ -308,7 +308,7 @@ const handleDelete = (id) => {
 </script>
 
 <template>
-    <Head title="Welcome" />
+    <Head title="Multimedia" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <RecordsLayout>
