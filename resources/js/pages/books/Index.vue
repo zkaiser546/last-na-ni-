@@ -16,7 +16,7 @@ import {
 import { ArrowUpDown, ChevronDown, ListFilter, X } from 'lucide-vue-next';
 
 import { h, ref } from 'vue'
-import DropdownAction from '../records/DataTableDemoColumn.vue'
+import DropdownAction from './DataTableDemoColumn.vue'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -380,7 +380,7 @@ const clearFilter = () => {
     table.getColumn('search')?.setFilterValue('')
 }
 
-import Filter from '../records/Filter.vue'
+import Filter from './Filter.vue'
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
 
