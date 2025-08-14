@@ -143,7 +143,7 @@ class AdminController extends Controller
             // event(new Registered($user));
             // i trigger ana ang mailler
 
-            return to_route('users.index')->with('success', 'You successfully created a new Admin');
+            return to_route('admins.index')->with('success', 'You successfully created a new Admin');
 
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             \Log::error('Error creating admin user: ' . $e->getMessage(), [
