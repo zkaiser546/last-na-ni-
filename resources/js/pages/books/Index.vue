@@ -380,7 +380,7 @@ const clearFilter = () => {
     table.getColumn('search')?.setFilterValue('')
 }
 
-import Filter from './Filter.vue'
+import Filter from '../users/Filter.vue'
 import AppLayout from '@/layouts/AppLayout.vue';
 import RecordsLayout from '@/layouts/records/Layout.vue';
 import type { BreadcrumbItem } from '@/types';

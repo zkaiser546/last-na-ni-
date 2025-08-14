@@ -14,7 +14,7 @@ import {
 import { ArrowUpDown, ChevronDown, X } from 'lucide-vue-next'
 
 import { h, ref } from 'vue'
-import DropdownAction from './DataTableDemoColumn.vue'
+import DropdownAction from '../users/DataTableDemoColumn.vue'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
     DropdownMenu,
@@ -391,7 +391,7 @@ const selectedUserId = ref(null);
 const handleDelete = (id) => {
     console.log('Deleting user with ID:', id);
 
-    router.delete(route('admins.destroy', id), {
+    router.delete(route('faculties.destroy', id), {
         preserveState: false,  // Important: Don't preserve state so fresh data is fetched
         preserveScroll: true,  // Keep scroll position
         onSuccess: () => {
