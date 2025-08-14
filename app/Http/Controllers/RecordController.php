@@ -14,75 +14,9 @@ class RecordController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): \Inertia\Response
+    public function index()
     {
-        $perPage = $request->input('per_page', 10);
-        $ddc_class_id = $request->input('ddc_class_id', null);
-        $sortField = $request->input('sort_field', null);
-        $sortDirection = $request->input('sort_direction', 'asc');
-        $filters = [];
-
-        if (!empty($ddc_class_id)) {
-            $filters[] = [
-                'id' => 'ddc_class_id',
-                'value' => $ddc_class_id
-            ];
-        }
-
-        // Capture search parameters
-        $searchTerm = $request->input('search');
-        if (!empty($searchTerm)) {
-            $filters[] = [
-                'id' => 'search',
-                'value' => $searchTerm
-            ];
-        }
-
-        // Get all DDC classes for filter dropdown
-        $ddcClasses = DdcClassification::select('id', 'name')
-            ->orderBy('name')
-            ->get();
-
-        $records = Record::query()
-            ->with(['book.ddcClassification']) // Load nested relationship
-            ->when($ddc_class_id, function ($query, $ddc_class_id) {
-                // Handle both single values and arrays
-                if (is_array($ddc_class_id) && !empty($ddc_class_id)) {
-                    // Convert string values to integers if needed
-                    $ddcClassIds = array_map('intval', array_filter($ddc_class_id));
-                    if (!empty($ddcClassIds)) {
-                        $query->whereHas('book', function ($bookQuery) use ($ddcClassIds) {
-                            $bookQuery->whereIn('ddc_class_id', $ddcClassIds);
-                        });
-                    }
-                } elseif (!empty($ddc_class_id)) {
-                    $query->whereHas('book', function ($bookQuery) use ($ddc_class_id) {
-                        $bookQuery->where('ddc_class_id', (int)$ddc_class_id);
-                    });
-                }
-            })
-            ->when($searchTerm, function ($query, $searchTerm) {
-                $query->where(function ($q) use ($searchTerm) {
-                    $q->where('accession_number', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('title', 'like', '%' . $searchTerm . '%')
-                        ->orWhereHas('book', function ($bookQuery) use ($searchTerm) {
-                            // Simple LIKE search on the JSON column as text
-                            $bookQuery->where('authors', 'like', '%' . $searchTerm . '%');
-                        });
-                });
-            })
-            ->when($sortField, function ($query, $sortField) use ($sortDirection) {
-                $query->orderBy($sortField, $sortDirection);
-            })
-            ->paginate(perPage: $perPage);
-
-        return Inertia::render('records/Index', [
-            'data' => $records,
-            'filter' => $filters,
-            'ddcClasses' => $ddcClasses,
-            'currentSortField' => $sortField,
-            'currentSortDirection' => $sortDirection,
-        ]);
+        return to_route('books.index');
     }
 
     /**
