@@ -410,6 +410,10 @@ const breadcrumbs: BreadcrumbItem[] = [
         title: 'Records',
         href: '/records',
     },
+    {
+        title: 'Books',
+        href: '/records/books',
+    },
 ];
 
 </script>
