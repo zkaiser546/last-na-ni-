@@ -16,7 +16,7 @@ import {
 import { ArrowUpDown, ChevronDown, ListFilter, X } from 'lucide-vue-next';
 
 import { h, ref } from 'vue'
-import DropdownAction from './DataTableDemoColumn.vue'
+import DropdownAction from '../records/DataTableDemoColumn.vue'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -400,9 +400,8 @@ const filter_toolbar = [
     filter_ddc_class,
 ];
 
-const showDialog = ref(false);
-const showDialogCreate = () => {
-    showDialog.value = true
+const createNewBook = () => {
+    router.get(route('books.create'));
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -449,7 +448,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             </div>
                         </div>
                         <div class="flex gap-2">
-                            <Button variant="outline" @click="showDialogCreate">
+                            <Button variant="outline" @click="createNewBook">
                                 <Plus class="h-4"></Plus>
                                 Create New
                             </Button>
