@@ -118,9 +118,9 @@ class StudentController extends Controller
                 'accession_number'      => 'required|string|max:50|unique:records,accession_number',
                 'title'                 => 'required|string|max:255',
                 'authors'               => 'required|array|min:1',
-                'authors.*'              => 'string|max:255',
+                'authors.*'             => 'string|max:255',
                 'editors'               => 'nullable|array',
-                'editors.*'              => 'string|max:255',
+                'editors.*'             => 'string|max:255',
                 'publication_year'      => 'required|integer|min:1000|max:' . date('Y'),
                 'publisher'             => 'required|string|max:255',
                 'publication_place'     => 'required|string|max:255',
@@ -134,6 +134,7 @@ class StudentController extends Controller
 
                 // Physical Description
                 'cover_image'           => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
+                'status'                => 'required|in:available,damaged,missing,borrowed,discarded', // Added status validation
 
                 // Administrative Information
                 'ics_number'            => 'nullable|string|max:50',
@@ -148,7 +149,6 @@ class StudentController extends Controller
                 'supplier'              => 'nullable|string|max:255',
                 'donated_by'            => 'nullable|string|max:255',
                 'cover_type'            => 'nullable|in:hardcover,paperback',
-                'condition'             => 'nullable|string|max:255',
 
                 // Content Description
                 'table_of_contents'     => 'nullable|string',
@@ -174,8 +174,8 @@ class StudentController extends Controller
             $record = Record::create([
                 'accession_number' => $request->accession_number,
                 'title'            => $request->title,
-                'condition'        => $request->condition,
                 'subject_headings' => $request->subject_headings,
+                'status'           => $request->status, // Added status field
                 'added_by'         => auth()->id(),
             ]);
 
