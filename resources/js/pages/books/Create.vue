@@ -20,6 +20,7 @@ const props = defineProps<{
     lcClassifications: { id: number; code: string; name: string }[];
     physicalLocations: { id: number; name: string; symbol: string }[];
     coverTypes: { id: number; name: string }[];
+    sources: { id: number; name: string }[];
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -48,7 +49,7 @@ const form = useForm({
     pr_date: '',
     po_number: '',
     po_date: '',
-    source: '',
+    source_id: '',
     purchase_amount: '',
     lot_cost: '',
     supplier: '',
@@ -264,16 +265,21 @@ const submit = () => {
                             <!-- Source -->
                             <div class="grid gap-2">
                                 <Label for="source">Source</Label>
-                                <Select v-model="form.source" required>
+                                <Select v-model="form.source_id" required>
                                     <SelectTrigger id="source">
                                         <SelectValue placeholder="Select source" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="purchase">Purchase</SelectItem>
-                                        <SelectItem value="donation">Donation</SelectItem>
+                                        <SelectItem
+                                            v-for="source in props.sources"
+                                            :key="source.id"
+                                            :value="source.id"
+                                        >
+                                            {{ source.name }}
+                                        </SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <InputError :message="form.errors.source" />
+                                <InputError :message="form.errors.source_id" />
                             </div>
 
                             <!-- Purchase-specific -->
