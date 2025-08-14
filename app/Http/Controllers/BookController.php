@@ -114,11 +114,14 @@ class BookController extends Controller
 
         $coverTypes = CoverType::select('id', 'name')->orderBy('name')->get();
 
+        $sources = Source::select('id', 'name')->orderBy('name')->get();
+
         return Inertia::render('books/Create', [
             'ddcClassifications' => $ddcClassifications,
             'lcClassifications'  => $lcClassifications,
             'physicalLocations'  => $physicalLocations,
             'coverTypes'         => $coverTypes,
+            'sources'         => $sources,
         ]);
     }
 
@@ -159,12 +162,12 @@ class BookController extends Controller
                 'pr_date'               => 'nullable|date',
                 'po_number'             => 'nullable|max:50',
                 'po_date'               => 'nullable|date',
-                'source'                => 'required|in:purchase,donation',
+                'source_id'                => 'required|exists:sources,id',
                 'purchase_amount'       => 'nullable|numeric|min:0',
                 'lot_cost'              => 'nullable|numeric|min:0',
                 'supplier'              => 'nullable|string|max:255',
                 'donated_by'            => 'nullable|string|max:255',
-                'cover_type_id'           => 'nullable|exists:cover_types,id|required_without:cover_type_id',
+                'cover_type_id'           => 'nullable|exists:cover_types,id',
 
                 // Content Description
                 'table_of_contents'     => 'nullable|string',
@@ -192,6 +195,7 @@ class BookController extends Controller
                 'title'            => $request->title,
                 'subject_headings' => $request->subject_headings,
                 'status'           => $request->status, // Added status field
+                'date_received'   => now(),
                 'added_by'         => auth()->id(),
             ]);
 
@@ -215,7 +219,7 @@ class BookController extends Controller
                 'pr_date'              => $request->pr_date,
                 'po_number'            => $request->po_number,
                 'po_date'              => $request->po_date,
-                'source'               => $request->source,
+                'source_id'               => $request->source_id,
                 'purchase_amount'      => $request->purchase_amount,
                 'lot_cost'             => $request->lot_cost,
                 'supplier'             => $request->supplier,
