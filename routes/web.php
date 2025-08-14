@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BorrowingTransactionController;
+use App\Http\Controllers\ClearanceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\GradSchoolStudentController;
@@ -14,6 +15,11 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\CoreCollectionController;
+use App\Http\Controllers\MissingCollectionController;
+use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\ReportsPenaltyController;
+use App\Http\Controllers\TransactionProfileController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 Route::get('/logger/create', [LibraryVisitController::class, 'create'])->name('logger.create');
@@ -22,6 +28,10 @@ Route::post('/', [LibraryVisitController::class, 'store'])->name('logger.store')
 // Routes that require authentication and verification
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/clearance', [ClearanceController::class, 'index'])->name('clearance.index');
+    Route::post('/clearance/export', [ClearanceController::class, 'export'])->name('clearance.export');
+
     Route::prefix('users')->group(function () {
 
         Route::get('/', [UserController::class, 'index'])->name('users.index');
@@ -55,6 +65,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('logger')->group(function () {
         Route::get('/', [LibraryVisitController::class, 'index'])->name('logger.index');
     });
+
+    // Reports routes
+    Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
+    Route::get('/reports/penalty', [ReportsPenaltyController::class, 'index'])->name('reports.penalty');
+    Route::get('/reports/transaction-profile', [TransactionProfileController::class, 'index'])->name('reports.transaction-profile');
+    Route::get('/reports/missing-collection', [MissingCollectionController::class, 'index'])->name('reports.missing-collection');
+    Route::get('/reports/core-collection', [CoreCollectionController::class, 'index'])->name('reports.core-collection');
 
 });
 
