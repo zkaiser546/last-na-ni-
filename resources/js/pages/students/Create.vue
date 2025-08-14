@@ -10,17 +10,21 @@ import { Button } from '@/components/ui/button';
 import { LoaderCircle } from 'lucide-vue-next';
 import Layout from '@/layouts/users/Layout.vue';
 
+// Define the props passed from the controller
 defineProps<{
-    offices: { id: number; acronym: string; name: string }[];
+    programs: { id: number; code: string; name: string }[];
+    majors: { id: number; name: string }[];
+    colleges: { id: number; code: string; name: string }[];
 }>();
 
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Users', href: '/users' },
     { title: 'Students', href: '/users/students' },
-    { title: 'Create Students', href: '/users/students/create' },
+    { title: 'Create Student', href: '/users/students/create' },
 ];
 
+// Initialize the form with all necessary fields
 const form = useForm({
     library_id: '',
     first_name: '',
@@ -28,18 +32,23 @@ const form = useForm({
     last_name: '',
     sex: '',
     contact_number: '',
-    role_title: '',
     email: '',
     student_type: '',
+    college_id: null,
+    program_id: null,
+    major_id: null,
 });
 
+// Handle form submission
 const submit = () => {
-    form.post(route('faculties.store'));
+    // Corrected the route to store a student
+    form.post(route('students.store'));
 };
 </script>
 
 <template>
-    <Head title="Create Admins" />
+    <!-- Corrected the Head title -->
+    <Head title="Create Student" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <Layout>
@@ -64,7 +73,7 @@ const submit = () => {
 
                             <div class="grid gap-2">
                                 <Label for="middle_initial" class="text-sm font-medium">Middle Initial</Label>
-                                <Input id="middle_initial" type="text" :tabindex="3" v-model="form.middle_initial" placeholder="Middle Initial" maxlength="1" class="h-10" />
+                                <Input id="middle_initial" type="text" :tabindex="3" v-model="form.middle_initial" placeholder="MI" maxlength="1" class="h-10" />
                                 <InputError :message="form.errors.middle_initial" />
                             </div>
 
@@ -108,10 +117,10 @@ const submit = () => {
                         </div>
                     </div>
 
-                    <!-- Account Information Section -->
+                    <!-- Academic Information Section -->
                     <div class="space-y-6">
-                        <h2 class="text-lg font-semibold text-gray-900">Account Information</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <h2 class="text-lg font-semibold text-gray-900">Academic Information</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div class="grid gap-2">
                                 <Label for="office_id" class="text-sm font-medium">Office</Label>
                                 <Select v-model="form.student_type" required>
@@ -125,15 +134,62 @@ const submit = () => {
                                 </Select>
                                 <InputError :message="form.errors.student_type" />
                             </div>
+                            <!-- College Select Input -->
+                            <div class="grid gap-2">
+                                <Label for="college_id" class="text-sm font-medium">College</Label>
+                                <Select v-model="form.college_id" required>
+                                    <SelectTrigger id="college_id" class="h-10">
+                                        <SelectValue placeholder="Select college" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {{ console.log(colleges) }}
+                                        <SelectItem v-for="college in colleges" :key="college.id" :value="college.id">
+                                            {{ college.name }} ({{ college.code }})
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <InputError :message="form.errors.college_id" />
+                            </div>
 
+                            <!-- Program Select Input -->
+                            <div class="grid gap-2">
+                                <Label for="program_id" class="text-sm font-medium">Program</Label>
+                                <Select v-model="form.program_id" required>
+                                    <SelectTrigger id="program_id" class="h-10">
+                                        <SelectValue placeholder="Select program" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem v-for="program in programs" :key="program.id" :value="program.id">
+                                            {{ program.name }} ({{ program.code }})
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <InputError :message="form.errors.program_id" />
+                            </div>
+
+                            <!-- Major Select Input -->
+                            <div class="grid gap-2">
+                                <Label for="major_id" class="text-sm font-medium">Major (if applicable)</Label>
+                                <Select v-model="form.major_id">
+                                    <SelectTrigger id="major_id" class="h-10">
+                                        <SelectValue placeholder="Select major" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem v-for="major in majors" :key="major.id" :value="major.id">
+                                            {{ major.name }}
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <InputError :message="form.errors.major_id" />
+                            </div>
                         </div>
                     </div>
 
                     <!-- Submit Button -->
-                    <div class="flex justify-end">
+                    <div class="flex justify-end pt-4">
                         <Button type="submit" class="w-full md:w-auto px-8 py-2" tabindex="9" :disabled="form.processing">
                             <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin mr-2" />
-                            Create Account
+                            Create Student Account
                         </Button>
                     </div>
                 </form>
