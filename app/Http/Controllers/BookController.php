@@ -112,7 +112,7 @@ class BookController extends Controller
             ->orderBy('name')
             ->get();
 
-        $coverTypes = CoverType::select('id', 'key', 'name')->orderBy('name')->get();
+        $coverTypes = CoverType::select('id', 'name')->orderBy('name')->get();
 
         return Inertia::render('books/Create', [
             'ddcClassifications' => $ddcClassifications,
@@ -164,7 +164,7 @@ class BookController extends Controller
                 'lot_cost'              => 'nullable|numeric|min:0',
                 'supplier'              => 'nullable|string|max:255',
                 'donated_by'            => 'nullable|string|max:255',
-                'cover_type'            => 'nullable|in:hardcover,paperback',
+                'cover_type_id'           => 'nullable|exists:cover_types,id|required_without:cover_type_id',
 
                 // Content Description
                 'table_of_contents'     => 'nullable|string',
@@ -207,7 +207,7 @@ class BookController extends Controller
                 'ddc_class_id'         => $request->ddc_class_id,
                 'lc_class_id'          => $request->lc_class_id,
                 'physical_location_id' => $request->physical_location_id,
-                'cover_type'           => $request->cover_type,
+                'cover_type_id'           => $request->cover_type_id,
                 'cover_image'          => $coverImagePath,
                 'ics_number'           => $request->ics_number,
                 'ics_date'             => $request->ics_date,

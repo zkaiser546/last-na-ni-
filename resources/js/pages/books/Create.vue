@@ -19,7 +19,7 @@ const props = defineProps<{
     ddcClassifications: { id: number; code: string; name: string }[];
     lcClassifications: { id: number; code: string; name: string }[];
     physicalLocations: { id: number; name: string; symbol: string }[];
-    coverTypes: { id: number; key: string; name: string }[];
+    coverTypes: { id: number; name: string }[];
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -53,7 +53,7 @@ const form = useForm({
     lot_cost: '',
     supplier: '',
     donated_by: '',
-    cover_type: '',
+    cover_type_id: '',
     table_of_contents: '',
     subject_headings: [],
     status: 'available',
@@ -304,20 +304,26 @@ const submit = () => {
                                 </div>
                             </template>
 
-                            <!-- Shared fields -->
+                            <!-- Cover Type -->
                             <div class="grid gap-2">
                                 <Label for="cover_type">Cover Type</Label>
-                                <Select v-model="form.cover_type">
+                                <Select v-model="form.cover_type_id" required>
                                     <SelectTrigger id="cover_type">
                                         <SelectValue placeholder="Select cover type" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="hardcover">Hardcover</SelectItem>
-                                        <SelectItem value="paperback">Paperback</SelectItem>
+                                        <SelectItem
+                                            v-for="type in props.coverTypes"
+                                            :key="type.id"
+                                            :value="type.id"
+                                        >
+                                            {{ type.name }}
+                                        </SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <InputError :message="form.errors.cover_type" />
+                                <InputError :message="form.errors.cover_type_id" />
                             </div>
+
                         </div>
                     </section>
 
