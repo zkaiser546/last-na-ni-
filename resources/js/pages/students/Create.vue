@@ -142,7 +142,6 @@ const submit = () => {
                                         <SelectValue placeholder="Select college" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {{ console.log(colleges) }}
                                         <SelectItem v-for="college in colleges" :key="college.id" :value="college.id">
                                             {{ college.name }} ({{ college.code }})
                                         </SelectItem>
