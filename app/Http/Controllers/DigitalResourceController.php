@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DigitalResource;
 use App\Models\Record;
+use App\Models\Source;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -54,7 +55,11 @@ class DigitalResourceController extends Controller
      */
     public function create()
     {
-        return Inertia::render('multimedia/Create');
+        $sources = Source::select('id', 'name')->orderBy('name')->get();
+
+        return Inertia::render('multimedia/Create', [
+            'sources'         => $sources,
+        ]);
     }
 
     /**

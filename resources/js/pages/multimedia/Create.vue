@@ -16,11 +16,7 @@ import SubjectTagsInput from '@/components/SubjectTagsInput.vue';
 
 // Props from Inertia
 const props = defineProps<{
-    languages: { id: number; name: string }[];
-    collectionTypes: { id: number; name: string }[];
     sources: { id: number; name: string; key: string }[];
-    acquisitionStatuses: { id: number; name: string }[];
-    conditions: { id: number; name: string }[];
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -46,8 +42,6 @@ const form = useForm({
     lot_cost: '',
     supplier: '',
     donated_by: '',
-    acquisition_status: '',
-    condition: '',
     overview: '',
     subject_headings: [],
 });
@@ -116,17 +110,14 @@ const submit = () => {
                                         <SelectValue placeholder="Select language" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem
-                                            v-for="lang in props.languages"
-                                            :key="lang.id"
-                                            :value="lang.id"
-                                        >
-                                            {{ lang.name }}
-                                        </SelectItem>
+                                        <SelectItem value="Bisaya">Bisaya</SelectItem>
+                                        <SelectItem value="Filipino">Filipino</SelectItem>
+                                        <SelectItem value="English">English</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 <InputError :message="form.errors.language" />
                             </div>
+
                         </div>
                     </section>
 
@@ -141,13 +132,11 @@ const submit = () => {
                                         <SelectValue placeholder="Select collection type" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem
-                                            v-for="type in props.collectionTypes"
-                                            :key="type.id"
-                                            :value="type.id"
-                                        >
-                                            {{ type.name }}
-                                        </SelectItem>
+                                        <SelectItem value="cd">CD</SelectItem>
+                                        <SelectItem value="duplicate_copy">Duplicate Copy</SelectItem>
+                                        <SelectItem value="cassette">Cassette</SelectItem>
+                                        <SelectItem value="vhs">VHS</SelectItem>
+                                        <SelectItem value="cdr">CDR</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 <InputError :message="form.errors.collection_type" />
@@ -215,43 +204,6 @@ const submit = () => {
                                     <InputError :message="form.errors.donated_by" />
                                 </div>
                             </template>
-
-                            <div class="grid gap-2">
-                                <Label for="acquisition_status">Acquisition Status</Label>
-                                <Select v-model="form.acquisition_status">
-                                    <SelectTrigger id="acquisition_status">
-                                        <SelectValue placeholder="Select acquisition status" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem
-                                            v-for="status in props.acquisitionStatuses"
-                                            :key="status.id"
-                                            :value="status.id"
-                                        >
-                                            {{ status.name }}
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <InputError :message="form.errors.acquisition_status" />
-                            </div>
-                            <div class="grid gap-2">
-                                <Label for="condition">Condition</Label>
-                                <Select v-model="form.condition">
-                                    <SelectTrigger id="condition">
-                                        <SelectValue placeholder="Select condition" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem
-                                            v-for="cond in props.conditions"
-                                            :key="cond.id"
-                                            :value="cond.id"
-                                        >
-                                            {{ cond.name }}
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <InputError :message="form.errors.condition" />
-                            </div>
                         </div>
                     </section>
 
