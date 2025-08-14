@@ -18,7 +18,7 @@ import SubjectTagsInput from '@/components/SubjectTagsInput.vue';
 const props = defineProps<{
     ddcClassifications: { id: number; code: string; name: string }[];
     lcClassifications: { id: number; code: string; name: string }[];
-    physicalLocations: { id: number; name: string }[];
+    physicalLocations: { id: number; name: string; symbol?: string }[];
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -55,7 +55,7 @@ const form = useForm({
     cover_type: '',
     table_of_contents: '',
     subject_headings: [],
-    status: 'available', // Added status with default value
+    status: 'available',
 });
 
 const submit = () => {
@@ -130,6 +130,7 @@ const submit = () => {
                             <div class="grid gap-2">
                                 <Label for="call_number">Call Number</Label>
                                 <Input id="call_number" type="text" v-model="form.call_number" />
+                                <InputError :message="form.errors.call_number" />
                             </div>
                             <!-- DDC Classification -->
                             <div v-if="!form.lc_class_id" class="grid gap-2">
@@ -148,6 +149,7 @@ const submit = () => {
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>
+                                <InputError :message="form.errors.ddc_class_id" />
                             </div>
                             <!-- LC Classification -->
                             <div v-if="!form.ddc_class_id" class="grid gap-2">
@@ -166,6 +168,7 @@ const submit = () => {
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>
+                                <InputError :message="form.errors.lc_class_id" />
                             </div>
                             <!-- Physical Location -->
                             <div class="grid gap-2">
@@ -184,6 +187,7 @@ const submit = () => {
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>
+                                <InputError :message="form.errors.physical_location_id" />
                             </div>
                         </div>
                     </section>
@@ -195,6 +199,7 @@ const submit = () => {
                             <div class="grid gap-2">
                                 <Label for="cover_image">Cover Image</Label>
                                 <Input id="cover_image" type="file" @change="e => form.cover_image = e.target.files[0]" />
+                                <InputError :message="form.errors.cover_image" />
                             </div>
                             <div class="grid gap-2">
                                 <Label for="status">Status</Label>
@@ -223,30 +228,36 @@ const submit = () => {
                             <div class="grid gap-2">
                                 <Label for="ics_number">ICS Number</Label>
                                 <Input id="ics_number" type="number" v-model="form.ics_number" />
+                                <InputError :message="form.errors.ics_number" />
                             </div>
                             <div v-if="form.ics_number" class="grid gap-2">
                                 <Label for="ics_date">ICS Date</Label>
                                 <Input id="ics_date" type="date" v-model="form.ics_date" />
+                                <InputError :message="form.errors.ics_date" />
                             </div>
 
                             <!-- PR -->
                             <div class="grid gap-2">
                                 <Label for="pr_number">PR Number</Label>
                                 <Input id="pr_number" type="number" v-model="form.pr_number" />
+                                <InputError :message="form.errors.pr_number" />
                             </div>
                             <div v-if="form.pr_number" class="grid gap-2">
                                 <Label for="pr_date">PR Date</Label>
                                 <Input id="pr_date" type="date" v-model="form.pr_date" />
+                                <InputError :message="form.errors.pr_date" />
                             </div>
 
                             <!-- PO -->
                             <div class="grid gap-2">
                                 <Label for="po_number">PO Number</Label>
                                 <Input id="po_number" type="number" v-model="form.po_number" />
+                                <InputError :message="form.errors.po_number" />
                             </div>
                             <div v-if="form.po_number" class="grid gap-2">
                                 <Label for="po_date">PO Date</Label>
                                 <Input id="po_date" type="date" v-model="form.po_date" />
+                                <InputError :message="form.errors.po_date" />
                             </div>
 
                             <!-- Source -->
@@ -261,6 +272,7 @@ const submit = () => {
                                         <SelectItem value="donation">Donation</SelectItem>
                                     </SelectContent>
                                 </Select>
+                                <InputError :message="form.errors.source" />
                             </div>
 
                             <!-- Purchase-specific -->
@@ -268,14 +280,17 @@ const submit = () => {
                                 <div class="grid gap-2">
                                     <Label for="purchase_amount">Purchase Amount</Label>
                                     <Input id="purchase_amount" type="number" step="0.01" v-model="form.purchase_amount" />
+                                    <InputError :message="form.errors.purchase_amount" />
                                 </div>
                                 <div class="grid gap-2">
                                     <Label for="lot_cost">Lot Cost</Label>
                                     <Input id="lot_cost" type="number" step="0.01" v-model="form.lot_cost" />
+                                    <InputError :message="form.errors.lot_cost" />
                                 </div>
                                 <div class="grid gap-2">
                                     <Label for="supplier">Supplier</Label>
                                     <Input id="supplier" type="text" v-model="form.supplier" />
+                                    <InputError :message="form.errors.supplier" />
                                 </div>
                             </template>
 
@@ -284,6 +299,7 @@ const submit = () => {
                                 <div class="grid gap-2">
                                     <Label for="donated_by">Donated By</Label>
                                     <Input id="donated_by" type="text" v-model="form.donated_by" />
+                                    <InputError :message="form.errors.donated_by" />
                                 </div>
                             </template>
 
@@ -299,6 +315,7 @@ const submit = () => {
                                         <SelectItem value="paperback">Paperback</SelectItem>
                                     </SelectContent>
                                 </Select>
+                                <InputError :message="form.errors.cover_type" />
                             </div>
                         </div>
                     </section>
@@ -310,6 +327,7 @@ const submit = () => {
                             <div class="grid gap-2">
                                 <Label for="table_of_contents">Table of Contents</Label>
                                 <Textarea id="table_of_contents" rows="4" v-model="form.table_of_contents" />
+                                <InputError :message="form.errors.table_of_contents" />
                             </div>
                             <div class="grid gap-2">
                                 <div class="flex gap-2">
@@ -317,6 +335,7 @@ const submit = () => {
                                     <span class="text-sm text-gray-500">(Hit 'ENTER' for each subject)</span>
                                 </div>
                                 <SubjectTagsInput v-model="form.subject_headings" />
+                                <InputError :message="form.errors.subject_headings" />
                             </div>
                         </div>
                     </section>
