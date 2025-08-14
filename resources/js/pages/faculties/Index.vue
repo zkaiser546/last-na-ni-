@@ -1,9 +1,7 @@
 <script setup lang="ts">
-// import Layout from './Layout'
 import { Head, router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import { Button } from '@/components/ui/button'
-// Layout
 import {
     FlexRender,
     getCoreRowModel,
@@ -16,9 +14,8 @@ import {
 import { ArrowUpDown, ChevronDown, X } from 'lucide-vue-next'
 
 import { h, ref } from 'vue'
-import DropdownAction from './DataTableDemoColumn.vue'
+import DropdownAction from '../users/DataTableDemoColumn.vue'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Badge } from '@/components/ui/badge'
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -49,15 +46,13 @@ interface Props {
     filter?: any[]
     currentSortField?: string
     currentSortDirection?: string
-    userTypes?: any[] // Add userTypes prop for dynamic filter options
 }
 
 const props = withDefaults(defineProps<Props>(), {
     data: () => ({ data: [], current_page: 1, per_page: 10, last_page: 1 }),
     filter: () => [],
     currentSortField: undefined,
-    currentSortDirection: 'asc',
-    userTypes: () => []
+    currentSortDirection: 'asc'
 })
 
 import type { Table, Row, Column, SortingState, ColumnFiltersState, ColumnDef } from '@tanstack/vue-table'
@@ -189,31 +184,47 @@ const columns: ColumnDef<RowData>[] = [
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('sex')),
     },
     {
-        accessorKey: 'user_type_id',
-        header: 'User Type',
-        cell: ({ row }: { row: Row<RowData> }) => {
-            const userType = row.original.user_type;
-
-            if (userType) {
-                return h('div', h(Badge, userType.name || 'Unknown'))
-            } else {
-                return h('div', h(Badge, { variant: 'outline' }, 'No User Type'))
-            }
+        accessorKey: 'email',
+        header: ({ column }: { column: Column<RowData, any> }) => {
+            return h(Button, {
+                variant: 'ghost',
+                onClick: () => {
+                    const currentSort = column.getIsSorted();
+                    if (currentSort === false) {
+                        column.toggleSorting(false);
+                    } else if (currentSort === 'asc') {
+                        column.toggleSorting(true);
+                    } else {
+                        column.clearSorting();
+                    }
+                },
+            }, () => ['Email', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('email')),
         enableHiding: false,
     },
     {
         id: 'actions',
         enableHiding: false,
         cell: ({ row }: { row: Row<RowData> }) => {
-            const payment = row.original
+            const user = row.original
 
             return h('div', { class: 'relative' }, h(DropdownAction, {
-                payment,
+                user,
                 onExpand: row.toggleExpanded,
+                onEdit: (id) => {
+                    // Handle edit functionality
+                    console.log('Edit clicked for ID:', id);
+                    // Add your edit logic here
+                    // For example: router.get(route('admins.edit', id));
+                },
+                onDelete: (id) => {
+                    showDeleteAlert.value = true;
+                    selectedUserId.value = id;
+                }
             }))
         },
-    },
+    }
 ]
 
 const sorting = ref<SortingState>(
@@ -255,7 +266,7 @@ const table = useVueTable({
             pagination.value = updater;
         }
         router.get(
-            route('users.index'),
+            route('faculties.index'),
             {
                 page: pagination.value.pageIndex + 1,
                 per_page: pagination.value.pageSize,
@@ -286,7 +297,7 @@ const table = useVueTable({
         }
 
         router.get(
-            route('users.index'),
+            route('faculties.index'),
             {
                 page: 1, // Reset to first page when sorting changes
                 per_page: pagination.value.pageSize,
@@ -319,7 +330,7 @@ const table = useVueTable({
         }
 
         router.get(
-            route('users.index'),
+            route('faculties.index'),
             {
                 page: 1, // Reset to first page when filtering
                 per_page: pagination.value.pageSize,
@@ -354,39 +365,48 @@ const clearFilter = () => {
     table.getColumn('search')?.setFilterValue('')
 }
 
-import {
-    PersonIcon,
-} from "@radix-icons/vue";
-import Filter from './Filter.vue'
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
-
-//Filter - Updated to use User Types
-const filter_user_type = {
-    title: 'Filter User Type',
-    column: 'user_type_id',
-    data: props.userTypes.map(userType => ({
-        value: userType.id.toString(),
-        label: userType.name,
-        icon: h(PersonIcon), // You can customize icons per user type if needed
-    }))
-}
-
-const filter_toolbar = [
-    filter_user_type,
-];
-
-const showDialog = ref(false);
-const showDialogCreate = () => {
-    showDialog.value = true
-}
+import Layout from '@/layouts/users/Layout.vue';
+import DeleteDialog from '@/components/DeleteDialog.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Users',
         href: '/users',
     },
+    {
+        title: 'Faculties',
+        href: '/users/faculties',
+    },
 ];
+
+const createNewStaffAdmin = () => {
+    router.get(route('faculties.create'));
+}
+
+const showDeleteAlert = ref(false);
+const selectedUserId = ref(null);
+
+const handleDelete = (id) => {
+    console.log('Deleting user with ID:', id);
+
+    router.delete(route('admins.destroy', id), {
+        preserveState: false,  // Important: Don't preserve state so fresh data is fetched
+        preserveScroll: true,  // Keep scroll position
+        onSuccess: () => {
+            console.log('Delete successful');
+            // Optional: Force reload if still having issues
+            // router.reload({ only: ['data'] });
+        },
+        onError: (errors) => {
+            console.error('Delete failed:', errors);
+        }
+    });
+
+    showDeleteAlert.value = false;
+    selectedUserId.value = null;
+};
 
 </script>
 
@@ -394,7 +414,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Welcome" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="p-4">
+        <Layout>
             <div class="w-full">
                 <div class="flex gap-2 items-center justify-between py-4">
                     <div class="flex gap-2">
@@ -415,12 +435,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 <X class="h-4 w-4" />
                             </Button>
                         </div>
-                        <div v-for="filter in filter_toolbar" :key="filter.title">
-                            <Filter :column="table.getColumn(filter.column)" :title="filter.title" :options="filter.data"></Filter>
-                        </div>
                     </div>
                     <div class="flex gap-2">
-                        <Button variant="outline" @click="showDialogCreate">
+                        <Button variant="outline" @click="createNewStaffAdmin">
                             <Plus class="h-4"></Plus>
                             Create New
                         </Button>
@@ -515,7 +532,11 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </div>
                 </div>
             </div>
-            <!-- Dialog -->
-        </div>
+            <DeleteDialog
+                v-model:open="showDeleteAlert"
+                :userId="selectedUserId"
+                @confirm-delete="handleDelete"
+            />
+        </Layout>
     </AppLayout>
 </template>

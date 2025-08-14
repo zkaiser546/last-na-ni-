@@ -52,91 +52,91 @@ defineProps({
 </script>
 
 <template>
-    <Head title="Welcome" />
-    <div class="min-h-screen flex flex-col bg-background text-[#1b1b18] dark:bg-[#0a0a0a]">
-        <!-- Top Bar: Theme Switcher & Login -->
-        <div class="flex justify-between items-center px-8 py-4 border-b border-gray-200 dark:border-gray-800">
-            <div class="flex items-center gap-3">
-                <img src="/images/usep-logo-small.png" alt="USEP Logo" class="h-10 w-10" />
-                <span class="font-bold text-xl">USeP Library</span>
-            </div>
-            <div class="flex items-center gap-4">
+    <Head title="Welcome">
+    </Head>
+    <div class="flex flex-col bg-background text-[#1b1b18] lg:justify-center dark:bg-[#0a0a0a]">
+        <Link :href="route('logger.create')" class="fixed top-0 left-0 opacity-0 bg-green-500">hi</Link>
+
+        <Alert class="absolute top-5 right-5 w-fit pr-8" variant="destructive" v-if="page.props.flash.error && showAlert">
+            <AlertCircle class="w-4 h-4" />
+            <button @click="showAlert = false" class="absolute top-2 right-2 p-1 hover:bg-red-100 rounded-full transition-colors">
+                <X class="w-4 h-4" />
+            </button>
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+                {{ page.props.flash.error }}
+            </AlertDescription>
+        </Alert>
+
+        <header class="flex justify-between items-center w-full p-2 px-8 text-sm not-has-[nav]:hidden">
+            <Link :href="route('home')" class="relative z-20 flex items-center text-lg font-medium dark:text-foreground">
+                <AppLogoIcon class="mr-2 size-8 fill-current text-white" />
+                {{ name }}
+            </Link>
+            <nav class="flex items-center justify-end gap-4">
                 <AppearanceTabs />
-                <Link v-if="$page.props.auth.user" :href="route('dashboard')" class="font-medium text-sm px-4 py-2 rounded bg-primary text-white">Dashboard</Link>
-                <Link v-else :href="route('login')" class="font-medium text-sm px-4 py-2 rounded bg-primary text-white">Log in</Link>
-            </div>
-        </div>
+                <Link
+                    v-if="$page.props.auth.user"
+                    :href="route('dashboard')"
+                    class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+                >
+                    Dashboard
+                </Link>
+                <template v-else>
+                    <Link
+                        v-if="$page.props.config.login_enabled"
+                        :href="route('login')"
+                        class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
+                    >
+                        <Button class="w-[120px]">Log in</Button>
+                    </Link>
+                    <Link
+                        v-if="$page.props.config.registration_enabled"
+                        :href="route('register')"
+                        class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+                    >
+                        <Button class="w-[120px]">Register</Button>
+                    </Link>
+                </template>
+            </nav>
+        </header>
 
-        <!-- Hero Section -->
-        <section class="hero-pattern py-16 flex flex-col items-center justify-center text-center">
-            <h1 class="text-4xl font-bold mb-2">USeP Campus Library Tagum-Mabini</h1>
-            <p class="text-lg text-gray-600 dark:text-gray-300 mb-6">Your gateway to knowledge and resources</p>
-            <div class="w-full max-w-xl">
-                <WelcomeSearch :search_result="search_result" :search_term="search_term" :search_button="search_button" />
-            </div>
-        </section>
+        <!-- The content itself -->
+        <div class="grid w-full opacity-100 transition-opacity duration-750 starting:opacity-0">
 
-        <!-- Collection Cards Section -->
-        <section class="py-12 px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="collection-card bg-white dark:bg-[#181818] rounded-lg shadow p-6 flex flex-col items-center">
-                <div class="text-5xl font-bold count-animation">{{ recordCount }}</div>
-                <div class="mt-2 text-lg font-semibold">Browse Collection</div>
-                <div class="text-sm text-gray-500">Items available</div>
-                <div class="mt-4 text-primary cursor-pointer hover:underline">Click for details</div>
-            </div>
-            <div class="collection-card bg-white dark:bg-[#181818] rounded-lg shadow p-6 flex flex-col items-center">
-                <div class="text-5xl font-bold count-animation">1,245</div>
-                <div class="mt-2 text-lg font-semibold">New Arrivals</div>
-                <div class="text-sm text-gray-500">New items this month</div>
-                <div class="mt-4 text-primary cursor-pointer hover:underline">Click for details</div>
-            </div>
-            <div class="collection-card bg-white dark:bg-[#181818] rounded-lg shadow p-6 flex flex-col items-center">
-                <div class="text-5xl font-bold count-animation">892</div>
-                <div class="mt-2 text-lg font-semibold">Top Picks</div>
-                <div class="text-sm text-gray-500">Highly recommended</div>
-                <div class="mt-4 text-primary cursor-pointer hover:underline">Click for details</div>
-            </div>
-        </section>
-
-        <!-- Book Collection Section -->
-        <section class="py-12 px-8">
-            <h2 class="text-2xl font-bold mb-6">Book Collection</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div v-for="record in records?.data" :key="record.id">
-                    <WelcomeBookDialog :record="record" />
+            <div class="p-8 h-[360px] bg-[url(/storage/images/eagle.jpg)] bg-cover min-w-full flex justify-center items-center">
+                <div class="grid bg-background rounded-lg">
+                    <WelcomeSearch :search_result="search_result" :search_term="search_term"
+                                   :search_button="search_button"
+                    />
                 </div>
             </div>
-        </section>
 
-        <!-- Footer -->
-        <footer class="mt-auto py-6 px-8 bg-gray-100 dark:bg-[#181818] text-center text-sm text-gray-600 dark:text-gray-400">
-            <div class="mb-2 font-semibold">USEP Library Tagum-Mabini Campus</div>
-            <div>© 2023 USEP Library. All rights reserved.</div>
-        </footer>
+            <div class="w-full p-16 pb-0 grid grid-cols-3 gap-16">
+                <Card class="p-4 gap-2">
+                    <h4 class="text-6xl">{{ userCount }}</h4>
+                    <div>Patrons</div>
+                </Card>
+                <Card class="p-4 gap-2">
+                    <h4 class="text-6xl">{{ recordCount }}</h4>
+                    <div>Books, Multimedia, Magazine, Periodals Thesis, Dissertations</div>
+                </Card>
+                <Card class="p-4 gap-2">
+                    <h4 class="text-6xl">{{ transactionCount }}</h4>
+                    <div>Transactions</div>
+                </Card>
+            </div>
+
+            <div class="w-full p-16" v-if="Object.keys(records?.data).length">
+                <h3 class="text-3xl text-center mb-8">Latest in Book Collections</h3>
+                <div class="grid grid-cols-3 gap-4">
+                    <div v-for="record in records?.data" :key="record.id">
+                        <WelcomeBookDialog :record="record" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="hidden h-14.5 lg:block"></div>
     </div>
 </template>
-
-<style>
-.hero-pattern {
-    background-image: radial-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px);
-    background-size: 20px 20px;
-}
-.collection-card {
-    transition: all 0.3s ease;
-    cursor: pointer;
-    position: relative;
-    z-index: 10;
-}
-.collection-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-    z-index: 20;
-}
-.count-animation {
-    animation: pulse 1s infinite;
-}
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
-</style>

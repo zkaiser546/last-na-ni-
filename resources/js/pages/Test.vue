@@ -1,10 +1,18 @@
-<template>
-    <div class="p-6">
-        <h2 class="text-xl font-bold mb-4">This is the Test Page</h2>
-        <HelloWorld />
-    </div>
-</template>
-
 <script setup lang="ts">
-import HelloWorld from '@/components/HelloWorld.vue';
+  import { Head } from '@inertiajs/vue3'
+  import AppLayout from '@/layouts/AppLayout.vue';
+  import Layout from '@/layouts/users/Layout.vue';
+
+  defineProps<{}>()
 </script>
+
+<template>
+    <Head title="Welcome" />
+
+    <AppLayout>
+        <Layout>
+
+        hi po, hello, padayon!
+        </Layout>
+    </AppLayout>
+</template>

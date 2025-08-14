@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('faculties', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('faculty_id')->unique();
-            $table->string('department');
-            $table->string('title'); // e.g., Professor, Associate Professor
+            $table->foreignId('office_id')->nullable()
+                ->constrained()->onDelete('set null');
+            $table->string('role_title'); // e.g., Professor, Associate Professor
             $table->timestamps();
         });
     }

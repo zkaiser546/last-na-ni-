@@ -29,6 +29,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // dapat ang admin lang
+
         $request->authenticate();
 
         $request->session()->regenerate();

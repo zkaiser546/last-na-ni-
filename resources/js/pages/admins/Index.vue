@@ -11,9 +11,10 @@ import {
     getSortedRowModel,
     useVueTable, VisibilityState
 } from '@tanstack/vue-table';
-import { ArrowUpDown, ChevronDown, ListFilter, X } from 'lucide-vue-next';
+import { ArrowUpDown, ChevronDown, X } from 'lucide-vue-next'
+
 import { h, ref } from 'vue'
-import DropdownAction from './DataTableDemoColumn.vue'
+import DropdownAction from '../users/DataTableDemoColumn.vue'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
     DropdownMenu,
@@ -32,6 +33,7 @@ import {
 import { valueUpdater } from '@/lib/utils'
 import { ChevronRightIcon, ChevronLeftIcon, DoubleArrowLeftIcon, DoubleArrowRightIcon } from "@radix-icons/vue";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 import { Plus } from 'lucide-vue-next'
 
 interface Props {
@@ -44,26 +46,23 @@ interface Props {
     filter?: any[]
     currentSortField?: string
     currentSortDirection?: string
-    ddcClasses?: any[]
-    availablePurposes?: { value: string, label: string }[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
     data: () => ({ data: [], current_page: 1, per_page: 10, last_page: 1 }),
     filter: () => [],
     currentSortField: undefined,
-    currentSortDirection: 'asc',
-    ddcClasses: () => [],
-    availablePurposes: () => []
+    currentSortDirection: 'asc'
 })
 
 import type { Table, Row, Column, SortingState, ColumnFiltersState, ColumnDef } from '@tanstack/vue-table'
 type RowData = any
-const data = props.data.data;
+const data = props.data.data; // Now safe to access directly
 const columns: ColumnDef<RowData>[] = [
     {
         id: 'search',
-        accessorFn: (row) => `${row.id} ${row.user?.first_name} ${row.user?.last_name}`,
+        // This is a virtual column for searching, not displayed
+        accessorFn: (row) => `${row.first_name} ${row.last_name}`,
         enableSorting: false,
         enableHiding: false,
     },
@@ -71,7 +70,7 @@ const columns: ColumnDef<RowData>[] = [
         id: 'select',
         header: ({ table }: { table: Table<RowData> }) => h(Checkbox, {
             'checked': table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate'),
-            'onUpdate:checked': (value: boolean) => table.toggleAllPageRowsSelected(!!value),
+            'onUpdate:checked': (value:boolean) => table.toggleAllPageRowsSelected(!!value),
             'ariaLabel': 'Select all',
         }),
         cell: ({ row }: { row: Row<RowData> }) => h(Checkbox, {
@@ -83,28 +82,49 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: 'id',
+        accessorKey: 'library_id',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
                 onClick: () => {
+                    // Get current sort state
                     const currentSort = column.getIsSorted();
+
+                    // Cycle through: none -> asc -> desc -> none
                     if (currentSort === false) {
-                        column.toggleSorting(false);
+                        column.toggleSorting(false); // Set to ascending
                     } else if (currentSort === 'asc') {
-                        column.toggleSorting(true);
+                        column.toggleSorting(true);  // Set to descending
                     } else {
-                        column.clearSorting();
+                        column.clearSorting();       // Clear sorting
                     }
                 },
-            }, () => ['ID', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Library ID ', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'max-w-48 whitespace-normal break-words' },
-            row.getValue('id')),
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('library_id')),
         enableHiding: false,
     },
     {
-        accessorKey: 'client',
+        accessorKey: 'first_name',
+        header: ({ column }: { column: Column<RowData, any> }) => {
+            return h(Button, {
+                variant: 'ghost',
+                onClick: () => {
+                    const currentSort = column.getIsSorted();
+                    if (currentSort === false) {
+                        column.toggleSorting(false); // asc
+                    } else if (currentSort === 'asc') {
+                        column.toggleSorting(true);  // desc
+                    } else {
+                        column.clearSorting();       // none
+                    }
+                },
+            }, () => ['First Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+        },
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('first_name')),
+    },
+    {
+        accessorKey: 'middle_initial',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
@@ -118,20 +138,15 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();
                     }
                 },
-            }, () => ['Client', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['M.I', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => {
-            const user = row.original.user;
-            if (user) {
-                return h('div', user.first_name + ' ' + user.last_name || 'Unknown')
-            } else {
-                return h('div', 'no user')
-            }
+            const middleInitial = row.getValue('middle_initial');
+            return h('div', { class: 'capitalize' }, middleInitial ? middleInitial + '.' : '');
         },
-        enableHiding: false,
     },
     {
-        accessorKey: 'entry_time',
+        accessorKey: 'last_name',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
@@ -145,14 +160,12 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();
                     }
                 },
-            }, () => ['Entry Time', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Last Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'max-w-48 whitespace-normal break-words' },
-            row.getValue('entry_time')),
-        enableHiding: false,
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('last_name')),
     },
     {
-        accessorKey: 'exit_time',
+        accessorKey: 'sex',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
@@ -166,35 +179,52 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();
                     }
                 },
-            }, () => ['Exit Time', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Sex', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'max-w-48 whitespace-normal break-words' },
-            row.getValue('exit_time')),
-        enableHiding: false,
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('sex')),
     },
     {
-        accessorKey: 'visit_purpose_id',
-        header: 'Purpose',
-        cell: ({ row }: { row: Row<RowData> }) => {
-            const purpose = row.original.visit_purpose;
-            if (purpose) {
-                return h('div', purpose.name || 'Unknown')
-            } else {
-                return h('div', 'not specified')
-            }
+        accessorKey: 'email',
+        header: ({ column }: { column: Column<RowData, any> }) => {
+            return h(Button, {
+                variant: 'ghost',
+                onClick: () => {
+                    const currentSort = column.getIsSorted();
+                    if (currentSort === false) {
+                        column.toggleSorting(false);
+                    } else if (currentSort === 'asc') {
+                        column.toggleSorting(true);
+                    } else {
+                        column.clearSorting();
+                    }
+                },
+            }, () => ['Email', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('email')),
+        enableHiding: false,
     },
     {
         id: 'actions',
         enableHiding: false,
         cell: ({ row }: { row: Row<RowData> }) => {
-            const payment = row.original
+            const user = row.original
+
             return h('div', { class: 'relative' }, h(DropdownAction, {
-                payment,
+                user,
                 onExpand: row.toggleExpanded,
+                onEdit: (id) => {
+                    // Handle edit functionality
+                    console.log('Edit clicked for ID:', id);
+                    // Add your edit logic here
+                    // For example: router.get(route('admins.edit', id));
+                },
+                onDelete: (id) => {
+                    showDeleteAlert.value = true;
+                    selectedUserId.value = id;
+                }
             }))
         },
-    },
+    }
 ]
 
 const sorting = ref<SortingState>(
@@ -207,11 +237,11 @@ const columnFilters = ref<ColumnFiltersState>(
     props.filter ? props.filter.map(f => ({ id: f.id, value: f.value })) : []
 )
 const columnVisibility = ref<VisibilityState>({
-    search: false,
+    search: false, // Hide the search column by default
 })
 const rowSelection = ref({})
 const expanded = ref({})
-const pageSizes = [1, 2, 3, 5, 10, 15, 30, 40, 50, 100];
+const pageSizes = [1, 2, 3, 5, 10, 15, 30, 40, 50, 100,];
 const pagination = ref({
     pageIndex: (props.data?.current_page ?? 1) - 1,
     pageSize: props.data?.per_page ?? 10,
@@ -235,28 +265,13 @@ const table = useVueTable({
         } else {
             pagination.value = updater;
         }
-
-        let filters: Record<string, any> = {}
-        if (columnFilters.value && columnFilters.value.length > 0) {
-            filters = columnFilters.value.reduce((acc: Record<string, any>, filter) => {
-                if (Array.isArray(filter.value) && filter.value.length > 0) {
-                    acc[filter.id] = filter.value
-                } else if (!Array.isArray(filter.value) && filter.value !== '' && filter.value !== null && filter.value !== undefined) {
-                    acc[filter.id] = filter.value
-                }
-                return acc
-            }, {})
-        }
-
         router.get(
-            route('logger.index'),
+            route('admins.index'),
             {
                 page: pagination.value.pageIndex + 1,
                 per_page: pagination.value.pageSize,
                 sort_field: sorting.value[0]?.id,
                 sort_direction: sorting.value.length == 0 ? undefined : (sorting.value[0]?.desc ? "desc" : "asc"),
-                search: filters.search,
-                visit_purpose_id: filters.visit_purpose_id
             },
             { preserveState: false, preserveScroll: true }
         );
@@ -268,6 +283,7 @@ const table = useVueTable({
             sorting.value = updaterOrValue
         }
 
+        // Build filters object (same logic as above)
         let filters: Record<string, any> = {}
         if (columnFilters.value && columnFilters.value.length > 0) {
             filters = columnFilters.value.reduce((acc: Record<string, any>, filter) => {
@@ -281,14 +297,13 @@ const table = useVueTable({
         }
 
         router.get(
-            route('logger.index'),
+            route('admins.index'),
             {
-                page: 1,
+                page: 1, // Reset to first page when sorting changes
                 per_page: pagination.value.pageSize,
                 sort_field: sorting.value[0]?.id,
                 sort_direction: sorting.value.length == 0 ? undefined : (sorting.value[0]?.desc ? "desc" : "asc"),
-                search: filters.search,
-                visit_purpose_id: filters.visit_purpose_id
+                ...filters
             },
             { preserveState: false, preserveScroll: true }
         );
@@ -300,9 +315,11 @@ const table = useVueTable({
             columnFilters.value = updaterOrValue
         }
 
+        // Build filters object
         let filters: Record<string, any> = {}
         if (columnFilters.value && columnFilters.value.length > 0) {
             filters = columnFilters.value.reduce((acc: Record<string, any>, filter) => {
+                // Handle array values (for multi-select filters)
                 if (Array.isArray(filter.value) && filter.value.length > 0) {
                     acc[filter.id] = filter.value
                 } else if (!Array.isArray(filter.value) && filter.value !== '' && filter.value !== null && filter.value !== undefined) {
@@ -313,25 +330,18 @@ const table = useVueTable({
         }
 
         router.get(
-            route('logger.index'),
+            route('admins.index'),
             {
-                page: 1,
+                page: 1, // Reset to first page when filtering
                 per_page: pagination.value.pageSize,
                 sort_field: sorting.value[0]?.id,
                 sort_direction: sorting.value.length == 0 ? undefined : (sorting.value[0]?.desc ? "desc" : "asc"),
-                search: filters.search,
-                visit_purpose_id: filters.visit_purpose_id
+                ...filters
             },
             { preserveState: false, preserveScroll: true }
         );
     },
-    onColumnVisibilityChange: updaterOrValue => {
-        if (typeof updaterOrValue === 'function') {
-            columnVisibility.value = updaterOrValue(columnVisibility.value)
-        } else {
-            columnVisibility.value = updaterOrValue
-        }
-    },
+    onColumnVisibilityChange: updaterOrValue => valueUpdater(updaterOrValue, columnVisibility),
     onRowSelectionChange: updaterOrValue => valueUpdater(updaterOrValue, rowSelection),
     onExpandedChange: updaterOrValue => valueUpdater(updaterOrValue, expanded),
     state: {
@@ -344,58 +354,74 @@ const table = useVueTable({
     },
 })
 
-const filterInput = ref<string>((table.getColumn('search')?.getFilterValue() as string) ?? '')
+// Local state for the input
+const filterInput = ref<string>((table.getColumn('search')?.getFilterValue() as string) ?? '')// Function to apply the filter
 const applyFilter = () => {
     table.getColumn('search')?.setFilterValue(filterInput.value)
 }
+
 const clearFilter = () => {
     filterInput.value = ''
     table.getColumn('search')?.setFilterValue('')
 }
 
-import Filter from './Filter.vue'
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
-
-// Filter for visit purpose
-const filter_purposes = {
-    title: 'Filter Purpose',
-    column: 'visit_purpose_id',
-    data: props.availablePurposes.map(purpose => ({
-        value: purpose.value,
-        label: purpose.label,
-        icon: h(ListFilter)
-    }))
-}
-
-const filter_toolbar = [
-    filter_purposes,
-];
-
-const showDialog = ref(false);
-const showDialogCreate = () => {
-    showDialog.value = true
-}
+import Layout from '@/layouts/users/Layout.vue';
+import DeleteDialog from '@/components/DeleteDialog.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Logger',
-        href: '/logger',
+        title: 'Users',
+        href: '/users',
+    },
+    {
+        title: 'Staff admins',
+        href: '/users/admins',
     },
 ];
+
+const createNewStaffAdmin = () => {
+    router.get(route('admins.create'));
+}
+
+const showDeleteAlert = ref(false);
+const selectedUserId = ref(null);
+
+const handleDelete = (id) => {
+    console.log('Deleting user with ID:', id);
+
+    router.delete(route('admins.destroy', id), {
+        preserveState: false,  // Important: Don't preserve state so fresh data is fetched
+        preserveScroll: true,  // Keep scroll position
+        onSuccess: () => {
+            console.log('Delete successful');
+            // Optional: Force reload if still having issues
+            // router.reload({ only: ['data'] });
+        },
+        onError: (errors) => {
+            console.error('Delete failed:', errors);
+        }
+    });
+
+    showDeleteAlert.value = false;
+    selectedUserId.value = null;
+};
+
 </script>
 
 <template>
-    <Head title="Borrowings" />
+    <Head title="Welcome" />
+
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="p-4">
+        <Layout>
             <div class="w-full">
                 <div class="flex gap-2 items-center justify-between py-4">
                     <div class="flex gap-2">
                         <div class="relative">
                             <Input
                                 class="w-[320px] pr-8"
-                                placeholder="Search by ID or Client..."
+                                placeholder="Search by lib id, first name, or last name ..."
                                 v-model="filterInput"
                                 @keyup.enter="applyFilter"
                                 @blur="applyFilter"
@@ -409,12 +435,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 <X class="h-4 w-4" />
                             </Button>
                         </div>
-                        <div v-for="filter in filter_toolbar" :key="filter.title">
-                            <Filter :column="table.getColumn(filter.column)" :title="filter.title" :options="filter.data"></Filter>
-                        </div>
                     </div>
                     <div class="flex gap-2">
-                        <Button variant="outline" @click="showDialogCreate">
+                        <Button variant="outline" @click="createNewStaffAdmin">
                             <Plus class="h-4"></Plus>
                             Create New
                         </Button>
@@ -463,6 +486,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                     </TableRow>
                                 </template>
                             </template>
+
                             <TableRow v-else>
                                 <TableCell :colspan="columns.length" class="h-24 text-center">
                                     No results.
@@ -504,9 +528,15 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 <DoubleArrowRightIcon class="h-4 w-4" />
                             </Button>
                         </div>
+
                     </div>
                 </div>
             </div>
-        </div>
+            <DeleteDialog
+                v-model:open="showDeleteAlert"
+                :userId="selectedUserId"
+                @confirm-delete="handleDelete"
+            />
+        </Layout>
     </AppLayout>
 </template>
