@@ -78,13 +78,19 @@ const submit = () => {
                                 <Input id="title" type="text" required v-model="form.title" />
                                 <InputError :message="form.errors.title" />
                             </div>
-                            <div class="grid gap-2 col-span-2">
-                                <Label>Authors</Label>
+                            <div class="grid gap-2">
+                                <div class="flex gap-2">
+                                    <Label for="authors">Author/s</Label>
+                                    <span class="text-sm text-gray-500">(Hit 'enter' for multiple authors)</span>
+                                </div>
                                 <AuthorsTagsInput v-model="form.authors" />
                                 <InputError :message="form.errors.authors" />
                             </div>
-                            <div class="grid gap-2 col-span-2">
-                                <Label>Editors</Label>
+                            <div class="grid gap-2">
+                                <div class="flex gap-2">
+                                    <Label for="editors">Editor/s</Label>
+                                    <span class="text-sm text-gray-500">(Hit 'enter' for multiple editors)</span>
+                                </div>
                                 <EditorsTagsInput v-model="form.editors" />
                                 <InputError :message="form.errors.editors" />
                             </div>
