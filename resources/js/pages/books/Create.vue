@@ -88,7 +88,7 @@ const submit = () => {
                             <div class="grid gap-2">
                                 <div class="flex gap-2">
                                     <Label for="authors">Author/s</Label>
-                                    <span class="text-sm text-gray-500">(Hit 'enter' for multiple authors)</span>
+                                    <span class="text-sm text-gray-500">(Hit 'ENTER' for each author)</span>
                                 </div>
                                 <AuthorsTagsInput v-model="form.authors" />
                                 <InputError :message="form.errors.authors" />
@@ -96,8 +96,7 @@ const submit = () => {
                             <div class="grid gap-2">
                                 <div class="flex gap-2">
                                     <Label for="editors">Editor/s</Label>
-                                    <span class="text-sm text-gray-500">(Hit 'enter' for multiple editors)</span>
-                                </div>
+                                    <span class="text-sm text-gray-500">(Hit 'ENTER' for each editor)</span>                                </div>
                                 <EditorsTagsInput v-model="form.editors" />
                                 <InputError :message="form.errors.editors" />
                             </div>
@@ -298,7 +297,10 @@ const submit = () => {
                                 <Textarea id="table_of_contents" rows="4" v-model="form.table_of_contents" />
                             </div>
                             <div class="grid gap-2">
-                                <Label>Subject Headings</Label>
+                                <div class="flex gap-2">
+                                    <Label for="authors">Subject Heading/s</Label>
+                                    <span class="text-sm text-gray-500">(Hit 'ENTER' for each subject)</span>
+                                </div>
                                 <SubjectTagsInput v-model="form.subject_headings" />
                             </div>
                         </div>

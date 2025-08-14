@@ -1,23 +1,20 @@
 <script setup lang="ts">
 import { TagsInput, TagsInputInput, TagsInputItem, TagsInputItemDelete, TagsInputItemText } from "@/components/ui/tags-input"
-import { ref, watch } from "vue"
+import { computed } from "vue"
 
 const props = defineProps<{
     modelValue: string[]
 }>()
+
 const emit = defineEmits<{
     (e: "update:modelValue", value: string[]): void
 }>()
 
-const localValue = ref([...props.modelValue])
-
-watch(() => props.modelValue, (newVal) => {
-    localValue.value = [...newVal]
+// Use computed for direct binding - no local state needed
+const localValue = computed({
+    get: () => props.modelValue,
+    set: (value: string[]) => emit("update:modelValue", value)
 })
-
-watch(localValue, (newVal) => {
-    emit("update:modelValue", newVal)
-}, { deep: true })
 </script>
 
 <template>
