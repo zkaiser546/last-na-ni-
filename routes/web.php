@@ -9,7 +9,6 @@ use App\Http\Controllers\GradSchoolStudentController;
 use App\Http\Controllers\LibraryVisitController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RecordController;
-use App\Http\Controllers\ScannerController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
@@ -17,47 +16,46 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
-Route::get('/logger', [LibraryVisitController::class, 'index'])->name('logger.index');
 Route::get('/logger/create', [LibraryVisitController::class, 'create'])->name('logger.create');
-Route::post('/logger', [LibraryVisitController::class, 'store'])->name('logger.store');
+Route::post('/', [LibraryVisitController::class, 'store'])->name('logger.store');
 
 // Routes that require authentication and verification
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::prefix('users')->group(function () {
+
         Route::get('/', [UserController::class, 'index'])->name('users.index');
-        Route::get('/import', [UserController::class, 'import'])->name('users.import');
-        Route::post('/import', [UserController::class, 'importStore'])->name('users.import.store');
-        Route::get('/admins/create', [AdminController::class, 'create'])->name('admins.create');
-        Route::post('/admins', [AdminController::class, 'store'])->name('admins.store');
-        Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
-        Route::post('/students', [StudentController::class, 'store'])->name('students.store');
+
+        Route::group(['middleware' => ['can:viewAny, App\Models\User']], function () {
+            Route::get('/import', [UserController::class, 'import'])->name('users.import');
+            Route::post('/import', [UserController::class, 'importStore'])->name('users.import.store');
+            Route::get('/admins',[AdminController::class, 'index'])->name('admins.index');
+            Route::get('/admins/create', [AdminController::class, 'create'])->name('admins.create');
+            Route::post('/admins', [AdminController::class, 'store'])->name('admins.store');
+            Route::delete('/admins/{id}', [AdminController::class, 'destroy'])->name('admins.destroy');
+        });
+        Route::get('/faculties', [FacultyController::class, 'index'])->name('faculties.index');
         Route::get('/faculties/create', [FacultyController::class, 'create'])->name('faculties.create');
         Route::post('/faculties', [FacultyController::class, 'store'])->name('faculties.store');
+        Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
+        Route::post('/students', [StudentController::class, 'store'])->name('students.store');
     });
     Route::prefix('records')->group(function () {
         Route::get('/', [RecordController::class, 'index'])->name('records.index');
         Route::get('/books/import', [BookController::class, 'import'])->name('books.import');
         Route::post('/books/import', [BookController::class, 'importStore'])->name('books.import.store');
     });
-    Route::get('/borrowings', [BorrowingTransactionController::class, 'index'])->name('borrowings.index');
-    Route::get('/borrowings/create', [BorrowingTransactionController::class, 'create'])->name('borrowings.create');
-    Route::post('/borrowings', [BorrowingTransactionController::class, 'store'])->name('borrowings.store');
-    Route::get('/borrowings/users/search', [BorrowingTransactionController::class, 'searchUser'])->name('borrowings.users.search');
-    Route::post('/borrowings/borrow', [BorrowingTransactionController::class, 'borrow'])->name('borrowings.borrow');
-
-    // Scanner routes
-    Route::get('/scanner', [ScannerController::class, 'index'])->name('scanner.index');
-    Route::post('/scanner/process', [ScannerController::class, 'processScan'])->name('scanner.process');
-});
-
-Route::middleware(['auth'])->group(function () {
-    Route::prefix('products')->group(function () {
-        Route::get('/', [ProductController::class, 'index'])->name('product.index');
-        Route::post('/', [ProductController::class, 'store'])->name('product.store');  //with POST
-        Route::get('/{product}', [ProductController::class, 'edit'])->name('product.edit');  //with GET
-        Route::put('/{product}', [ProductController::class, 'update'])->name('product.update');  //with GET
+    Route::prefix('borrowings')->group(function () {
+        Route::get('/', [BorrowingTransactionController::class, 'index'])->name('borrowings.index');
+        Route::post('/', [BorrowingTransactionController::class, 'store'])->name('borrowings.store');
+        Route::get('/create', [BorrowingTransactionController::class, 'create'])->name('borrowings.create');
+        Route::get('/users/search', [BorrowingTransactionController::class, 'searchUser'])->name('borrowings.users.search');
+        Route::post('/borrow', [BorrowingTransactionController::class, 'borrow'])->name('borrowings.borrow');
     });
+    Route::prefix('logger')->group(function () {
+        Route::get('/', [LibraryVisitController::class, 'index'])->name('logger.index');
+    });
+
 });
 
 // Test routes (no middleware)

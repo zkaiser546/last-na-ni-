@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('offices', function (Blueprint $table) {
             $table->id();
+            $table->string('acronym')->unique();
+            $table->string('name');
             $table->timestamps();
         });
     }

@@ -1,274 +1,126 @@
 <script setup lang="ts">
-import { Search } from "lucide-vue-next"
-import { Input } from "@/components/ui/input"
-import { router, useForm } from '@inertiajs/vue3';
-import { Button } from '@/components/ui/button';
-import WelcomeSearchDialog from '@/components/WelcomeSearchDialog.vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import { Search } from "lucide-vue-next";
+import { Input } from "@/components/ui/input";
+import { router } from '@inertiajs/vue3';
 import WelcomeSelect from '@/components/WelcomeSelect.vue';
+import WelcomeSearchDialog from '@/components/WelcomeSearchDialog.vue';
 
-const props = defineProps({
-    search_result: Object,
-    search_term: String,
-    search_button: Boolean,
-    record_type: String,
-});
+const props = defineProps<{
+    search_result?: any;
+    search_term?: string;
+    record_type?: string;
+}>();
 
-const form = useForm({
-    search: props.search_term,
-    record_type: props.record_type || 'all',
-});
+const searchQuery = ref(props.search_term || '');
+const recordType = ref(props.record_type || 'all');
+const suggestions = ref<any[]>([]);
+const showSuggestions = ref(false);
+const debounceTimer = ref<ReturnType<typeof setTimeout> | null>(null);
+const searchContainer = ref<HTMLElement | null>(null);
 
-const search = () => {
+const fetchSuggestions = () => {
+    const query = searchQuery.value.trim();
+    if (!query) {
+        suggestions.value = [];
+        showSuggestions.value = false;
+        return;
+    }
+
     router.get(route('home'), {
-        search: form.search,
-        search_button: true,
-        record_type: form.record_type, }, { preserveState: true });
+        search: query,
+        record_type: recordType.value,
+        search_button: false
+    }, {
+        preserveState: true,
+        preserveScroll: true,
+        onSuccess: (page) => {
+            suggestions.value = page.props.search_result?.data || [];
+            showSuggestions.value = true;
+            console.log('Search results:', suggestions.value); // Debug log
+        }
+    });
 };
 
-const clearSearch = () => {
-    form.search = ''; // Clear the search input
-    form.record_type = 'all';
-    router.get(route('home'), { search: '', record_type: 'all' }, { preserveState: true }); // Update the route
-};
+// Watch searchQuery for changes with debounce
+watch(searchQuery, () => {
+    if (debounceTimer.value) {
+        clearTimeout(debounceTimer.value);
+    }
+    debounceTimer.value = setTimeout(fetchSuggestions, 300);
+});
 
+// Record type change triggers search
 const onRecordTypeChange = (value: string) => {
-    form.record_type = value;
-    // trigger search automatically when record type changes
-    search();
+    recordType.value = value;
+    if (searchQuery.value) {
+        fetchSuggestions();
+    }
 };
 
+// Click-outside handler
+const handleClickOutside = (event: MouseEvent) => {
+    if (searchContainer.value && !searchContainer.value.contains(event.target as Node)) {
+        showSuggestions.value = false;
+    }
+};
+
+onMounted(() => {
+    document.addEventListener('click', handleClickOutside);
+    // If there's an initial search term, fetch results
+    if (props.search_term) {
+        fetchSuggestions();
+    }
+});
+
+onBeforeUnmount(() => {
+    document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <template>
-    <form @submit.prevent="search" class="search-form">
+    <div ref="searchContainer" class="relative w-full max-w-3xl">
         <div class="flex items-center gap-2">
             <WelcomeSelect
-                :model-value="form.record_type"
+                :model-value="recordType"
                 @update:model-value="onRecordTypeChange"
             />
-            <!-- Search Input Container -->
-            <div class="relative flex-1 search-input-container">
+            <!-- Search Input -->
+            <div class="relative flex-1">
                 <Input
-                    required
-                    v-model="form.search"
+                    v-model="searchQuery"
                     id="search"
                     type="search"
-                    placeholder="Search accession, title..."
-                    class="pl-10 search-input w-80"
-                    autocomplete="off"
+                    placeholder="Search accession, title... "
+                    class="pl-10 w-full"
+                    @focus="searchQuery && (showSuggestions = true)"
                 />
-                <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2 search-icon">
+                <span class="absolute start-0 inset-y-0 flex items-center px-2">
                     <Search class="size-6 text-muted-foreground" />
                 </span>
-            </div>
-            <!-- Button Container -->
-            <div class="flex gap-2 flex-shrink-0 button-container">
-                <Button
-                    type="submit"
-                    @click="search"
-                    class="search-button"
+
+                <!-- Suggestions dropdown -->
+                <div
+                    v-if="showSuggestions && suggestions.length > 0"
+                    class="absolute z-50 mt-1 w-full bg-white border rounded-lg shadow-lg max-h-[60vh] overflow-y-auto"
                 >
-                    Search
-                </Button>
-                <Transition name="clear-button">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        v-if="form.search"
-                        @click="clearSearch"
-                        class="clear-button"
+                    <div
+                        v-for="result in suggestions"
+                        :key="result.id"
+                        class="p-2 hover:bg-gray-50"
                     >
-                        Clear
-                    </Button>
-                </Transition>
-            </div>
-        </div>
-    </form>
-
-    <!-- Search Results -->
-    <Transition name="fade" mode="out-in">
-        <div v-if="search_result?.data?.length" class="max-w-md results-container">
-            <TransitionGroup name="result-item" tag="div" class="grid gap-y-1">
-                <div v-for="result in search_result?.data" :key="result.id" class="result-item ">
-                    <WelcomeSearchDialog :record="result" />
+                        <WelcomeSearchDialog :record="result" />
+                    </div>
                 </div>
-            </TransitionGroup>
-        </div>
-        <div v-else-if="!search_result?.data?.length && search_button" class="no-results">
-            <div class="text-center text-gray-500 py-4">
-                <Search class="size-8 mx-auto mb-1 opacity-50" />
-                <p>No records found</p>
+
+                <!-- No results message -->
+                <div
+                    v-if="showSuggestions && searchQuery && !suggestions.length"
+                    class="absolute z-50 mt-1 w-full bg-white border rounded-lg shadow-lg p-4 text-center text-gray-500"
+                >
+                    No results found
+                </div>
             </div>
         </div>
-    </Transition>
+    </div>
 </template>
-
-<style scoped>
-/* Form transitions */
-.search-form {
-    width: 100%;
-    max-width: 60rem;
-    padding: 0.5rem;
-    transition: all 0.3s ease;
-}
-
-.search-input-container {
-    transition: transform 0.2s ease;
-}
-
-.search-input-container:focus-within {
-    transform: scale(1.02);
-}
-
-.search-input {
-    transition: all 0.3s ease;
-}
-
-.search-input:focus {
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.search-icon {
-    transition: color 0.3s ease;
-}
-
-.search-input:focus + .search-icon {
-    color: rgb(59, 130, 246);
-}
-
-/* Button transitions */
-.button-container {
-    transition: gap 0.3s ease;
-}
-
-.search-button,
-.clear-button {
-    transition: all 0.3s ease;
-}
-
-.search-button:hover,
-.clear-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.search-button:active,
-.clear-button:active {
-    transform: translateY(0);
-}
-
-/* Clear button transition */
-.clear-button-enter-active,
-.clear-button-leave-active {
-    transition: all 0.3s ease;
-}
-
-.clear-button-enter-from {
-    opacity: 0;
-    transform: translateX(10px) scale(0.9);
-}
-
-.clear-button-leave-to {
-    opacity: 0;
-    transform: translateX(10px) scale(0.9);
-}
-
-/* Results container transitions */
-.results-container {
-    transition: all 0.3s ease;
-}
-
-/* Fade transition for results/no results */
-.fade-enter-active,
-.fade-leave-active {
-    transition: all 0.4s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-    transform: translateY(10px);
-}
-
-/* Individual result item transitions */
-.result-item {
-    transition: all 0.3s ease;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    border: 1px solid rgb(229, 231, 235);
-    background: white;
-}
-
-.result-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-color: rgb(209, 213, 219);
-}
-
-.result-content {
-    transition: all 0.3s ease;
-}
-
-/* TransitionGroup animations for result items */
-.result-item-enter-active {
-    transition: all 0.5s ease;
-}
-
-.result-item-leave-active {
-    transition: all 0.3s ease;
-}
-
-.result-item-enter-from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-}
-
-.result-item-leave-to {
-    opacity: 0;
-    transform: translateY(-10px) scale(0.95);
-}
-
-.result-item-move {
-    transition: transform 0.3s ease;
-}
-
-/* No results transition */
-.no-results {
-    transition: all 0.4s ease;
-}
-
-/* Loading states (optional) */
-.search-form:has(.search-input:focus) .search-button {
-    background-color: var(--accent);
-    color: var(--accent-foreground);
-}
-
-/* Responsive transitions */
-@media (max-width: 640px) {
-    .search-form {
-        max-width: 100%;
-        padding: 0.25rem;
-    }
-
-    .button-container {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .result-item:hover {
-        transform: none;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-}
-
-/* Accessibility improvements */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-</style>

@@ -14,12 +14,66 @@ class LibraryVisitController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request): \Inertia\Response
     {
-        $visits = LibraryVisit::latest()->paginate(10);
+        $perPage = $request->input('per_page', 10);
+        $sortField = $request->input('sort_field', null);
+        $sortDirection = $request->input('sort_direction', 'desc');
+        $filters = [];
+
+        // Capture search parameters
+        $searchTerm = $request->input('search');
+        if (!empty($searchTerm)) {
+            $filters[] = [
+                'id' => 'search',
+                'value' => $searchTerm
+            ];
+        }
+
+        // Capture purpose filter
+        $visitPurposes = $request->input('visit_purpose_id');
+        if (!empty($visitPurposes)) {
+            $filters[] = [
+                'id' => 'visit_purpose_id',
+                'value' => is_array($visitPurposes) ? $visitPurposes : [$visitPurposes]
+            ];
+        }
+
+        $visits = LibraryVisit::with('user', 'visitPurpose')
+            ->when($searchTerm, function ($query, $searchTerm) {
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('id', 'like', '%' . $searchTerm . '%')
+                        ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
+                            $userQuery->where('first_name', 'like', '%' . $searchTerm . '%')
+                                ->orWhere('last_name', 'like', '%' . $searchTerm . '%');
+                        });
+                });
+            })
+            ->when($visitPurposes, function ($query, $visitPurposes) {
+                $purposes = is_array($visitPurposes) ? $visitPurposes : [$visitPurposes];
+                $query->whereIn('visit_purpose_id', $purposes);
+            })
+            ->when($sortField, function ($query, $sortField) use ($sortDirection) {
+                $query->orderBy($sortField, $sortDirection);
+            }, function ($query) {
+                $query->latest();
+            })
+            ->paginate(perPage: $perPage);
+
+        // Fetch available purposes for the filter dropdown
+        $availablePurposes = VisitPurpose::select('id', 'name')->get()->map(function ($purpose) {
+            return [
+                'value' => (string) $purpose->id, // Cast to string for frontend compatibility
+                'label' => $purpose->name,
+            ];
+        })->toArray();
 
         return Inertia::render('logger/Index', [
-            'visits' => $visits
+            'data' => $visits,
+            'filter' => $filters,
+            'currentSortField' => $sortField,
+            'currentSortDirection' => $sortDirection,
+            'availablePurposes' => $availablePurposes,
         ]);
     }
 

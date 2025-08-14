@@ -54,8 +54,8 @@ defineProps({
 <template>
     <Head title="Welcome">
     </Head>
-    <div class="flex min-h-screen flex-col bg-background text-[#1b1b18] lg:justify-center dark:bg-[#0a0a0a]">
-        <Link :href="route('logger.create')" class="fixed top-0 left-0 opacity-0 bg-red-500">hi</Link>
+    <div class="flex flex-col bg-background text-[#1b1b18] lg:justify-center dark:bg-[#0a0a0a]">
+        <Link :href="route('logger.create')" class="fixed top-0 left-0 opacity-0 bg-green-500">hi</Link>
 
         <Alert class="absolute top-5 right-5 w-fit pr-8" variant="destructive" v-if="page.props.flash.error && showAlert">
             <AlertCircle class="w-4 h-4" />
@@ -68,7 +68,7 @@ defineProps({
             </AlertDescription>
         </Alert>
 
-        <header class="flex justify-between items-center w-full p-4 px-8 text-sm not-has-[nav]:hidden">
+        <header class="flex justify-between items-center w-full p-2 px-8 text-sm not-has-[nav]:hidden">
             <Link :href="route('home')" class="relative z-20 flex items-center text-lg font-medium dark:text-foreground">
                 <AppLogoIcon class="mr-2 size-8 fill-current text-white" />
                 {{ name }}

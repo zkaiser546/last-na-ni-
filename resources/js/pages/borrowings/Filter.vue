@@ -24,7 +24,7 @@
                 </template>
             </Button>
         </PopoverTrigger>
-        <PopoverContent class="w-[200px] p-0" align="start">
+        <PopoverContent class="w-[240px] p-0" align="start">
             <Command :filter-function="filterFunction">
                 <CommandInput :placeholder="title" />
                 <CommandList>
@@ -73,7 +73,8 @@
         </PopoverContent>
     </Popover>
 </template>
-<script setup>
+
+<script setup lang="ts">
 import { computed } from 'vue'
 import { CheckIcon, PlusCircledIcon } from "@radix-icons/vue"
 import { Badge } from '@/components/ui/badge'
