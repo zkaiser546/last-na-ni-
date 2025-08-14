@@ -5,6 +5,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\BorrowingTransactionController;
 use App\Http\Controllers\ClearanceController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DigitalResourceController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\GradSchoolStudentController;
 use App\Http\Controllers\LibraryVisitController;
@@ -56,6 +57,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/books', [BookController::class, 'store'])->name('books.store');
         Route::get('/books/import', [BookController::class, 'import'])->name('books.import');
         Route::post('/books/import', [BookController::class, 'importStore'])->name('books.import.store');
+        Route::get('/multimedia', [DigitalResourceController::class, 'index'])->name('multimedia.index');
     });
     Route::prefix('borrowings')->group(function () {
         Route::get('/', [BorrowingTransactionController::class, 'index'])->name('borrowings.index');

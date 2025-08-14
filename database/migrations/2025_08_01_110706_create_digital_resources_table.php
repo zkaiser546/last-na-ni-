@@ -13,7 +13,33 @@ return new class extends Migration
     {
         Schema::create('digital_resources', function (Blueprint $table) {
             $table->id();
+
+            // Foreign Keys
+            $table->foreignId('record_id')->constrained('records')->onDelete('cascade');
+
+            $table->json('authors')->nullable();
+            $table->json('editors')->nullable();
+            $table->year('publication_year')->nullable();
+            $table->year('copyright_year')->nullable();
+            $table->string('producer')->nullable();
+            $table->string('language')->nullable();
+
+            $table->enum('collection_type', ['cd', 'duplicate_copy', 'cassette', 'vhs', 'cdr'])->nullable();
+            $table->string('duration')->nullable();
+            $table->string('cover_image')->nullable();
+
+            $table->string('source')->nullable();
+            $table->string('donated_by')->nullable();
+            $table->decimal('purchase_amount', 10, 2)->nullable();
+            $table->decimal('lot_cost', 10, 2)->nullable();
+            $table->string('supplier')->nullable();
+
+            $table->text('overview')->nullable();
+
             $table->timestamps();
+            $table->softDeletes();
+
+            // indexes later for performance
         });
     }
 
