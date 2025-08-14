@@ -13,7 +13,35 @@ return new class extends Migration
     {
         Schema::create('periodicals', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('record_id')->constrained('records')->onDelete('cascade');
+
+            $table->json('authors')->nullable();
+            $table->json('editors')->nullable();
+            $table->string('month')->nullable();
+            $table->year('publication_year')->nullable();
+            $table->string('publication_month')->nullable();
+            $table->string('publisher')->nullable();
+            $table->string('volume_number')->nullable();
+            $table->string('issue_number')->nullable();
+            $table->string('issn')->nullable()->unique();
+            $table->string('series_title')->nullable();
+
+            $table->foreignId('ddc_class_id')->nullable()
+                ->constrained('ddc_classifications')->onDelete('set null');
+            $table->foreignId('lc_class_id')->nullable()
+                ->constrained('lc_classifications')->onDelete('set null');
+            $table->string('call_number')->nullable();
+
+            $table->string('cover_image')->nullable();
+
+            $table->string('source')->nullable();
+            $table->string('donated_by')->nullable();
+            $table->decimal('purchase_amount', 10, 2)->nullable();
+            $table->decimal('lot_cost', 10, 2)->nullable();
+            $table->string('supplier')->nullable();
+
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

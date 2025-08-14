@@ -3,16 +3,51 @@
 namespace App\Http\Controllers;
 
 use App\Models\Periodical;
+use App\Models\Record;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PeriodicalController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request): \Inertia\Response
     {
-        //
+        $perPage = $request->input('per_page', 10);
+        $sortField = $request->input('sort_field', null);
+        $sortDirection = $request->input('sort_direction', 'asc');
+        $filters = [];
+
+        // Capture search parameters
+        $searchTerm = $request->input('search');
+        if (!empty($searchTerm)) {
+            $filters[] = [
+                'id' => 'search',
+                'value' => $searchTerm
+            ];
+        }
+
+        $records = Record::query()
+            ->with('periodical')
+            ->whereHas('periodical')
+            ->when($searchTerm, function ($query, $searchTerm) {
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('accession_number', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('title', 'like', '%' . $searchTerm . '%');
+                });
+            })
+            ->when($sortField, function ($query, $sortField) use ($sortDirection) {
+                $query->orderBy($sortField, $sortDirection);
+            })
+            ->paginate(perPage: $perPage);
+
+        return Inertia::render('periodicals/Index', [
+            'data' => $records,
+            'filter' => $filters,
+            'currentSortField' => $sortField,
+            'currentSortDirection' => $sortDirection,
+        ]);
     }
 
     /**
@@ -20,7 +55,7 @@ class PeriodicalController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**

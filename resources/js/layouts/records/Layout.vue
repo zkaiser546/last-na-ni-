@@ -13,6 +13,10 @@ const sidebarNavItems: NavItem[] = [
         title: 'Multimedia Collections',
         href: '/records/multimedia',
     },
+    {
+        title: 'Magazines/Periodicals',
+        href: '/records/periodicals',
+    },
 ];
 
 const rightNavItems: NavItem[] = [
