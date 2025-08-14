@@ -278,8 +278,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const createNewBook = () => {
-    router.get(route('books.create'));
+const createNewMultimedia = () => {
+    router.get(route('multimedia.create'));
 }
 
 const showDeleteAlert = ref(false);
@@ -334,7 +334,7 @@ const handleDelete = (id) => {
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <Button variant="outline" @click="createNewBook">
+                        <Button variant="outline" @click="createNewMultimedia">
                             <Plus class="h-4"></Plus>
                             Create New
                         </Button>
