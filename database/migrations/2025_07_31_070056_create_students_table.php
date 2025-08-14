@@ -16,6 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('student_id')->unique()->nullable();
             $table->enum('student_type', ['graduate', 'undergraduate']);
+            $table->foreignId('college_id')->constrained()->onDelete('restrict');
+            $table->foreignId('program_id')->constrained()->onDelete('restrict');
+            $table->foreignId('major_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
         });
     }
