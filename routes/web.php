@@ -26,9 +26,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/', [UserController::class, 'index'])->name('users.index');
 
-        Route::get('/import', [UserController::class, 'import'])->name('users.import');
-        Route::post('/import', [UserController::class, 'importStore'])->name('users.import.store');
         Route::group(['middleware' => ['can:viewAny, App\Models\User']], function () {
+            Route::get('/import', [UserController::class, 'import'])->name('users.import');
+            Route::post('/import', [UserController::class, 'importStore'])->name('users.import.store');
             Route::get('/admins',[AdminController::class, 'index'])->name('admins.index');
             Route::get('/admins/create', [AdminController::class, 'create'])->name('admins.create');
             Route::post('/admins', [AdminController::class, 'store'])->name('admins.store');
