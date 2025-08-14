@@ -30,7 +30,7 @@ const form = useForm({
     contact_number: '',
     role_title: '',
     email: '',
-    office_id: '',
+    student_type: '',
 });
 
 const submit = () => {
@@ -114,27 +114,18 @@ const submit = () => {
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="grid gap-2">
                                 <Label for="office_id" class="text-sm font-medium">Office</Label>
-                                <Select v-model="form.office_id" required>
-                                    <SelectTrigger id="office_id" class="h-10">
-                                        <SelectValue placeholder="Select an office" />
+                                <Select v-model="form.student_type" required>
+                                    <SelectTrigger id="student_type" class="h-10">
+                                        <SelectValue placeholder="Select student type" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem
-                                            v-for="office in offices"
-                                            :key="office.id"
-                                            :value="office.id"
-                                        >
-                                            {{ office.acronym }} - {{ office.name }}
-                                        </SelectItem>
+                                        <SelectItem value="undergraduate">Undergraduate</SelectItem>
+                                        <SelectItem value="graduate">Graduate</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <InputError :message="form.errors.office_id" />
+                                <InputError :message="form.errors.student_type" />
                             </div>
-                            <div class="grid gap-2">
-                                <Label for="role_title" class="text-sm font-medium">Role Title</Label>
-                                <Input id="role_title" type="text" required :tabindex="8" v-model="form.role_title" placeholder="Role Title" class="h-10" />
-                                <InputError :message="form.errors.role_title" />
-                            </div>
+
                         </div>
                     </div>
 
