@@ -89,7 +89,6 @@ class BookController extends Controller
         return Inertia::render('books/Index', [
             'data' => $users,
             'filter' => $filters,
-            'userTypes' => $userTypes,
             'currentSortField' => $sortField,
             'currentSortDirection' => $sortDirection,
         ]);

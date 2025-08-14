@@ -367,7 +367,7 @@ const clearFilter = () => {
 
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
-import Layout from '@/layouts/users/Layout.vue';
+import RecordsLayout from '@/layouts/records/Layout.vue';
 import DeleteDialog from '@/components/DeleteDialog.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -414,7 +414,7 @@ const handleDelete = (id) => {
     <Head title="Welcome" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <Layout>
+        <RecordsLayout>
             <div class="w-full">
                 <div class="flex gap-2 items-center justify-between py-4">
                     <div class="flex gap-2">
@@ -537,6 +537,6 @@ const handleDelete = (id) => {
                 :userId="selectedUserId"
                 @confirm-delete="handleDelete"
             />
-        </Layout>
+        </RecordsLayout>
     </AppLayout>
 </template>
