@@ -39,7 +39,7 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Create Admins" />
+    <Head title="Create Faculty" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <Layout>
