@@ -46,7 +46,6 @@ const form = useForm({
     supplier: '',
     donated_by: '',
     cover_type: '',
-    acquisition_status: '',
     condition: '',
     table_of_contents: '',
     subject_headings: [],
@@ -254,32 +253,6 @@ const submit = () => {
                                     <SelectContent>
                                         <SelectItem value="hardcover">Hardcover</SelectItem>
                                         <SelectItem value="paperback">Paperback</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div class="grid gap-2">
-                                <Label for="acquisition_status">Acquisition Status</Label>
-                                <Select v-model="form.acquisition_status">
-                                    <SelectTrigger id="acquisition_status">
-                                        <SelectValue placeholder="Select status" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="available">Available</SelectItem>
-                                        <SelectItem value="pending">Pending</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div class="grid gap-2">
-                                <Label for="condition">Condition</Label>
-                                <Select v-model="form.condition">
-                                    <SelectTrigger id="condition">
-                                        <SelectValue placeholder="Select condition" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="new">New</SelectItem>
-                                        <SelectItem value="good">Good</SelectItem>
-                                        <SelectItem value="fair">Fair</SelectItem>
-                                        <SelectItem value="poor">Poor</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
