@@ -11,18 +11,9 @@ import { LoaderCircle } from 'lucide-vue-next';
 import Layout from '@/layouts/users/Layout.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Users',
-        href: '/users',
-    },
-    {
-        title: 'Faculties',
-        href: '/users/faculties',
-    },
-    {
-        title: 'Create Faculties',
-        href: '/users/faculties/create',
-    },
+    { title: 'Users', href: '/users' },
+    { title: 'Faculties', href: '/users/faculties' },
+    { title: 'Create Faculties', href: '/users/faculties/create' },
 ];
 
 const form = useForm({
@@ -34,16 +25,11 @@ const form = useForm({
     contact_number: '',
     role_title: '',
     email: '',
-    password: '',
-    password_confirmation: '',
 });
 
 const submit = () => {
-    form.post(route('faculties.store'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
-    });
+    form.post(route('faculties.store'));
 };
-
 </script>
 
 <template>
@@ -53,6 +39,7 @@ const submit = () => {
         <Layout>
             <div class="flex h-full flex-1 flex-col gap-6 p-6 bg-white rounded-xl shadow-sm overflow-x-auto">
                 <form @submit.prevent="submit" class="flex flex-col gap-8 max-w-4xl mx-auto">
+
                     <!-- Personal Information Section -->
                     <div class="space-y-6">
                         <h2 class="text-lg font-semibold text-gray-900">Personal Information</h2>
@@ -125,42 +112,11 @@ const submit = () => {
                                 <InputError :message="form.errors.role_title" />
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="grid gap-2">
-                                <Label for="password" class="text-sm font-medium">Password</Label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    required
-                                    :tabindex="9"
-                                    autocomplete="new-password"
-                                    v-model="form.password"
-                                    placeholder="Password"
-                                    class="h-10"
-                                />
-                                <InputError :message="form.errors.password" />
-                            </div>
-
-                            <div class="grid gap-2">
-                                <Label for="password_confirmation" class="text-sm font-medium">Confirm Password</Label>
-                                <Input
-                                    id="password_confirmation"
-                                    type="password"
-                                    required
-                                    :tabindex="10"
-                                    autocomplete="new-password"
-                                    v-model="form.password_confirmation"
-                                    placeholder="Confirm password"
-                                    class="h-10"
-                                />
-                                <InputError :message="form.errors.password_confirmation" />
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Submit Button -->
                     <div class="flex justify-end">
-                        <Button type="submit" class="w-full md:w-auto px-8 py-2" tabindex="11" :disabled="form.processing">
+                        <Button type="submit" class="w-full md:w-auto px-8 py-2" tabindex="9" :disabled="form.processing">
                             <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin mr-2" />
                             Create Account
                         </Button>
