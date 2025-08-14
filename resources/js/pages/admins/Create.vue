@@ -128,6 +128,9 @@ const submit = () => {
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="grid gap-2">
                                 <Label for="password" class="text-sm font-medium">Password</Label>
+                                <span class="text-xs text-gray-500">
+                                    Must be at least 8 characters, include uppercase, lowercase, number, and symbol.
+                                </span>
                                 <Input
                                     id="password"
                                     type="password"
