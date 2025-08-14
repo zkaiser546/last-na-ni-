@@ -34,6 +34,7 @@ const form = useForm({
     contact_number: '',
     email: '',
     student_type: '',
+    student_id: '',
     college_id: null,
     program_id: null,
     major_id: null,
@@ -121,6 +122,20 @@ const submit = () => {
                     <div class="space-y-6">
                         <h2 class="text-lg font-semibold text-gray-900">Academic Information</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Student ID Input -->
+                            <div class="grid gap-2">
+                                <Label for="student_id" class="text-sm font-medium">Student ID</Label>
+                                <Input
+                                    id="student_id"
+                                    type="text"
+                                    required
+                                    v-model="form.student_id"
+                                    placeholder="e.g., 2025-12345"
+                                    class="h-10"
+                                />
+                                <InputError :message="form.errors.student_id" />
+                            </div>
+
                             <!-- College Select Input -->
                             <div class="grid gap-2">
                                 <Label for="college_id" class="text-sm font-medium">College</Label>
