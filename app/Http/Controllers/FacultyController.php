@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Faculty;
-use App\Models\Student;
 use App\Models\User;
 use App\Models\UserType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -104,46 +104,73 @@ class FacultyController extends Controller
      */
     public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
-        $validator = Validator::make($request->all(), [
-            'library_id'     => 'required|integer|unique:' . User::class,
-            'first_name'     => 'required|string|max:50',
-            'middle_initial' => 'nullable|string|max:1',
-            'last_name'      => 'required|string|max:50',
-            'sex'            => 'required|in:m,f',
-            'contact_number' => 'nullable|string|max:20',
-            'role_title'     => 'required|string|max:50',
-            'email'          => 'required|string|lowercase|email|max:255|unique:' . User::class,
-            'office_id'      => 'required|exists:offices,id',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput()
-                ->with('error', 'Please fix the validation errors below.');
+        // 1. Validation
+        try {
+            $request->validate([
+                'library_id'     => 'required|integer|digits_between:1,10|unique:users,library_id',
+                'first_name'     => 'required|string|max:50',
+                'middle_initial' => 'nullable|string|max:1',
+                'last_name'      => 'required|string|max:50',
+                'sex'            => 'required|in:m,f',
+                'contact_number' => 'nullable|string|max:20',
+                'role_title'     => 'required|string|max:50',
+                'email'          => 'required|string|lowercase|email|max:255|unique:users,email',
+                'office_id'      => 'required|exists:offices,id',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            session()->flash('error', 'Please fix the validation errors below.');
+            throw $e; // Let Laravel redirect back with errors
         }
 
-        // Create the user
-        $user = User::create([
-            'library_id' => $request->library_id,
-            'first_name'     => $request->first_name,
-            'middle_initial' => $request->middle_initial,
-            'last_name'      => $request->last_name,
-            'sex'            => $request->sex,
-            'contact_number' => $request->contact_number,
-            'email'          => $request->email,
-            'user_type'      => 'faculty',
-        ]);
+        // 2. Database operations with error handling
+        try {
+            // You could fetch user type ID dynamically instead of hardcoding string
+            $facultyType = UserType::where('key', 'faculty')->firstOrFail();
 
-        // Create the faculty profile linked to the user
-        $user->faculty()->create([
-            'role_title' => $request->role_title,
-            'office_id'  => $request->office_id,
-        ]);
+            // Create the User
+            $user = User::create([
+                'library_id'     => $request->library_id,
+                'first_name'     => $request->first_name,
+                'middle_initial' => $request->middle_initial,
+                'last_name'      => $request->last_name,
+                'sex'            => $request->sex,
+                'contact_number' => $request->contact_number,
+                'email'          => $request->email,
+                'user_type_id'   => $facultyType->id,
+            ]);
 
-        return to_route('users.index')->with('success', 'You successfully created a new Faculty');
+            // Create the Faculty profile linked to the user
+            $user->faculty()->create([
+                'role_title' => $request->role_title,
+                'office_id'  => $request->office_id,
+            ]);
+
+            return to_route('faculties.index')
+                ->with('success', 'You successfully created a new Faculty');
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            \Log::error('Faculty user type not found: ' . $e->getMessage(), [
+                'request_data' => $request->except([]),
+                'exception'    => $e
+            ]);
+            return back()->withInput()
+                ->with('error', 'Faculty user type not found. Please contact the system administrator.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            \Log::error('Database error creating Faculty: ' . $e->getMessage(), [
+                'request_data' => $request->except([]),
+                'exception'    => $e
+            ]);
+            return back()->withInput()
+                ->with('error', 'Database error occurred while creating the faculty. Please try again.');
+        } catch (\Exception $e) {
+            \Log::error('Unexpected error creating Faculty: ' . $e->getMessage(), [
+                'request_data' => $request->except([]),
+                'exception'    => $e
+            ]);
+            return back()->withInput()
+                ->with('error', 'An unexpected error occurred. Please try again or contact support.');
+        }
     }
-
 
     /**
      * Display the specified resource.

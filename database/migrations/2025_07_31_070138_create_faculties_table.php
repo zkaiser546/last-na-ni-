@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('office_id')->nullable()
                 ->constrained()->onDelete('set null');
-            $table->string('title'); // e.g., Professor, Associate Professor
+            $table->string('role_title'); // e.g., Professor, Associate Professor
             $table->timestamps();
         });
     }
