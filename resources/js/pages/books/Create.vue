@@ -53,16 +53,15 @@ const form = useForm({
     supplier: '',
     donated_by: '',
     cover_type: '',
-    condition: '',
     table_of_contents: '',
     subject_headings: [],
+    status: 'available', // Added status with default value
 });
 
 const submit = () => {
     form.post(route('books.store'));
 };
 </script>
-
 
 <template>
     <Head title="Create Book" />
@@ -96,7 +95,8 @@ const submit = () => {
                             <div class="grid gap-2">
                                 <div class="flex gap-2">
                                     <Label for="editors">Editor/s</Label>
-                                    <span class="text-sm text-gray-500">(Hit 'ENTER' for each editor)</span>                                </div>
+                                    <span class="text-sm text-gray-500">(Hit 'ENTER' for each editor)</span>
+                                </div>
                                 <EditorsTagsInput v-model="form.editors" />
                                 <InputError :message="form.errors.editors" />
                             </div>
@@ -175,7 +175,6 @@ const submit = () => {
                                         <SelectValue placeholder="Select location" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {{ console.log(physicalLocations) }}
                                         <SelectItem
                                             v-for="loc in props.physicalLocations"
                                             :key="loc.id"
@@ -196,6 +195,22 @@ const submit = () => {
                             <div class="grid gap-2">
                                 <Label for="cover_image">Cover Image</Label>
                                 <Input id="cover_image" type="file" @change="e => form.cover_image = e.target.files[0]" />
+                            </div>
+                            <div class="grid gap-2">
+                                <Label for="status">Status</Label>
+                                <Select v-model="form.status" required>
+                                    <SelectTrigger id="status">
+                                        <SelectValue placeholder="Select status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="available">Available</SelectItem>
+                                        <SelectItem value="damaged">Damaged</SelectItem>
+                                        <SelectItem value="missing">Missing</SelectItem>
+                                        <SelectItem value="borrowed">Borrowed</SelectItem>
+                                        <SelectItem value="discarded">Discarded</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <InputError :message="form.errors.status" />
                             </div>
                         </div>
                     </section>
