@@ -24,6 +24,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->statefulApi();
     })
+    ->withSchedule(function ($schedule) {
+        // Import scans from ScanSnap Home output folder every minute
+        $schedule->command('scan:import')->everyMinute();
+    })
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
