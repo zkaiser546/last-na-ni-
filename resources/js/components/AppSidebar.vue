@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, BookOpenCheck, Folder, LayoutGrid, Library, Users } from 'lucide-vue-next';
+import { BookOpen, BookOpenCheck, Folder, LayoutGrid, Library, Users, Scan } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { FileClock  } from 'lucide-vue-next';
 
@@ -34,6 +34,11 @@ const mainNavItems: NavItem[] = [
         title: 'Visitors',
         href: '/logger',
         icon: FileClock ,
+    },
+    {
+        title: 'Scanner',
+        href: '/scanner',
+        icon: Scan,
     },
 
 ];
