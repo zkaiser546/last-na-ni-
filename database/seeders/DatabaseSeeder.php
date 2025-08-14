@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\PhysicalLocation;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,5 +20,8 @@ class DatabaseSeeder extends Seeder
         $this->call(BorrowingPolicySeeder::class);
         $this->call(OfficeSeeder::class);
         $this->call(AcademicSeeder::class);
+        $this->call(DdcClassificationSeeder::class);
+        $this->call(LcClassificationSeeder::class);
+        $this->call(PhysicalLocation::class);
     }
 }
