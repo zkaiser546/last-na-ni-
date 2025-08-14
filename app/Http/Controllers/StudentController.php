@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\College;
+use App\Models\Major;
+use App\Models\Program;
 use App\Models\Student;
 use App\Models\User;
 use App\Models\UserType;
@@ -24,13 +27,13 @@ class StudentController extends Controller
         $filters = [];
 
         // Get the admin user type ID by key
-        $adminUserType = UserType::where('key', 'student')->first();
-        $adminUserTypeId = $adminUserType ? $adminUserType->id : null;
+        $studentUserType = UserType::where('key', 'student')->first();
+        $studentUserTypeId = $studentUserType ? $studentUserType->id : null;
 
         // Set default filter to admin user type, or use request parameter
-        $user_type_id = $request->input('user_type_id', $adminUserTypeId);
+        $user_type_id = $request->input('user_type_id', $studentUserTypeId);
 
-        // Handle user_type_id filter (can be single value or array)
+        // Handle user_type_id filter
         if (!empty($user_type_id)) {
             $filters[] = [
                 'id' => 'user_type_id',
@@ -52,12 +55,16 @@ class StudentController extends Controller
             ->orderBy('name')
             ->get();
 
+        // --- ADDED: Load data for frontend filters ---
+        $programs = Program::select('id', 'code', 'name')->orderBy('name')->get();
+        $majors = Major::select('id', 'name')->orderBy('name')->get();
+        $colleges = College::select('id', 'code', 'name')->orderBy('name')->get();
+        // ---------------------------------------------
+
         $users = User::query()
             ->with('userType')
             ->when($user_type_id, function ($query, $user_type_id) {
-                // Handle both single values and arrays
                 if (is_array($user_type_id) && !empty($user_type_id)) {
-                    // Convert string values to integers if needed
                     $userTypeIds = array_map('intval', array_filter($user_type_id));
                     if (!empty($userTypeIds)) {
                         $query->whereIn('user_type_id', $userTypeIds);
@@ -82,6 +89,9 @@ class StudentController extends Controller
             'data' => $users,
             'filter' => $filters,
             'userTypes' => $userTypes,
+            'programs' => $programs, // Added prop
+            'majors' => $majors,     // Added prop
+            'colleges' => $colleges,   // Added prop
             'currentSortField' => $sortField,
             'currentSortDirection' => $sortDirection,
         ]);
