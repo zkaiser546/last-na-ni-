@@ -44,6 +44,7 @@ class BookController extends Controller
 
         $records = Record::query()
             ->with('book')
+            ->whereHas('book')
             ->when($searchTerm, function ($query, $searchTerm) {
                 $query->where(function ($q) use ($searchTerm) {
                     $q->where('accession_number', 'like', '%' . $searchTerm . '%')
