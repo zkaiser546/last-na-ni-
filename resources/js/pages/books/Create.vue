@@ -18,7 +18,8 @@ import SubjectTagsInput from '@/components/SubjectTagsInput.vue';
 const props = defineProps<{
     ddcClassifications: { id: number; code: string; name: string }[];
     lcClassifications: { id: number; code: string; name: string }[];
-    physicalLocations: { id: number; name: string; symbol?: string }[];
+    physicalLocations: { id: number; name: string; symbol: string }[];
+    coverTypes: { id: number; key: string; name: string }[];
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
