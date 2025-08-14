@@ -4,12 +4,17 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BorrowingTransactionController;
 use App\Http\Controllers\ClearanceController;
+use App\Http\Controllers\CoreCollectionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\GradSchoolStudentController;
 use App\Http\Controllers\LibraryVisitController;
+use App\Http\Controllers\MissingCollectionController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RecordController;
+use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\ReportsPenaltyController;
+use App\Http\Controllers\TransactionProfileController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
@@ -56,6 +61,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{product}', [ProductController::class, 'edit'])->name('product.edit');  //with GET
         Route::put('/{product}', [ProductController::class, 'update'])->name('product.update');  //with GET
     });
+
+    // Reports routes
+    Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
+    Route::get('/reports/penalty', [ReportsPenaltyController::class, 'index'])->name('reports.penalty');
+    Route::get('/reports/transaction-profile', [TransactionProfileController::class, 'index'])->name('reports.transaction-profile');
+    Route::get('/reports/missing-collection', [MissingCollectionController::class, 'index'])->name('reports.missing-collection');
+    Route::get('/reports/core-collection', [CoreCollectionController::class, 'index'])->name('reports.core-collection');
 });
 
 // Test routes (no middleware)
