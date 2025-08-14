@@ -109,122 +109,87 @@ class StudentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
-        // 1. Validate based exactly on your front-end inputs
+        // 1. Validation
         try {
             $request->validate([
-                // Basic Information
-                'accession_number'      => 'required|string|max:50|unique:records,accession_number',
-                'title'                 => 'required|string|max:255',
-                'authors'               => 'required|array|min:1',
-                'authors.*'             => 'string|max:255',
-                'editors'               => 'nullable|array',
-                'editors.*'             => 'string|max:255',
-                'publication_year'      => 'required|integer|min:1000|max:' . date('Y'),
-                'publisher'             => 'required|string|max:255',
-                'publication_place'     => 'required|string|max:255',
-                'isbn'                  => 'required|string|max:20|unique:books,isbn',
-
-                // Classification & Location
-                'call_number'           => 'nullable|string|max:50',
-                'ddc_class_id'          => 'nullable|exists:ddc_classifications,id|required_without:lc_class_id',
-                'lc_class_id'           => 'nullable|exists:lc_classifications,id|required_without:ddc_class_id',
-                'physical_location_id'  => 'required|exists:physical_locations,id',
-
-                // Physical Description
-                'cover_image'           => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
-                'status'                => 'required|in:available,damaged,missing,borrowed,discarded', // Added status validation
-
-                // Administrative Information
-                'ics_number'            => 'nullable|string|max:50',
-                'ics_date'              => 'nullable|date',
-                'pr_number'             => 'nullable|string|max:50',
-                'pr_date'               => 'nullable|date',
-                'po_number'             => 'nullable|string|max:50',
-                'po_date'               => 'nullable|date',
-                'source'                => 'required|in:purchase,donation',
-                'purchase_amount'       => 'nullable|numeric|min:0',
-                'lot_cost'              => 'nullable|numeric|min:0',
-                'supplier'              => 'nullable|string|max:255',
-                'donated_by'            => 'nullable|string|max:255',
-                'cover_type'            => 'nullable|in:hardcover,paperback',
-
-                // Content Description
-                'table_of_contents'     => 'nullable|string',
-                'subject_headings'      => 'nullable|array',
-                'subject_headings.*'    => 'string|max:255',
+                'library_id'     => 'required|integer|digits_between:1,10|unique:users,library_id',
+                'first_name'     => 'required|string|max:50',
+                'middle_initial' => 'nullable|string|max:1',
+                'last_name'      => 'required|string|max:50',
+                'sex'            => 'required|in:m,f',
+                'contact_number' => 'nullable|string|max:20',
+                'email'          => 'required|string|lowercase|email|max:255|unique:users,email',
+                'student_type'   => 'required|in:undergraduate,graduate',
+                'college_id'     => 'required|exists:colleges,id',
+                'program_id'     => 'required|exists:programs,id',
+                'major_id'       => 'nullable|exists:majors,id',
+                'school_id'     => 'required|string|max:20|unique:users,school_id', // <-- added
             ]);
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             session()->flash('error', 'Please fix the validation errors below.');
-            throw $e;
+            throw $e; // Let Laravel handle redirect back
         }
 
-        // 2. Database Transaction
+        // 2. Database operations inside a transaction
         try {
             DB::beginTransaction();
 
-            // Handle file upload
-            $coverImagePath = null;
-            if ($request->hasFile('cover_image')) {
-                $coverImagePath = $request->file('cover_image')->store('uploads/covers', 'public');
-            }
+            // Get the "student" user type dynamically
+            $studentType = UserType::where('key', 'student')->firstOrFail();
 
-            // Create main record
-            $record = Record::create([
-                'accession_number' => $request->accession_number,
-                'title'            => $request->title,
-                'subject_headings' => $request->subject_headings,
-                'status'           => $request->status, // Added status field
-                'added_by'         => auth()->id(),
+            // Create the User record
+            $user = User::create([
+                'library_id'     => $request->library_id,
+                'school_id'   => $request->school_id,
+                'first_name'     => $request->first_name,
+                'middle_initial' => $request->middle_initial,
+                'last_name'      => $request->last_name,
+                'sex'            => $request->sex,
+                'contact_number' => $request->contact_number,
+                'email'          => $request->email,
+                'user_type_id'   => $studentType->id,
             ]);
 
-            // Create related book record
-            $record->book()->create([
-                'authors'              => $request->authors,
-                'editors'              => $request->editors,
-                'publication_year'     => $request->publication_year,
-                'publisher'            => $request->publisher,
-                'publication_place'    => $request->publication_place,
-                'isbn'                 => $request->isbn,
-                'call_number'          => $request->call_number,
-                'ddc_class_id'         => $request->ddc_class_id,
-                'lc_class_id'          => $request->lc_class_id,
-                'physical_location_id' => $request->physical_location_id,
-                'cover_type'           => $request->cover_type,
-                'cover_image'          => $coverImagePath,
-                'ics_number'           => $request->ics_number,
-                'ics_date'             => $request->ics_date,
-                'pr_number'            => $request->pr_number,
-                'pr_date'              => $request->pr_date,
-                'po_number'            => $request->po_number,
-                'po_date'              => $request->po_date,
-                'source'               => $request->source,
-                'purchase_amount'      => $request->purchase_amount,
-                'lot_cost'             => $request->lot_cost,
-                'supplier'             => $request->supplier,
-                'donated_by'           => $request->donated_by,
-                'table_of_contents'    => $request->table_of_contents,
+            // Create the Student profile linked to the user
+            $user->student()->create([
+                'student_type' => $request->student_type,
+                'college_id'   => $request->college_id,
+                'program_id'   => $request->program_id,
+                'major_id'     => $request->major_id,
             ]);
 
             DB::commit();
 
-            return to_route('books.index')
-                ->with('success', 'Book record created successfully.');
+            return to_route('students.index')
+                ->with('success', 'You successfully created a new Student');
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            DB::rollBack();
+            \Log::error('Student user type not found: ' . $e->getMessage(), [
+                'request_data' => $request->except([]),
+                'exception'    => $e
+            ]);
+            return back()->withInput()
+                ->with('error', 'Student user type not found. Please contact the system administrator.');
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
-            Log::error('Database error creating Book: ' . $e->getMessage(), [
-                'request_data' => $request->except(['cover_image']),
+            \Log::error('Database error creating Student: ' . $e->getMessage(), [
+                'request_data' => $request->except([]),
                 'exception'    => $e
             ]);
-            return back()->withInput()->with('error', 'Database error occurred while creating the book.');
+            return back()->withInput()
+                ->with('error', 'A database error occurred while creating the student. Please try again.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Unexpected error creating Book: ' . $e->getMessage(), [
-                'request_data' => $request->except(['cover_image']),
+            \Log::error('Unexpected error creating Student: ' . $e->getMessage(), [
+                'request_data' => $request->except([]),
                 'exception'    => $e
             ]);
-            return back()->withInput()->with('error', 'An unexpected error occurred. Please try again.');
+            return back()->withInput()
+                ->with('error', 'An unexpected error occurred. Please try again or contact support.');
         }
     }
 
