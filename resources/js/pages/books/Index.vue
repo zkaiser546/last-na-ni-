@@ -60,52 +60,7 @@ type RowData = any
 const data = props.data.data; // Now safe to access directly
 const columns: ColumnDef<RowData>[] = [
     {
-        id: 'search',
-        // This is a virtual column for searching, not displayed
-        accessorFn: (row) => `${row.first_name} ${row.last_name}`,
-        enableSorting: false,
-        enableHiding: false,
-    },
-    {
-        id: 'select',
-        header: ({ table }: { table: Table<RowData> }) => h(Checkbox, {
-            'checked': table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate'),
-            'onUpdate:checked': (value:boolean) => table.toggleAllPageRowsSelected(!!value),
-            'ariaLabel': 'Select all',
-        }),
-        cell: ({ row }: { row: Row<RowData> }) => h(Checkbox, {
-            'checked': row.getIsSelected(),
-            'onUpdate:checked': (value: boolean) => row.toggleSelected(!!value),
-            'ariaLabel': 'Select row',
-        }),
-        enableSorting: false,
-        enableHiding: false,
-    },
-    {
-        accessorKey: 'library_id',
-        header: ({ column }: { column: Column<RowData, any> }) => {
-            return h(Button, {
-                variant: 'ghost',
-                onClick: () => {
-                    // Get current sort state
-                    const currentSort = column.getIsSorted();
-
-                    // Cycle through: none -> asc -> desc -> none
-                    if (currentSort === false) {
-                        column.toggleSorting(false); // Set to ascending
-                    } else if (currentSort === 'asc') {
-                        column.toggleSorting(true);  // Set to descending
-                    } else {
-                        column.clearSorting();       // Clear sorting
-                    }
-                },
-            }, () => ['Library ID ', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
-        },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('library_id')),
-        enableHiding: false,
-    },
-    {
-        accessorKey: 'first_name',
+        accessorKey: 'accession_number',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
@@ -119,113 +74,55 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();       // none
                     }
                 },
-            }, () => ['First Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Accession Number', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('first_name')),
+        cell: ({ row }: { row: Row<RowData> }) =>
+            h('div', row.getValue('accession_number')),
     },
     {
-        accessorKey: 'middle_initial',
+        accessorKey: 'title',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
                 onClick: () => {
                     const currentSort = column.getIsSorted();
                     if (currentSort === false) {
-                        column.toggleSorting(false);
+                        column.toggleSorting(false); // asc
                     } else if (currentSort === 'asc') {
-                        column.toggleSorting(true);
+                        column.toggleSorting(true);  // desc
                     } else {
-                        column.clearSorting();
+                        column.clearSorting();       // none
                     }
                 },
-            }, () => ['M.I', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Title', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+        },
+        cell: ({ row }: { row: Row<RowData> }) =>
+            h('div', row.getValue('title')),
+    },
+    {
+        accessorKey: 'date_received',
+        header: ({ column }: { column: Column<RowData, any> }) => {
+            return h(Button, {
+                variant: 'ghost',
+                onClick: () => {
+                    const currentSort = column.getIsSorted();
+                    if (currentSort === false) {
+                        column.toggleSorting(false); // asc
+                    } else if (currentSort === 'asc') {
+                        column.toggleSorting(true);  // desc
+                    } else {
+                        column.clearSorting();       // none
+                    }
+                },
+            }, () => ['Date Received', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => {
-            const middleInitial = row.getValue('middle_initial');
-            return h('div', { class: 'capitalize' }, middleInitial ? middleInitial + '.' : '');
+            const date = row.getValue('date_received');
+            return h('div', date ? new Date(date).toLocaleDateString() : '');
         },
     },
-    {
-        accessorKey: 'last_name',
-        header: ({ column }: { column: Column<RowData, any> }) => {
-            return h(Button, {
-                variant: 'ghost',
-                onClick: () => {
-                    const currentSort = column.getIsSorted();
-                    if (currentSort === false) {
-                        column.toggleSorting(false);
-                    } else if (currentSort === 'asc') {
-                        column.toggleSorting(true);
-                    } else {
-                        column.clearSorting();
-                    }
-                },
-            }, () => ['Last Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
-        },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('last_name')),
-    },
-    {
-        accessorKey: 'sex',
-        header: ({ column }: { column: Column<RowData, any> }) => {
-            return h(Button, {
-                variant: 'ghost',
-                onClick: () => {
-                    const currentSort = column.getIsSorted();
-                    if (currentSort === false) {
-                        column.toggleSorting(false);
-                    } else if (currentSort === 'asc') {
-                        column.toggleSorting(true);
-                    } else {
-                        column.clearSorting();
-                    }
-                },
-            }, () => ['Sex', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
-        },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('sex')),
-    },
-    {
-        accessorKey: 'email',
-        header: ({ column }: { column: Column<RowData, any> }) => {
-            return h(Button, {
-                variant: 'ghost',
-                onClick: () => {
-                    const currentSort = column.getIsSorted();
-                    if (currentSort === false) {
-                        column.toggleSorting(false);
-                    } else if (currentSort === 'asc') {
-                        column.toggleSorting(true);
-                    } else {
-                        column.clearSorting();
-                    }
-                },
-            }, () => ['Email', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
-        },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('email')),
-        enableHiding: false,
-    },
-    {
-        id: 'actions',
-        enableHiding: false,
-        cell: ({ row }: { row: Row<RowData> }) => {
-            const user = row.original
+];
 
-            return h('div', { class: 'relative' }, h(DropdownAction, {
-                user,
-                onExpand: row.toggleExpanded,
-                onEdit: (id) => {
-                    // Handle edit functionality
-                    console.log('Edit clicked for ID:', id);
-                    // Add your edit logic here
-                    // For example: router.get(route('admins.edit', id));
-                },
-                onDelete: (id) => {
-                    showDeleteAlert.value = true;
-                    selectedUserId.value = id;
-                }
-            }))
-        },
-    }
-]
 
 const sorting = ref<SortingState>(
     props.currentSortField ? [{
@@ -372,12 +269,12 @@ import DeleteDialog from '@/components/DeleteDialog.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Users',
-        href: '/users',
+        title: 'Records',
+        href: '/records',
     },
     {
-        title: 'Students',
-        href: '/users/students',
+        title: 'Books',
+        href: '/records/books',
     },
 ];
 
