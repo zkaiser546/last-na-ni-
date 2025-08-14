@@ -120,20 +120,7 @@ const submit = () => {
                     <!-- Academic Information Section -->
                     <div class="space-y-6">
                         <h2 class="text-lg font-semibold text-gray-900">Academic Information</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="grid gap-2">
-                                <Label for="office_id" class="text-sm font-medium">Office</Label>
-                                <Select v-model="form.student_type" required>
-                                    <SelectTrigger id="student_type" class="h-10">
-                                        <SelectValue placeholder="Select student type" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="undergraduate">Undergraduate</SelectItem>
-                                        <SelectItem value="graduate">Graduate</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <InputError :message="form.errors.student_type" />
-                            </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- College Select Input -->
                             <div class="grid gap-2">
                                 <Label for="college_id" class="text-sm font-medium">College</Label>
@@ -143,7 +130,7 @@ const submit = () => {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem v-for="college in colleges" :key="college.id" :value="college.id">
-                                            {{ college.name }} ({{ college.code }})
+                                            {{ college.code }} - {{ college.name }}
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>
@@ -159,12 +146,14 @@ const submit = () => {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem v-for="program in programs" :key="program.id" :value="program.id">
-                                            {{ program.name }} ({{ program.code }})
+                                            {{ program.code }} - {{ program.name }}
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>
                                 <InputError :message="form.errors.program_id" />
                             </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                             <!-- Major Select Input -->
                             <div class="grid gap-2">
@@ -180,6 +169,20 @@ const submit = () => {
                                     </SelectContent>
                                 </Select>
                                 <InputError :message="form.errors.major_id" />
+                            </div>
+
+                            <div class="grid gap-2">
+                                <Label for="office_id" class="text-sm font-medium">Student Type</Label>
+                                <Select v-model="form.student_type" required>
+                                    <SelectTrigger id="student_type" class="h-10">
+                                        <SelectValue placeholder="Select student type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="undergraduate">Undergraduate</SelectItem>
+                                        <SelectItem value="graduate">Graduate</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <InputError :message="form.errors.student_type" />
                             </div>
                         </div>
                     </div>

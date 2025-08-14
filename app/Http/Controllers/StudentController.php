@@ -110,33 +110,7 @@ class StudentController extends Controller
      */
     public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required|string|max:50',
-            'last_name' => 'required|string|max:50',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'student_id' => 'required|integer|unique:'.Student::class,
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput()
-                ->with('error', 'Please fix the validation errors below.');
-        }
-
-        $user = User::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'user_type' => 'student',
-        ]);
-
-        $user->student()->create([
-            'student_id' => $request->student_id,
-        ]);
-
-        return to_route('users.index')->with('success', 'You successfully created a new Student');
-
+        dd($request);
     }
 
     /**
