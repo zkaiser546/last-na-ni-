@@ -10,9 +10,16 @@ import { Button } from '@/components/ui/button';
 import { LoaderCircle } from 'lucide-vue-next';
 import RecordsLayout from '@/layouts/records/Layout.vue';
 import { Textarea } from '@/components/ui/textarea';
-import AuthorsTagsInput from '@/components/AuthorsTagsInput.vue'; // for authors[]
-import EditorsTagsInput from '@/components/EditorsTagsInput.vue'; // new dynamic editors[]
-import SubjectTagsInput from '@/components/SubjectTagsInput.vue'; // new dynamic subject_headings[]
+import AuthorsTagsInput from '@/components/AuthorsTagsInput.vue';
+import EditorsTagsInput from '@/components/EditorsTagsInput.vue';
+import SubjectTagsInput from '@/components/SubjectTagsInput.vue';
+
+// Props from Inertia
+const props = defineProps<{
+    ddcClassifications: { id: number; code: string; name: string }[];
+    lcClassifications: { id: number; code: string; name: string }[];
+    physicalLocations: { id: number; name: string }[];
+}>();
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Records', href: '/records' },
@@ -55,6 +62,7 @@ const submit = () => {
     form.post(route('books.store'));
 };
 </script>
+
 
 <template>
     <Head title="Create Book" />
@@ -124,6 +132,7 @@ const submit = () => {
                                 <Label for="call_number">Call Number</Label>
                                 <Input id="call_number" type="text" v-model="form.call_number" />
                             </div>
+                            <!-- DDC Classification -->
                             <div v-if="!form.lc_class_id" class="grid gap-2">
                                 <Label for="ddc_class_id">DDC Classification</Label>
                                 <Select v-model="form.ddc_class_id">
@@ -131,10 +140,17 @@ const submit = () => {
                                         <SelectValue placeholder="Select DDC classification" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="000">000 – General Works</SelectItem>
+                                        <SelectItem
+                                            v-for="ddc in props.ddcClassifications"
+                                            :key="ddc.id"
+                                            :value="ddc.id.toString()"
+                                        >
+                                            {{ ddc.code }} – {{ ddc.name }}
+                                        </SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
+                            <!-- LC Classification -->
                             <div v-if="!form.ddc_class_id" class="grid gap-2">
                                 <Label for="lc_class_id">LC Classification</Label>
                                 <Select v-model="form.lc_class_id">
@@ -142,10 +158,17 @@ const submit = () => {
                                         <SelectValue placeholder="Select LC classification" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="A">A – General Works</SelectItem>
+                                        <SelectItem
+                                            v-for="lc in props.lcClassifications"
+                                            :key="lc.id"
+                                            :value="lc.id.toString()"
+                                        >
+                                            {{ lc.code }} – {{ lc.name }}
+                                        </SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
+                            <!-- Physical Location -->
                             <div class="grid gap-2">
                                 <Label for="physical_location_id">Physical Location</Label>
                                 <Select v-model="form.physical_location_id" required>
@@ -153,7 +176,14 @@ const submit = () => {
                                         <SelectValue placeholder="Select location" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="1">Main Library</SelectItem>
+                                        {{ console.log(physicalLocations) }}
+                                        <SelectItem
+                                            v-for="loc in props.physicalLocations"
+                                            :key="loc.id"
+                                            :value="loc.id.toString()"
+                                        >
+                                            {{ loc.symbol }} - {{ loc.name }}
+                                        </SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
