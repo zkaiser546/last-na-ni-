@@ -22,6 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(AcademicSeeder::class);
         $this->call(DdcClassificationSeeder::class);
         $this->call(LcClassificationSeeder::class);
-        $this->call(PhysicalLocation::class);
+        $this->call(PhysicalLocationSeeder::class);
     }
 }
