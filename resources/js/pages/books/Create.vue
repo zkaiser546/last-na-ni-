@@ -70,11 +70,13 @@ const submit = () => {
                                 <InputError :message="form.errors.title" />
                             </div>
                             <div class="grid gap-2">
-                                <Label for="author">Authors</Label>
-                                <Input id="author" type="text" required v-model="form.authors" />
+                                <div class="flex gap-2">
+                                <Label for="authors">Author/s</Label>
+                                <span class="text-sm text-gray-500">(Hit 'enter' for multiple authors)</span>
+                                </div>
+                                <AuthorsTagsInput v-model="form.authors" />
                                 <InputError :message="form.errors.authors" />
                             </div>
-                            <AuthorsTagsInput />
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div class="grid gap-2">
