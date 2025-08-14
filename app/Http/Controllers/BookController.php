@@ -11,6 +11,8 @@ use App\Models\DdcClassification;
 use App\Models\PhysicalLocation;
 use App\Models\Record;
 use App\Models\Source;
+use App\Models\User;
+use App\Models\UserType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,15 +29,22 @@ class BookController extends Controller
     public function index(Request $request): \Inertia\Response
     {
         $perPage = $request->input('per_page', 10);
-        $ddc_class_id = $request->input('ddc_class_id', null);
         $sortField = $request->input('sort_field', null);
         $sortDirection = $request->input('sort_direction', 'asc');
         $filters = [];
 
-        if (!empty($ddc_class_id)) {
+        // Get the admin user type ID by key
+        $studentUserType = UserType::where('key', 'student')->first();
+        $studentUserTypeId = $studentUserType ? $studentUserType->id : null;
+
+        // Set default filter to admin user type, or use request parameter
+        $user_type_id = $request->input('user_type_id', $studentUserTypeId);
+
+        // Handle user_type_id filter
+        if (!empty($user_type_id)) {
             $filters[] = [
-                'id' => 'ddc_class_id',
-                'value' => $ddc_class_id
+                'id' => 'user_type_id',
+                'value' => $user_type_id
             ];
         }
 
@@ -48,37 +57,28 @@ class BookController extends Controller
             ];
         }
 
-        // Get all DDC classes for filter dropdown
-        $ddcClasses = DdcClassification::select('id', 'name')
+        // Get all user types for filter dropdown
+        $userTypes = UserType::select('id', 'name')
             ->orderBy('name')
             ->get();
 
-        $records = Record::query()
-            ->with(['book.ddcClassification']) // Load nested relationship
-            ->when($ddc_class_id, function ($query, $ddc_class_id) {
-                // Handle both single values and arrays
-                if (is_array($ddc_class_id) && !empty($ddc_class_id)) {
-                    // Convert string values to integers if needed
-                    $ddcClassIds = array_map('intval', array_filter($ddc_class_id));
-                    if (!empty($ddcClassIds)) {
-                        $query->whereHas('book', function ($bookQuery) use ($ddcClassIds) {
-                            $bookQuery->whereIn('ddc_class_id', $ddcClassIds);
-                        });
+        $users = User::query()
+            ->with('userType')
+            ->when($user_type_id, function ($query, $user_type_id) {
+                if (is_array($user_type_id) && !empty($user_type_id)) {
+                    $userTypeIds = array_map('intval', array_filter($user_type_id));
+                    if (!empty($userTypeIds)) {
+                        $query->whereIn('user_type_id', $userTypeIds);
                     }
-                } elseif (!empty($ddc_class_id)) {
-                    $query->whereHas('book', function ($bookQuery) use ($ddc_class_id) {
-                        $bookQuery->where('ddc_class_id', (int)$ddc_class_id);
-                    });
+                } elseif (!empty($user_type_id)) {
+                    $query->where('user_type_id', intval($user_type_id));
                 }
             })
             ->when($searchTerm, function ($query, $searchTerm) {
                 $query->where(function ($q) use ($searchTerm) {
-                    $q->where('accession_number', 'like', '%' . $searchTerm . '%')
-                        ->orWhere('title', 'like', '%' . $searchTerm . '%')
-                        ->orWhereHas('book', function ($bookQuery) use ($searchTerm) {
-                            // Simple LIKE search on the JSON column as text
-                            $bookQuery->where('authors', 'like', '%' . $searchTerm . '%');
-                        });
+                    $q->where('first_name', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('last_name', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('library_id', 'like', '%' . $searchTerm . '%');
                 });
             })
             ->when($sortField, function ($query, $sortField) use ($sortDirection) {
@@ -87,41 +87,11 @@ class BookController extends Controller
             ->paginate(perPage: $perPage);
 
         return Inertia::render('books/Index', [
-            'data' => $records,
+            'data' => $users,
             'filter' => $filters,
-            'ddcClasses' => $ddcClasses,
+            'userTypes' => $userTypes,
             'currentSortField' => $sortField,
             'currentSortDirection' => $sortDirection,
-        ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $ddcClassifications = DdcClassification::select('id', 'name', 'code')
-            ->orderBy('name')
-            ->get();
-
-        $lcClassifications = LcClassification::select('id', 'code', 'name')
-            ->orderBy('name')
-            ->get();
-
-        $physicalLocations = PhysicalLocation::select('id', 'symbol', 'name')
-            ->orderBy('name')
-            ->get();
-
-        $coverTypes = CoverType::select('id', 'name')->orderBy('name')->get();
-
-        $sources = Source::select('id', 'name')->orderBy('name')->get();
-
-        return Inertia::render('books/Create', [
-            'ddcClassifications' => $ddcClassifications,
-            'lcClassifications'  => $lcClassifications,
-            'physicalLocations'  => $physicalLocations,
-            'coverTypes'         => $coverTypes,
-            'sources'         => $sources,
         ]);
     }
 

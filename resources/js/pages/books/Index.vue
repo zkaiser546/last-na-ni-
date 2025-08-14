@@ -1,9 +1,7 @@
 <script setup lang="ts">
-// import Layout from './Layout'
 import { Head, router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import { Button } from '@/components/ui/button'
-// Layout
 import {
     FlexRender,
     getCoreRowModel,
@@ -13,12 +11,11 @@ import {
     getSortedRowModel,
     useVueTable, VisibilityState
 } from '@tanstack/vue-table';
-import { ArrowUpDown, ChevronDown, ListFilter, X } from 'lucide-vue-next';
+import { ArrowUpDown, ChevronDown, X } from 'lucide-vue-next'
 
 import { h, ref } from 'vue'
-import DropdownAction from '../records/DataTableDemoColumn.vue'
+import DropdownAction from '../users/DataTableDemoColumn.vue'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Badge } from '@/components/ui/badge'
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -49,15 +46,13 @@ interface Props {
     filter?: any[]
     currentSortField?: string
     currentSortDirection?: string
-    ddcClasses?: any[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
     data: () => ({ data: [], current_page: 1, per_page: 10, last_page: 1 }),
     filter: () => [],
     currentSortField: undefined,
-    currentSortDirection: 'asc',
-    ddcClasses: () => []
+    currentSortDirection: 'asc'
 })
 
 import type { Table, Row, Column, SortingState, ColumnFiltersState, ColumnDef } from '@tanstack/vue-table'
@@ -67,7 +62,7 @@ const columns: ColumnDef<RowData>[] = [
     {
         id: 'search',
         // This is a virtual column for searching, not displayed
-        accessorFn: (row) => `${row.accession_number} ${row.title}`,
+        accessorFn: (row) => `${row.first_name} ${row.last_name}`,
         enableSorting: false,
         enableHiding: false,
     },
@@ -87,7 +82,7 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: 'accession_number',
+        accessorKey: 'library_id',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
@@ -104,13 +99,13 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();       // Clear sorting
                     }
                 },
-            }, () => ['Acc.', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Library ID ', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('accession_number')),
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('library_id')),
         enableHiding: false,
     },
     {
-        accessorKey: 'title',
+        accessorKey: 'first_name',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
                 variant: 'ghost',
@@ -124,100 +119,112 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();       // none
                     }
                 },
-            }, () => ['Title', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['First Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize truncate max-w-sm' }, row.getValue('title')),
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('first_name')),
+    },
+    {
+        accessorKey: 'middle_initial',
+        header: ({ column }: { column: Column<RowData, any> }) => {
+            return h(Button, {
+                variant: 'ghost',
+                onClick: () => {
+                    const currentSort = column.getIsSorted();
+                    if (currentSort === false) {
+                        column.toggleSorting(false);
+                    } else if (currentSort === 'asc') {
+                        column.toggleSorting(true);
+                    } else {
+                        column.clearSorting();
+                    }
+                },
+            }, () => ['M.I', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+        },
+        cell: ({ row }: { row: Row<RowData> }) => {
+            const middleInitial = row.getValue('middle_initial');
+            return h('div', { class: 'capitalize' }, middleInitial ? middleInitial + '.' : '');
+        },
+    },
+    {
+        accessorKey: 'last_name',
+        header: ({ column }: { column: Column<RowData, any> }) => {
+            return h(Button, {
+                variant: 'ghost',
+                onClick: () => {
+                    const currentSort = column.getIsSorted();
+                    if (currentSort === false) {
+                        column.toggleSorting(false);
+                    } else if (currentSort === 'asc') {
+                        column.toggleSorting(true);
+                    } else {
+                        column.clearSorting();
+                    }
+                },
+            }, () => ['Last Name', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+        },
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('last_name')),
+    },
+    {
+        accessorKey: 'sex',
+        header: ({ column }: { column: Column<RowData, any> }) => {
+            return h(Button, {
+                variant: 'ghost',
+                onClick: () => {
+                    const currentSort = column.getIsSorted();
+                    if (currentSort === false) {
+                        column.toggleSorting(false);
+                    } else if (currentSort === 'asc') {
+                        column.toggleSorting(true);
+                    } else {
+                        column.clearSorting();
+                    }
+                },
+            }, () => ['Sex', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+        },
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('sex')),
+    },
+    {
+        accessorKey: 'email',
+        header: ({ column }: { column: Column<RowData, any> }) => {
+            return h(Button, {
+                variant: 'ghost',
+                onClick: () => {
+                    const currentSort = column.getIsSorted();
+                    if (currentSort === false) {
+                        column.toggleSorting(false);
+                    } else if (currentSort === 'asc') {
+                        column.toggleSorting(true);
+                    } else {
+                        column.clearSorting();
+                    }
+                },
+            }, () => ['Email', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+        },
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('email')),
         enableHiding: false,
-    },
-    {
-        accessorKey: 'authors',
-        header: ({ column }: { column: Column<RowData, any> }) => {
-            return h(Button, {
-                variant: 'ghost',
-                onClick: () => {
-                    const currentSort = column.getIsSorted();
-                    if (currentSort === false) {
-                        column.toggleSorting(false); // asc
-                    } else if (currentSort === 'asc') {
-                        column.toggleSorting(true);  // desc
-                    } else {
-                        column.clearSorting();       // none
-                    }
-                },
-            }, () => ['Authors', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
-        },
-        cell: ({ row }: { row: Row<RowData> }) => {
-            return h('div', { class: 'capitalize truncate max-w-40' }, row.original.book.authors || '')
-        },
-        enableHiding: true,
-    },
-    {
-        accessorKey: 'date_received',
-        header: ({ column }: { column: Column<RowData, any> }) => {
-            return h(Button, {
-                variant: 'ghost',
-                onClick: () => {
-                    const currentSort = column.getIsSorted();
-                    if (currentSort === false) {
-                        column.toggleSorting(false); // asc
-                    } else if (currentSort === 'asc') {
-                        column.toggleSorting(true);  // desc
-                    } else {
-                        column.clearSorting();       // none
-                    }
-                },
-            }, () => ['Date Received', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
-        },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('date_received')),
-        enableHiding: true,
-    },
-    {
-        accessorKey: 'call_number',
-        header: ({ column }: { column: Column<RowData, any> }) => {
-            return h(Button, {
-                variant: 'ghost',
-                onClick: () => {
-                    const currentSort = column.getIsSorted();
-                    if (currentSort === false) {
-                        column.toggleSorting(false); // asc
-                    } else if (currentSort === 'asc') {
-                        column.toggleSorting(true);  // desc
-                    } else {
-                        column.clearSorting();       // none
-                    }
-                },
-            }, () => ['Call Number', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
-        },
-        cell: ({ row }: { row: Row<RowData> }) => {
-            return h('div', { class: 'truncate max-w-40' }, row.original.book.call_number || '')
-        },
-        enableHiding: true,
-    },
-    {
-        accessorKey: 'ddc_class_id',
-        header: 'DDC Class',
-        cell: ({ row }: { row: Row<RowData> }) => {
-            const ddcClass = row.original.book.ddc_classification;
-            if (ddcClass) {
-                return h('div', h(Badge, ddcClass.name || 'Unknown'))
-            } else {
-                return h('div', 'No DDC Class')
-            }
-        },
-        enableHiding: true,
     },
     {
         id: 'actions',
         enableHiding: false,
         cell: ({ row }: { row: Row<RowData> }) => {
-            const payment = row.original
+            const user = row.original
 
             return h('div', { class: 'relative' }, h(DropdownAction, {
-                payment,
+                user,
                 onExpand: row.toggleExpanded,
+                onEdit: (id) => {
+                    // Handle edit functionality
+                    console.log('Edit clicked for ID:', id);
+                    // Add your edit logic here
+                    // For example: router.get(route('admins.edit', id));
+                },
+                onDelete: (id) => {
+                    showDeleteAlert.value = true;
+                    selectedUserId.value = id;
+                }
             }))
         },
-    },
+    }
 ]
 
 const sorting = ref<SortingState>(
@@ -252,35 +259,19 @@ const table = useVueTable({
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
-    // Replace your onPaginationChange handler with this:
     onPaginationChange: updater => {
         if (typeof updater === 'function') {
             pagination.value = updater(pagination.value);
         } else {
             pagination.value = updater;
         }
-
-        // Build filters object (same logic as in onColumnFiltersChange)
-        let filters: Record<string, any> = {}
-        if (columnFilters.value && columnFilters.value.length > 0) {
-            filters = columnFilters.value.reduce((acc: Record<string, any>, filter) => {
-                if (Array.isArray(filter.value) && filter.value.length > 0) {
-                    acc[filter.id] = filter.value
-                } else if (!Array.isArray(filter.value) && filter.value !== '' && filter.value !== null && filter.value !== undefined) {
-                    acc[filter.id] = filter.value
-                }
-                return acc
-            }, {})
-        }
-
         router.get(
-            route('books.index'),
+            route('students.index'),
             {
                 page: pagination.value.pageIndex + 1,
                 per_page: pagination.value.pageSize,
                 sort_field: sorting.value[0]?.id,
                 sort_direction: sorting.value.length == 0 ? undefined : (sorting.value[0]?.desc ? "desc" : "asc"),
-                ...filters // Include current filters
             },
             { preserveState: false, preserveScroll: true }
         );
@@ -306,7 +297,7 @@ const table = useVueTable({
         }
 
         router.get(
-            route('books.index'),
+            route('students.index'),
             {
                 page: 1, // Reset to first page when sorting changes
                 per_page: pagination.value.pageSize,
@@ -339,7 +330,7 @@ const table = useVueTable({
         }
 
         router.get(
-            route('books.index'),
+            route('students.index'),
             {
                 page: 1, // Reset to first page when filtering
                 per_page: pagination.value.pageSize,
@@ -350,13 +341,7 @@ const table = useVueTable({
             { preserveState: false, preserveScroll: true }
         );
     },
-    onColumnVisibilityChange: updaterOrValue => {
-        if (typeof updaterOrValue === 'function') {
-            columnVisibility.value = updaterOrValue(columnVisibility.value)
-        } else {
-            columnVisibility.value = updaterOrValue
-        }
-    },
+    onColumnVisibilityChange: updaterOrValue => valueUpdater(updaterOrValue, columnVisibility),
     onRowSelectionChange: updaterOrValue => valueUpdater(updaterOrValue, rowSelection),
     onExpandedChange: updaterOrValue => valueUpdater(updaterOrValue, expanded),
     state: {
@@ -380,171 +365,178 @@ const clearFilter = () => {
     table.getColumn('search')?.setFilterValue('')
 }
 
-import Filter from '../users/Filter.vue'
 import AppLayout from '@/layouts/AppLayout.vue';
-import RecordsLayout from '@/layouts/records/Layout.vue';
 import type { BreadcrumbItem } from '@/types';
-
-//Filter - Updated to use DDC Class
-const filter_ddc_class = {
-    title: 'Filter DDC Classes',
-    column: 'ddc_class_id',
-    data: props.ddcClasses.map(ddcClass => ({
-        value: ddcClass.id.toString(),
-        label: ddcClass.name,
-        icon: h(ListFilter),
-    }))
-}
-
-const filter_toolbar = [
-    filter_ddc_class,
-];
-
-const createNewBook = () => {
-    router.get(route('books.create'));
-}
+import Layout from '@/layouts/users/Layout.vue';
+import DeleteDialog from '@/components/DeleteDialog.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Records',
-        href: '/records',
+        title: 'Users',
+        href: '/users',
     },
     {
-        title: 'Books',
-        href: '/records/books',
+        title: 'Students',
+        href: '/users/students',
     },
 ];
+
+const createNewStaffAdmin = () => {
+    router.get(route('students.create'));
+}
+
+const showDeleteAlert = ref(false);
+const selectedUserId = ref(null);
+
+const handleDelete = (id) => {
+    console.log('Deleting user with ID:', id);
+
+    router.delete(route('faculties.destroy', id), {
+        preserveState: false,  // Important: Don't preserve state so fresh data is fetched
+        preserveScroll: true,  // Keep scroll position
+        onSuccess: () => {
+            console.log('Delete successful');
+            // Optional: Force reload if still having issues
+            // router.reload({ only: ['data'] });
+        },
+        onError: (errors) => {
+            console.error('Delete failed:', errors);
+        }
+    });
+
+    showDeleteAlert.value = false;
+    selectedUserId.value = null;
+};
 
 </script>
 
 <template>
-    <Head title="Books" />
+    <Head title="Welcome" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <RecordsLayout>
-            <div class="p-4">
-                <div class="w-full">
-                    <div class="flex gap-2 items-center justify-between py-4">
-                        <div class="flex gap-2">
-                            <div class="relative">
-                                <Input
-                                    class="w-[320px] pr-8"
-                                    placeholder="Search by acc. no., title ..."
-                                    v-model="filterInput"
-                                    @keyup.enter="applyFilter"
-                                    @blur="applyFilter"
-                                />
-                                <Button
-                                    v-if="filterInput"
-                                    variant="ghost"
-                                    class="absolute right-0 top-0 h-full px-2"
-                                    @click="clearFilter"
-                                >
-                                    <X class="h-4 w-4" />
-                                </Button>
-                            </div>
-                            <div v-for="filter in filter_toolbar" :key="filter.title">
-                                <Filter :column="table.getColumn(filter.column)" :title="filter.title" :options="filter.data"></Filter>
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <Button variant="outline" @click="createNewBook">
-                                <Plus class="h-4"></Plus>
-                                Create New
+        <Layout>
+            <div class="w-full">
+                <div class="flex gap-2 items-center justify-between py-4">
+                    <div class="flex gap-2">
+                        <div class="relative">
+                            <Input
+                                class="w-[320px] pr-8"
+                                placeholder="Search by lib id, first name, or last name ..."
+                                v-model="filterInput"
+                                @keyup.enter="applyFilter"
+                                @blur="applyFilter"
+                            />
+                            <Button
+                                v-if="filterInput"
+                                variant="ghost"
+                                class="absolute right-0 top-0 h-full px-2"
+                                @click="clearFilter"
+                            >
+                                <X class="h-4 w-4" />
                             </Button>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger as-child>
-                                    <Button variant="outline" class="ml-auto">
-                                        Columns
-                                        <ChevronDown class="ml-2 h-4 w-4" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    <DropdownMenuCheckboxItem v-for="column in
-                                    table.getAllColumns().filter((column) => column.getCanHide())"
-                                                              :key="column.id" class="capitalize"
-                                                              :checked="column.getIsVisible()"
-                                                              @update:checked="(value: boolean | 'indeterminate') => {
-                                                              column.toggleVisibility(!!value)
-                                                            }">
-                                        {{ column.id }}
-                                    </DropdownMenuCheckboxItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
                         </div>
                     </div>
-                    <div class="rounded-md border">
-                        <Table class="w-full">
-                            <TableHeader>
-                                <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
-                                    <TableHead v-for="header in headerGroup.headers" :key="header.id">
-                                        <FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header" :props="header.getContext()" />
-                                    </TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                <template v-if="table.getRowModel().rows?.length">
-                                    <template v-for="row in table.getRowModel().rows" :key="row.id">
-                                        <TableRow :data-state="row.getIsSelected() && 'selected'">
-                                            <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
-                                                <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
-                                            </TableCell>
-                                        </TableRow>
-                                        <TableRow v-if="row.getIsExpanded()">
-                                            <TableCell :colspan="row.getAllCells().length">
-                                                {{ JSON.stringify(row.original) }}
-                                            </TableCell>
-                                        </TableRow>
-                                    </template>
-                                </template>
-
-                                <TableRow v-else>
-                                    <TableCell :colspan="columns.length" class="h-24 text-center">
-                                        No results.
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </div>
-                    <div class="flex items-center justify-end space-x-2 py-4">
-                        <div class="flex-1 text-sm text-muted-foreground">
-                            {{ table.getFilteredSelectedRowModel().rows.length }} of
-                            {{ table.getFilteredRowModel().rows.length }} row(s) selected.
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <p class="text-sm font-medium">Rows per page</p>
-                            <Select :model-value="table.getState().pagination.pageSize.toString()" @update:model-value="(value) => table.setPageSize(Number(value))">
-                                <SelectTrigger class="h-8 w-[70px]">
-                                    <SelectValue :placeholder="table.getState().pagination.pageSize.toString()" />
-                                </SelectTrigger>
-                                <SelectContent side="top">
-                                    <SelectItem v-for="pageSize in pageSizes" :key="pageSize" :value="pageSize.toString()">
-                                        {{ pageSize }}
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div class="space-x-2">
-                            <div class="flex items-center space-x-2">
-                                <Button variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="!table.getCanPreviousPage()" @click="table.setPageIndex(0)">
-                                    <DoubleArrowLeftIcon class="h-4 w-4" />
+                    <div class="flex gap-2">
+                        <Button variant="outline" @click="createNewStaffAdmin">
+                            <Plus class="h-4"></Plus>
+                            Create New
+                        </Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger as-child>
+                                <Button variant="outline" class="ml-auto">
+                                    Columns
+                                    <ChevronDown class="ml-2 h-4 w-4" />
                                 </Button>
-                                <Button variant="outline" class="h-8 w-8 p-0" :disabled="!table.getCanPreviousPage()" @click="table.previousPage()">
-                                    <ChevronLeftIcon class="h-4 w-4" />
-                                </Button>
-                                <Button variant="outline" class="h-8 w-8 p-0" :disabled="!table.getCanNextPage()" @click="table.nextPage()">
-                                    <ChevronRightIcon class="h-4 w-4" />
-                                </Button>
-                                <Button variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="!table.getCanNextPage()" @click="table.setPageIndex(table.getPageCount() - 1)">
-                                    <DoubleArrowRightIcon class="h-4 w-4" />
-                                </Button>
-                            </div>
-
-                        </div>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuCheckboxItem v-for="column in
+                                table.getAllColumns().filter((column) => column.getCanHide())"
+                                                          :key="column.id" class="capitalize"
+                                                          :checked="column.getIsVisible()"
+                                                          @update:checked="(value: boolean | 'indeterminate') => {
+                                                          column.toggleVisibility(!!value)
+                                                        }">
+                                    {{ column.id }}
+                                </DropdownMenuCheckboxItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </div>
-            <!-- Dialog -->
+                <div class="rounded-md border">
+                    <Table class="w-full">
+                        <TableHeader>
+                            <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
+                                <TableHead v-for="header in headerGroup.headers" :key="header.id">
+                                    <FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header" :props="header.getContext()" />
+                                </TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            <template v-if="table.getRowModel().rows?.length">
+                                <template v-for="row in table.getRowModel().rows" :key="row.id">
+                                    <TableRow :data-state="row.getIsSelected() && 'selected'">
+                                        <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
+                                            <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow v-if="row.getIsExpanded()">
+                                        <TableCell :colspan="row.getAllCells().length">
+                                            {{ JSON.stringify(row.original) }}
+                                        </TableCell>
+                                    </TableRow>
+                                </template>
+                            </template>
+
+                            <TableRow v-else>
+                                <TableCell :colspan="columns.length" class="h-24 text-center">
+                                    No results.
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </div>
+                <div class="flex items-center justify-end space-x-2 py-4">
+                    <div class="flex-1 text-sm text-muted-foreground">
+                        {{ table.getFilteredSelectedRowModel().rows.length }} of
+                        {{ table.getFilteredRowModel().rows.length }} row(s) selected.
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <p class="text-sm font-medium">Rows per page</p>
+                        <Select :model-value="table.getState().pagination.pageSize.toString()" @update:model-value="(value) => table.setPageSize(Number(value))">
+                            <SelectTrigger class="h-8 w-[70px]">
+                                <SelectValue :placeholder="table.getState().pagination.pageSize.toString()" />
+                            </SelectTrigger>
+                            <SelectContent side="top">
+                                <SelectItem v-for="pageSize in pageSizes" :key="pageSize" :value="pageSize.toString()">
+                                    {{ pageSize }}
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div class="space-x-2">
+                        <div class="flex items-center space-x-2">
+                            <Button variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="!table.getCanPreviousPage()" @click="table.setPageIndex(0)">
+                                <DoubleArrowLeftIcon class="h-4 w-4" />
+                            </Button>
+                            <Button variant="outline" class="h-8 w-8 p-0" :disabled="!table.getCanPreviousPage()" @click="table.previousPage()">
+                                <ChevronLeftIcon class="h-4 w-4" />
+                            </Button>
+                            <Button variant="outline" class="h-8 w-8 p-0" :disabled="!table.getCanNextPage()" @click="table.nextPage()">
+                                <ChevronRightIcon class="h-4 w-4" />
+                            </Button>
+                            <Button variant="outline" class="hidden h-8 w-8 p-0 lg:flex" :disabled="!table.getCanNextPage()" @click="table.setPageIndex(table.getPageCount() - 1)">
+                                <DoubleArrowRightIcon class="h-4 w-4" />
+                            </Button>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-        </RecordsLayout>
+            <DeleteDialog
+                v-model:open="showDeleteAlert"
+                :userId="selectedUserId"
+                @confirm-delete="handleDelete"
+            />
+        </Layout>
     </AppLayout>
 </template>
