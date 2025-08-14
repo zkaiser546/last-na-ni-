@@ -33,9 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/clearance/export', [ClearanceController::class, 'export'])->name('clearance.export');
 
     Route::prefix('users')->group(function () {
-
         Route::get('/', [UserController::class, 'index'])->name('users.index');
-
         Route::group(['middleware' => ['can:viewAny, App\Models\User']], function () {
             Route::get('/import', [UserController::class, 'import'])->name('users.import');
             Route::post('/import', [UserController::class, 'importStore'])->name('users.import.store');
@@ -53,6 +51,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
     Route::prefix('records')->group(function () {
         Route::get('/', [RecordController::class, 'index'])->name('records.index');
+        Route::get('/books', [BookController::class, 'index'])->name('books.index');
         Route::get('/books/import', [BookController::class, 'import'])->name('books.import');
         Route::post('/books/import', [BookController::class, 'importStore'])->name('books.import.store');
     });
