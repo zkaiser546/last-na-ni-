@@ -33,6 +33,7 @@ class DigitalResourceController extends Controller
 
         $records = Record::query()
             ->with('digitalResource')
+            ->whereHas('digitalResource')
             ->when($searchTerm, function ($query, $searchTerm) {
                 $query->where(function ($q) use ($searchTerm) {
                     $q->where('accession_number', 'like', '%' . $searchTerm . '%')
