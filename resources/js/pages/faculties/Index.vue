@@ -382,7 +382,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const createNewStaffAdmin = () => {
-    router.get(route('admins.create'));
+    router.get(route('faculties.create'));
 }
 
 const showDeleteAlert = ref(false);
