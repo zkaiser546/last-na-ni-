@@ -35,11 +35,6 @@ const mainNavItems: NavItem[] = [
         href: '/logger',
         icon: FileClock ,
     },
-    {
-        title: 'Test',
-        href: '/test',
-        icon: FileClock ,
-    },
 
 ];
 
