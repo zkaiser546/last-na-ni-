@@ -1,21 +1,25 @@
-<script setup>
+<script setup lang="ts">
 import { MoreHorizontal } from 'lucide-vue-next'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 
 const props = defineProps({
-    payment: Object,
+    user: Object,
     onEdit: Function,
+    onDelete: Function, // Add onDelete prop
 })
 
-
-
-
 const edit = (id) => {
-    props.onEdit(id);
+    if (props.onEdit) {
+        props.onEdit(id);
+    }
 }
 
-
+const deleteItem = (id) => {
+    if (props.onDelete) {
+        props.onDelete(id);
+    }
+}
 </script>
 
 <template>
@@ -28,10 +32,13 @@ const edit = (id) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem @click="edit(payment.id)">
+            <DropdownMenuItem @click="edit(user.id)">
                 Edit
             </DropdownMenuItem>
-            <DropdownMenuItem>Delete</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem @click="deleteItem(user.id)" class="text-red-600 focus:text-red-600">
+                Delete
+            </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>
 </template>
