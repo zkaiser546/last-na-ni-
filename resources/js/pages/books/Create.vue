@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { LoaderCircle } from 'lucide-vue-next';
 import RecordsLayout from '@/layouts/records/Layout.vue';
 import { Textarea } from '@/components/ui/textarea';
+import AuthorsTagsInput from '@/components/AuthorsTagsInput.vue';
 
 // Breadcrumbs
 const breadcrumbs: BreadcrumbItem[] = [
@@ -22,7 +23,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 const form = useForm({
     accession_number: '',
     title: '',
-    author: '',
+    authors: [],
     publication_year: '',
     publisher: '',
     place_of_publication: '',
@@ -62,21 +63,24 @@ const submit = () => {
                     <!-- Basic Information -->
                     <section class="space-y-6">
                         <h2 class="text-lg font-semibold text-gray-900">Basic Information</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="grid gap-2">
-                                <Label for="accession_number">Accession Number</Label>
-                                <Input id="accession_number" type="text" required v-model="form.accession_number" />
-                                <InputError :message="form.errors.accession_number" />
-                            </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="grid gap-2">
                                 <Label for="title">Title</Label>
                                 <Input id="title" type="text" required v-model="form.title" />
                                 <InputError :message="form.errors.title" />
                             </div>
                             <div class="grid gap-2">
-                                <Label for="author">Author</Label>
-                                <Input id="author" type="text" required v-model="form.author" />
-                                <InputError :message="form.errors.author" />
+                                <Label for="author">Authors</Label>
+                                <Input id="author" type="text" required v-model="form.authors" />
+                                <InputError :message="form.errors.authors" />
+                            </div>
+                            <AuthorsTagsInput />
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="grid gap-2">
+                                <Label for="accession_number">Accession Number</Label>
+                                <Input id="accession_number" type="number" required v-model="form.accession_number" />
+                                <InputError :message="form.errors.accession_number" />
                             </div>
                             <div class="grid gap-2">
                                 <Label for="publication_year">Publication Year</Label>
