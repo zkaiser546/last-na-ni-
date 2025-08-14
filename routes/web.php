@@ -9,6 +9,7 @@ use App\Http\Controllers\DigitalResourceController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\GradSchoolStudentController;
 use App\Http\Controllers\LibraryVisitController;
+use App\Http\Controllers\PeriodicalController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\StudentController;
@@ -60,6 +61,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/multimedia', [DigitalResourceController::class, 'index'])->name('multimedia.index');
         Route::get('/multimedia/create', [DigitalResourceController::class, 'create'])->name('multimedia.create');
         Route::post('/multimedia', [DigitalResourceController::class, 'store'])->name('multimedia.store');
+        Route::get('/periodicals', [PeriodicalController::class, 'index'])->name('periodicals.index');
     });
     Route::prefix('borrowings')->group(function () {
         Route::get('/', [BorrowingTransactionController::class, 'index'])->name('borrowings.index');
