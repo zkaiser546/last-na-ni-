@@ -91,8 +91,13 @@ class FacultyController extends Controller
      */
     public function create()
     {
-        return Inertia::render('faculties/Create');
+        $offices = \App\Models\Office::select('id', 'acronym', 'name')->get();
+
+        return Inertia::render('faculties/Create', [
+            'offices' => $offices
+        ]);
     }
+
 
     /**
      * Store a newly created resource in storage.

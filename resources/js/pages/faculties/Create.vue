@@ -10,6 +10,11 @@ import { Button } from '@/components/ui/button';
 import { LoaderCircle } from 'lucide-vue-next';
 import Layout from '@/layouts/users/Layout.vue';
 
+defineProps<{
+    offices: { id: number; acronym: string; name: string }[];
+}>();
+
+
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Users', href: '/users' },
     { title: 'Faculties', href: '/users/faculties' },
@@ -25,6 +30,7 @@ const form = useForm({
     contact_number: '',
     role_title: '',
     email: '',
+    office_id: '',
 });
 
 const submit = () => {
@@ -106,6 +112,24 @@ const submit = () => {
                     <div class="space-y-6">
                         <h2 class="text-lg font-semibold text-gray-900">Account Information</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="grid gap-2">
+                                <Label for="office_id" class="text-sm font-medium">Office</Label>
+                                <Select v-model="form.office_id" required>
+                                    <SelectTrigger id="office_id" class="h-10">
+                                        <SelectValue placeholder="Select an office" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem
+                                            v-for="office in offices"
+                                            :key="office.id"
+                                            :value="office.id"
+                                        >
+                                            {{ office.acronym }} - {{ office.name }}
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <InputError :message="form.errors.office_id" />
+                            </div>
                             <div class="grid gap-2">
                                 <Label for="role_title" class="text-sm font-medium">Role Title</Label>
                                 <Input id="role_title" type="text" required :tabindex="8" v-model="form.role_title" placeholder="Role Title" class="h-10" />
