@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AcademicPeriod;
+use App\Models\LcClassification;
 use App\Models\Status;
 use App\Models\Book;
 use App\Models\CoverType;
@@ -98,7 +99,23 @@ class BookController extends Controller
      */
     public function create()
     {
-        return Inertia::render('books/Create');
+        $ddcClassifications = DdcClassification::select('id', 'name', 'code')
+            ->orderBy('name')
+            ->get();
+
+        $lcClassifications = LcClassification::select('id', 'code', 'name')
+            ->orderBy('name')
+            ->get();
+
+        $physicalLocations = PhysicalLocation::select('id', 'symbol', 'name')
+            ->orderBy('name')
+            ->get();
+
+        return Inertia::render('books/Create', [
+            'ddcClassifications' => $ddcClassifications,
+            'lcClassifications'  => $lcClassifications,
+            'physicalLocations'  => $physicalLocations,
+        ]);
     }
 
     /**
