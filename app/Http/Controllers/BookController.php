@@ -112,10 +112,13 @@ class BookController extends Controller
             ->orderBy('name')
             ->get();
 
+        $coverTypes = CoverType::select('id', 'key', 'name')->orderBy('name')->get();
+
         return Inertia::render('books/Create', [
             'ddcClassifications' => $ddcClassifications,
             'lcClassifications'  => $lcClassifications,
             'physicalLocations'  => $physicalLocations,
+            'coverTypes'         => $coverTypes,
         ]);
     }
 
