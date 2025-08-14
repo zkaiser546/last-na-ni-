@@ -17,8 +17,8 @@ defineProps<{
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Users', href: '/users' },
-    { title: 'Faculties', href: '/users/faculties' },
-    { title: 'Create Faculties', href: '/users/faculties/create' },
+    { title: 'Students', href: '/users/students' },
+    { title: 'Create Students', href: '/users/students/create' },
 ];
 
 const form = useForm({
