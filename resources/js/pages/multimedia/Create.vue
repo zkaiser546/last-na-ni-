@@ -32,7 +32,7 @@ const form = useForm({
     editors: [],
     publication_year: '',
     copyright_year: '',
-    publisher: '',
+    producer: '',
     language: '',
     collection_type: '',
     duration: '',
@@ -99,9 +99,9 @@ const submit = () => {
                                 <InputError :message="form.errors.copyright_year" />
                             </div>
                             <div class="grid gap-2">
-                                <Label for="publisher">Publisher</Label>
-                                <Input id="publisher" type="text" required v-model="form.publisher" />
-                                <InputError :message="form.errors.publisher" />
+                                <Label for="producer">Producer</Label>
+                                <Input id="producer" type="text" required v-model="form.producer" />
+                                <InputError :message="form.errors.producer" />
                             </div>
                             <div class="grid gap-2">
                                 <Label for="language">Language</Label>

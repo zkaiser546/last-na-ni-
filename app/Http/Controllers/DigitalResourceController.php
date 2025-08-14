@@ -7,6 +7,7 @@ use App\Models\Record;
 use App\Models\Source;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class DigitalResourceController extends Controller
@@ -66,11 +67,6 @@ class DigitalResourceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    use Illuminate\Http\Request;
-    use Illuminate\Support\Facades\DB;
-    use Illuminate\Support\Facades\Log;
-    use App\Models\Record;
-    use App\Models\Multimedia;
 
     public function store(Request $request)
     {
@@ -86,7 +82,7 @@ class DigitalResourceController extends Controller
                 'editors.*'         => 'string|max:255',
                 'publication_year'  => 'required|integer|min:1000|max:' . date('Y'),
                 'copyright_year'    => 'nullable|integer|min:1000|max:' . date('Y'),
-                'publisher'         => 'required|string|max:255',
+                'producer'         => 'required|string|max:255',
                 'language'          => 'required|in:Bisaya,Filipino,English',
 
                 // Technical Specifications
@@ -136,7 +132,7 @@ class DigitalResourceController extends Controller
                 'editors'           => $request->editors,
                 'publication_year'  => $request->publication_year,
                 'copyright_year'    => $request->copyright_year,
-                'publisher'         => $request->publisher,
+                'producer'         => $request->producer,
                 'language'          => $request->language,
                 'collection_type'   => $request->collection_type,
                 'duration'          => $request->duration,
