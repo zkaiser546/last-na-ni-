@@ -150,11 +150,11 @@ class BookController extends Controller
                 'status'                => 'required|in:available,damaged,missing,borrowed,discarded', // Added status validation
 
                 // Administrative Information
-                'ics_number'            => 'nullable|string|max:50',
+                'ics_number'            => 'nullable|max:50',
                 'ics_date'              => 'nullable|date',
-                'pr_number'             => 'nullable|string|max:50',
+                'pr_number'             => 'nullable|max:50',
                 'pr_date'               => 'nullable|date',
-                'po_number'             => 'nullable|string|max:50',
+                'po_number'             => 'nullable|max:50',
                 'po_date'               => 'nullable|date',
                 'source'                => 'required|in:purchase,donation',
                 'purchase_amount'       => 'nullable|numeric|min:0',
