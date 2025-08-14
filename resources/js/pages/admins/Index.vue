@@ -411,7 +411,7 @@ const handleDelete = (id) => {
 </script>
 
 <template>
-    <Head title="Welcome" />
+    <Head title="Staff Admins" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <Layout>
