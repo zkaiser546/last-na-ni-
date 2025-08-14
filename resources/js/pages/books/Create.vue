@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { LoaderCircle } from 'lucide-vue-next';
-import Layout from '@/layouts/users/Layout.vue';
+import RecordsLayout from '@/layouts/records/Layout.vue';
 
 // Define the props passed from the controller
 defineProps<{
@@ -19,9 +19,9 @@ defineProps<{
 
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Users', href: '/users' },
-    { title: 'Students', href: '/users/students' },
-    { title: 'Create Student', href: '/users/students/create' },
+    { title: 'Records', href: '/records' },
+    { title: 'Books', href: '/records/books' },
+    { title: 'Create Book', href: '/records/books/create' },
 ];
 
 // Initialize the form with all necessary fields
@@ -49,10 +49,10 @@ const submit = () => {
 
 <template>
     <!-- Corrected the Head title -->
-    <Head title="Create Student" />
+    <Head title="Create Book" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <Layout>
+        <RecordsLayout>
             <div class="flex h-full flex-1 flex-col gap-6 p-6 bg-white rounded-xl shadow-sm overflow-x-auto">
                 <form @submit.prevent="submit" class="flex flex-col gap-8 max-w-4xl mx-auto">
 
@@ -211,6 +211,6 @@ const submit = () => {
                     </div>
                 </form>
             </div>
-        </Layout>
+        </RecordsLayout>
     </AppLayout>
 </template>
