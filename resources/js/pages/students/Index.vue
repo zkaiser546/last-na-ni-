@@ -266,7 +266,7 @@ const table = useVueTable({
             pagination.value = updater;
         }
         router.get(
-            route('faculties.index'),
+            route('students.index'),
             {
                 page: pagination.value.pageIndex + 1,
                 per_page: pagination.value.pageSize,
@@ -297,7 +297,7 @@ const table = useVueTable({
         }
 
         router.get(
-            route('faculties.index'),
+            route('students.index'),
             {
                 page: 1, // Reset to first page when sorting changes
                 per_page: pagination.value.pageSize,
@@ -330,7 +330,7 @@ const table = useVueTable({
         }
 
         router.get(
-            route('faculties.index'),
+            route('students.index'),
             {
                 page: 1, // Reset to first page when filtering
                 per_page: pagination.value.pageSize,
@@ -382,7 +382,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const createNewStaffAdmin = () => {
-    router.get(route('faculties.create'));
+    router.get(route('students.create'));
 }
 
 const showDeleteAlert = ref(false);
