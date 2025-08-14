@@ -16,17 +16,17 @@ import SubjectTagsInput from '@/components/SubjectTagsInput.vue';
 
 // Props from Inertia
 const props = defineProps<{
-    ddcClassifications: { id: number; code: string; name: string }[];
-    lcClassifications: { id: number; code: string; name: string }[];
-    physicalLocations: { id: number; name: string; symbol: string }[];
-    coverTypes: { id: number; name: string }[];
-    sources: { id: number; name: string }[];
+    languages: { id: number; name: string }[];
+    collectionTypes: { id: number; name: string }[];
+    sources: { id: number; name: string; key: string }[];
+    acquisitionStatuses: { id: number; name: string }[];
+    conditions: { id: number; name: string }[];
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Records', href: '/records' },
-    { title: 'Books', href: '/records/books' },
-    { title: 'Create Book', href: '/records/books/create' },
+    { title: 'Multimedia', href: '/records/multimedia' },
+    { title: 'Create Multimedia', href: '/records/multimedia/create' },
 ];
 
 const form = useForm({
@@ -35,33 +35,25 @@ const form = useForm({
     authors: [],
     editors: [],
     publication_year: '',
+    copyright_year: '',
     publisher: '',
-    publication_place: '',
-    isbn: '',
-    call_number: '',
-    ddc_class_id: '',
-    lc_class_id: '',
-    physical_location_id: '',
+    language: '',
+    collection_type: '',
+    duration: '',
     cover_image: null,
-    ics_number: '',
-    ics_date: '',
-    pr_number: '',
-    pr_date: '',
-    po_number: '',
-    po_date: '',
-    source_id: '',
+    source: '',
     purchase_amount: '',
     lot_cost: '',
     supplier: '',
     donated_by: '',
-    cover_type_id: '',
-    table_of_contents: '',
+    acquisition_status: '',
+    condition: '',
+    overview: '',
     subject_headings: [],
-    status: 'available',
 });
 
 const submit = () => {
-    form.post(route('books.store'));
+    form.post(route('multimedia.store'));
 };
 </script>
 
@@ -103,9 +95,14 @@ const submit = () => {
                                 <InputError :message="form.errors.editors" />
                             </div>
                             <div class="grid gap-2">
-                                <Label for="publication_year">Publication Year</Label>
+                                <Label for="publication_year">Year of Publication</Label>
                                 <Input id="publication_year" type="number" required v-model="form.publication_year" />
                                 <InputError :message="form.errors.publication_year" />
+                            </div>
+                            <div class="grid gap-2">
+                                <Label for="copyright_year">Year of Copyright</Label>
+                                <Input id="copyright_year" type="number" v-model="form.copyright_year" />
+                                <InputError :message="form.errors.copyright_year" />
                             </div>
                             <div class="grid gap-2">
                                 <Label for="publisher">Publisher</Label>
@@ -113,111 +110,57 @@ const submit = () => {
                                 <InputError :message="form.errors.publisher" />
                             </div>
                             <div class="grid gap-2">
-                                <Label for="publication_place">Publication Place</Label>
-                                <Input id="publication_place" type="text" required v-model="form.publication_place" />
-                                <InputError :message="form.errors.publication_place" />
-                            </div>
-                            <div class="grid gap-2">
-                                <Label for="isbn">ISBN</Label>
-                                <Input id="isbn" type="text" required v-model="form.isbn" />
-                                <InputError :message="form.errors.isbn" />
+                                <Label for="language">Language</Label>
+                                <Select v-model="form.language">
+                                    <SelectTrigger id="language">
+                                        <SelectValue placeholder="Select language" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem
+                                            v-for="lang in props.languages"
+                                            :key="lang.id"
+                                            :value="lang.id"
+                                        >
+                                            {{ lang.name }}
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <InputError :message="form.errors.language" />
                             </div>
                         </div>
                     </section>
 
-                    <!-- Classification & Location -->
+                    <!-- Technical Specifications -->
                     <section class="space-y-6">
-                        <h2 class="text-lg font-semibold">Classification & Location</h2>
+                        <h2 class="text-lg font-semibold">Technical Specifications</h2>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div class="grid gap-2">
-                                <Label for="call_number">Call Number</Label>
-                                <Input id="call_number" type="text" v-model="form.call_number" />
-                                <InputError :message="form.errors.call_number" />
-                            </div>
-                            <!-- DDC Classification -->
-                            <div v-if="!form.lc_class_id" class="grid gap-2">
-                                <Label for="ddc_class_id">DDC Classification</Label>
-                                <Select v-model="form.ddc_class_id">
-                                    <SelectTrigger id="ddc_class_id">
-                                        <SelectValue placeholder="Select DDC classification" />
+                                <Label for="collection_type">Collection Type</Label>
+                                <Select v-model="form.collection_type">
+                                    <SelectTrigger id="collection_type">
+                                        <SelectValue placeholder="Select collection type" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem
-                                            v-for="ddc in props.ddcClassifications"
-                                            :key="ddc.id"
-                                            :value="ddc.id.toString()"
+                                            v-for="type in props.collectionTypes"
+                                            :key="type.id"
+                                            :value="type.id"
                                         >
-                                            {{ ddc.code }} – {{ ddc.name }}
+                                            {{ type.name }}
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <InputError :message="form.errors.ddc_class_id" />
+                                <InputError :message="form.errors.collection_type" />
                             </div>
-                            <!-- LC Classification -->
-                            <div v-if="!form.ddc_class_id" class="grid gap-2">
-                                <Label for="lc_class_id">LC Classification</Label>
-                                <Select v-model="form.lc_class_id">
-                                    <SelectTrigger id="lc_class_id">
-                                        <SelectValue placeholder="Select LC classification" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem
-                                            v-for="lc in props.lcClassifications"
-                                            :key="lc.id"
-                                            :value="lc.id.toString()"
-                                        >
-                                            {{ lc.code }} – {{ lc.name }}
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <InputError :message="form.errors.lc_class_id" />
-                            </div>
-                            <!-- Physical Location -->
                             <div class="grid gap-2">
-                                <Label for="physical_location_id">Physical Location</Label>
-                                <Select v-model="form.physical_location_id" required>
-                                    <SelectTrigger id="physical_location_id">
-                                        <SelectValue placeholder="Select location" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem
-                                            v-for="loc in props.physicalLocations"
-                                            :key="loc.id"
-                                            :value="loc.id.toString()"
-                                        >
-                                            {{ loc.symbol }} - {{ loc.name }}
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <InputError :message="form.errors.physical_location_id" />
+                                <Label for="duration">Duration</Label>
+                                <Input id="duration" type="text" v-model="form.duration" />
+                                <InputError :message="form.errors.duration" />
                             </div>
-                        </div>
-                    </section>
-
-                    <!-- Physical Description -->
-                    <section class="space-y-6">
-                        <h2 class="text-lg font-semibold">Physical Description</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div class="grid gap-2">
                                 <Label for="cover_image">Cover Image</Label>
                                 <Input id="cover_image" type="file" @change="e => form.cover_image = e.target.files[0]" />
                                 <InputError :message="form.errors.cover_image" />
-                            </div>
-                            <div class="grid gap-2">
-                                <Label for="status">Status</Label>
-                                <Select v-model="form.status" required>
-                                    <SelectTrigger id="status">
-                                        <SelectValue placeholder="Select status" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="available">Available</SelectItem>
-                                        <SelectItem value="damaged">Damaged</SelectItem>
-                                        <SelectItem value="missing">Missing</SelectItem>
-                                        <SelectItem value="borrowed">Borrowed</SelectItem>
-                                        <SelectItem value="discarded">Discarded</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <InputError :message="form.errors.status" />
                             </div>
                         </div>
                     </section>
@@ -226,60 +169,23 @@ const submit = () => {
                     <section class="space-y-6">
                         <h2 class="text-lg font-semibold">Administrative Information</h2>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <!-- ICS -->
-                            <div class="grid gap-2">
-                                <Label for="ics_number">ICS Number</Label>
-                                <Input id="ics_number" type="number" v-model="form.ics_number" />
-                                <InputError :message="form.errors.ics_number" />
-                            </div>
-                            <div v-if="form.ics_number" class="grid gap-2">
-                                <Label for="ics_date">ICS Date</Label>
-                                <Input id="ics_date" type="date" v-model="form.ics_date" />
-                                <InputError :message="form.errors.ics_date" />
-                            </div>
-
-                            <!-- PR -->
-                            <div class="grid gap-2">
-                                <Label for="pr_number">PR Number</Label>
-                                <Input id="pr_number" type="number" v-model="form.pr_number" />
-                                <InputError :message="form.errors.pr_number" />
-                            </div>
-                            <div v-if="form.pr_number" class="grid gap-2">
-                                <Label for="pr_date">PR Date</Label>
-                                <Input id="pr_date" type="date" v-model="form.pr_date" />
-                                <InputError :message="form.errors.pr_date" />
-                            </div>
-
-                            <!-- PO -->
-                            <div class="grid gap-2">
-                                <Label for="po_number">PO Number</Label>
-                                <Input id="po_number" type="number" v-model="form.po_number" />
-                                <InputError :message="form.errors.po_number" />
-                            </div>
-                            <div v-if="form.po_number" class="grid gap-2">
-                                <Label for="po_date">PO Date</Label>
-                                <Input id="po_date" type="date" v-model="form.po_date" />
-                                <InputError :message="form.errors.po_date" />
-                            </div>
-
-                            <!-- Source -->
                             <div class="grid gap-2">
                                 <Label for="source">Source</Label>
-                                <Select v-model="form.source_id" required>
+                                <Select v-model="form.source" required>
                                     <SelectTrigger id="source">
                                         <SelectValue placeholder="Select source" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem
-                                            v-for="source in props.sources"
-                                            :key="source.id"
-                                            :value="source.id"
+                                            v-for="src in props.sources"
+                                            :key="src.id"
+                                            :value="src.key"
                                         >
-                                            {{ source.name }}
+                                            {{ src.name }}
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <InputError :message="form.errors.source_id" />
+                                <InputError :message="form.errors.source" />
                             </div>
 
                             <!-- Purchase-specific -->
@@ -310,26 +216,42 @@ const submit = () => {
                                 </div>
                             </template>
 
-                            <!-- Cover Type -->
                             <div class="grid gap-2">
-                                <Label for="cover_type">Cover Type</Label>
-                                <Select v-model="form.cover_type_id" required>
-                                    <SelectTrigger id="cover_type">
-                                        <SelectValue placeholder="Select cover type" />
+                                <Label for="acquisition_status">Acquisition Status</Label>
+                                <Select v-model="form.acquisition_status">
+                                    <SelectTrigger id="acquisition_status">
+                                        <SelectValue placeholder="Select acquisition status" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem
-                                            v-for="type in props.coverTypes"
-                                            :key="type.id"
-                                            :value="type.id"
+                                            v-for="status in props.acquisitionStatuses"
+                                            :key="status.id"
+                                            :value="status.id"
                                         >
-                                            {{ type.name }}
+                                            {{ status.name }}
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <InputError :message="form.errors.cover_type_id" />
+                                <InputError :message="form.errors.acquisition_status" />
                             </div>
-
+                            <div class="grid gap-2">
+                                <Label for="condition">Condition</Label>
+                                <Select v-model="form.condition">
+                                    <SelectTrigger id="condition">
+                                        <SelectValue placeholder="Select condition" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem
+                                            v-for="cond in props.conditions"
+                                            :key="cond.id"
+                                            :value="cond.id"
+                                        >
+                                            {{ cond.name }}
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <InputError :message="form.errors.condition" />
+                            </div>
                         </div>
                     </section>
 
@@ -338,13 +260,13 @@ const submit = () => {
                         <h2 class="text-lg font-semibold">Content Description</h2>
                         <div class="grid gap-6">
                             <div class="grid gap-2">
-                                <Label for="table_of_contents">Table of Contents</Label>
-                                <Textarea id="table_of_contents" rows="4" v-model="form.table_of_contents" />
-                                <InputError :message="form.errors.table_of_contents" />
+                                <Label for="overview">Overview</Label>
+                                <Textarea id="overview" rows="4" v-model="form.overview" />
+                                <InputError :message="form.errors.overview" />
                             </div>
                             <div class="grid gap-2">
                                 <div class="flex gap-2">
-                                    <Label for="authors">Subject Heading/s</Label>
+                                    <Label for="subject_headings">Subject Heading/s</Label>
                                     <span class="text-sm text-gray-500">(Hit 'ENTER' for each subject)</span>
                                 </div>
                                 <SubjectTagsInput v-model="form.subject_headings" />

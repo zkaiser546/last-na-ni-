@@ -59,6 +59,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/books/import', [BookController::class, 'importStore'])->name('books.import.store');
         Route::get('/multimedia', [DigitalResourceController::class, 'index'])->name('multimedia.index');
         Route::get('/multimedia/create', [DigitalResourceController::class, 'create'])->name('multimedia.create');
+        Route::post('/multimedia', [DigitalResourceController::class, 'store'])->name('multimedia.store');
     });
     Route::prefix('borrowings')->group(function () {
         Route::get('/', [BorrowingTransactionController::class, 'index'])->name('borrowings.index');
