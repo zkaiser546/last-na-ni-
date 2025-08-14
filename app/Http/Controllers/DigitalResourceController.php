@@ -54,7 +54,7 @@ class DigitalResourceController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('multimedia/Create');
     }
 
     /**
