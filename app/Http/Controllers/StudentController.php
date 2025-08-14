@@ -125,7 +125,7 @@ class StudentController extends Controller
                 'college_id'     => 'required|exists:colleges,id',
                 'program_id'     => 'required|exists:programs,id',
                 'major_id'       => 'nullable|exists:majors,id',
-                'student_id'     => 'required|string|max:20|unique:students,student_id', // <-- added
+                'school_id'     => 'required|string|max:20|unique:users,school_id', // <-- added
             ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -143,6 +143,7 @@ class StudentController extends Controller
             // Create the User record
             $user = User::create([
                 'library_id'     => $request->library_id,
+                'school_id'   => $request->school_id,
                 'first_name'     => $request->first_name,
                 'middle_initial' => $request->middle_initial,
                 'last_name'      => $request->last_name,
@@ -154,7 +155,6 @@ class StudentController extends Controller
 
             // Create the Student profile linked to the user
             $user->student()->create([
-                'student_id'   => $request->student_id, // <-- added
                 'student_type' => $request->student_type,
                 'college_id'   => $request->college_id,
                 'program_id'   => $request->program_id,
