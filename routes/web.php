@@ -54,8 +54,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
     Route::prefix('records')->group(function () {
         Route::group(['middleware' => ['can:viewAny, App\Models\User']], function () {
-            Route::get('/books/import', [BookController::class, 'import'])->name('books.import');
-            Route::post('/books/import', [BookController::class, 'importStore'])->name('books.import.store');
+            Route::get('/import', [BookController::class, 'import'])->name('books.import');
+            Route::post('/import', [BookController::class, 'importStore'])->name('books.import.store');
         });
         Route::get('/', [RecordController::class, 'index'])->name('records.index');
         Route::get('/books', [BookController::class, 'index'])->name('books.index');

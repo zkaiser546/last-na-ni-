@@ -7,6 +7,7 @@ import { Head, useForm } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
 import { LoaderCircle } from 'lucide-vue-next';
 import { Input } from '@/components/ui/input';
+import RecordsLayout from '@/layouts/records/Layout.vue';
 
   const breadcrumbs: BreadcrumbItem[] = [
       {
@@ -15,7 +16,7 @@ import { Input } from '@/components/ui/input';
       },
       {
           title: 'Book Import',
-          href: '/records/books/import',
+          href: '/records/import',
       },
   ];
 
@@ -40,23 +41,25 @@ import { Input } from '@/components/ui/input';
     <Head title="Import Books" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-            <form @submit.prevent="submit" class="flex flex-col gap-6">
-                <div class="grid grid-cols-4 gap-6">
-                    <div class="grid gap-2">
-                        <Label for="csv_file">CSV File</Label>
-                        <Input required type="file" @input="handleFileInput" />
-                        <progress v-if="form.progress" :value="form.progress.percentage" max="100">
-                            {{ form.progress.percentage }}%
-                        </progress>
-                        <InputError :message="form.errors.csv_file" />
-                        <Button type="submit" variant="outline" class="mt-2 w-full" tabindex="5" :disabled="form.processing">
-                            <span v-if="form.processing" class="flex gap-2"><LoaderCircle class="h-4 w-4 animate-spin" />1 min/1000 records</span>
-                            <span v-else>Import Books</span>
-                        </Button>
+        <RecordsLayout>
+            <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+                <form @submit.prevent="submit" class="flex flex-col gap-6">
+                    <div class="grid grid-cols-4 gap-6">
+                        <div class="grid gap-2">
+                            <Label for="csv_file">CSV File</Label>
+                            <Input required type="file" @input="handleFileInput" />
+                            <progress v-if="form.progress" :value="form.progress.percentage" max="100">
+                                {{ form.progress.percentage }}%
+                            </progress>
+                            <InputError :message="form.errors.csv_file" />
+                            <Button type="submit" variant="outline" class="mt-2 w-full" tabindex="5" :disabled="form.processing">
+                                <span v-if="form.processing" class="flex gap-2"><LoaderCircle class="h-4 w-4 animate-spin" />1 min/1000 records</span>
+                                <span v-else>Import Books</span>
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
+        </RecordsLayout>
     </AppLayout>
 </template>
