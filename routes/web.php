@@ -34,6 +34,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/admins/create', [AdminController::class, 'create'])->name('admins.create');
             Route::post('/admins', [AdminController::class, 'store'])->name('admins.store');
             Route::delete('/admins/{id}', [AdminController::class, 'destroy'])->name('admins.destroy');
+            Route::get('/books/import', [BookController::class, 'import'])->name('books.import');
+            Route::post('/books/import', [BookController::class, 'importStore'])->name('books.import.store');
         });
         Route::get('/faculties', [FacultyController::class, 'index'])->name('faculties.index');
         Route::get('/faculties/create', [FacultyController::class, 'create'])->name('faculties.create');
@@ -47,8 +49,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/books', [BookController::class, 'index'])->name('books.index');
         Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
         Route::post('/books', [BookController::class, 'store'])->name('books.store');
-        Route::get('/books/import', [BookController::class, 'import'])->name('books.import');
-        Route::post('/books/import', [BookController::class, 'importStore'])->name('books.import.store');
         Route::get('/multimedia', [DigitalResourceController::class, 'index'])->name('multimedia.index');
         Route::get('/multimedia/create', [DigitalResourceController::class, 'create'])->name('multimedia.create');
         Route::post('/multimedia', [DigitalResourceController::class, 'store'])->name('multimedia.store');

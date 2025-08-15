@@ -25,10 +25,6 @@ const sidebarNavItems: NavItem[] = [
 
 const rightNavItems: NavItem[] = [
     {
-        title: 'Import',
-        href: 'records//books/import',
-    },
-    {
         title: 'Options',
         href: '/records/options',
     },
@@ -36,6 +32,13 @@ const rightNavItems: NavItem[] = [
 
 
 const page = usePage();
+if (page.props.auth.permissions.can_view_any_users)
+{
+    rightNavItems.unshift( {
+        title: 'Import',
+        href: 'records//books/import',
+    })
+}
 
 const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.location).pathname : '';
 </script>
