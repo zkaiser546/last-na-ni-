@@ -20,9 +20,18 @@ const props = defineProps<{
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Records', href: '/records' },
-    { title: 'Multimedia', href: '/records/multimedia' },
-    { title: 'Create Multimedia', href: '/records/multimedia/create' },
+    {
+        title: 'Records',
+        href: '/records',
+    },
+    {
+        title: 'Magazines/Periodicals',
+        href: '/records/periodicals',
+    },
+    {
+        title: 'Create Magazines/Periodicals',
+        href: '/records/periodicals/create',
+    },
 ];
 
 const form = useForm({
@@ -47,12 +56,12 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('multimedia.store'));
+    form.post(route('periodicals.store'));
 };
 </script>
 
 <template>
-    <Head title="Create Book" />
+    <Head title="Create Magazines/Periodicals" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <RecordsLayout>
             <div class="flex flex-col gap-6 p-6 bg-white rounded-xl shadow-sm overflow-x-auto">
