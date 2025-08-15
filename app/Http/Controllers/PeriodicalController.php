@@ -55,7 +55,7 @@ class PeriodicalController extends Controller
      */
     public function create()
     {
-
+        return Inertia::render('periodicals/Create');
     }
 
     /**

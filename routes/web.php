@@ -52,6 +52,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/multimedia/create', [DigitalResourceController::class, 'create'])->name('multimedia.create');
         Route::post('/multimedia', [DigitalResourceController::class, 'store'])->name('multimedia.store');
         Route::get('/periodicals', [PeriodicalController::class, 'index'])->name('periodicals.index');
+        Route::get('/periodicals/create', [PeriodicalController::class, 'create'])->name('periodicals.create');
     });
     Route::prefix('borrowings')->group(function () {
         Route::get('/', [BorrowingTransactionController::class, 'index'])->name('borrowings.index');
