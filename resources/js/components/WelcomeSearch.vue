@@ -92,7 +92,7 @@ onBeforeUnmount(() => {
                     id="search"
                     type="search"
                     placeholder="Search accession, title... "
-                    class="pl-10 w-full"
+                    class="pl-10 w-full text-gray-900 dark:text-gray-100 bg-white dark:bg-[#181818] placeholder-gray-500 dark:placeholder-gray-400"
                     @focus="searchQuery && (showSuggestions = true)"
                 />
                 <span class="absolute start-0 inset-y-0 flex items-center px-2">

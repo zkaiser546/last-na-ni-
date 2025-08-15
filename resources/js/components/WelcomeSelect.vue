@@ -39,13 +39,13 @@ const getDisplayText = (value: string) => {
 <template>
     <Select :model-value="modelValue" @update:model-value="handleValueChange">
         <SelectTrigger class="w-[180px]">
-            <SelectValue :placeholder="getDisplayText(modelValue || 'all')" />
+            <SelectValue :placeholder="getDisplayText(modelValue || 'all')" class="text-gray-900 dark:text-gray-100" />
         </SelectTrigger>
         <SelectContent>
             <SelectGroup>
                 <SelectLabel>Records</SelectLabel>
                 <SelectItem value="all">
-                    All
+                    <span class="text-gray-900 dark:text-gray-100">All</span>
                 </SelectItem>
                 <SelectItem value="books">
                     Books
