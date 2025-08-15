@@ -54,7 +54,7 @@ defineProps({
 <template>
     <Head title="Welcome" />
     <div class="min-h-screen flex flex-col bg-background text-[#1b1b18] dark:bg-[#0a0a0a]">
-        <!-- Top Bar: Theme Switcher & Login -->
+        <!-- Top Bar: Theme Switcher & Login/Register -->
         <div class="flex justify-between items-center px-8 py-4 border-b border-gray-200 dark:border-gray-800">
             <div class="flex items-center gap-3">
                 <img src="/images/usep-logo-small.png" alt="USEP Logo" class="h-10 w-10" />
@@ -62,10 +62,33 @@ defineProps({
             </div>
             <div class="flex items-center gap-4">
                 <AppearanceTabs />
-                <Link v-if="$page.props.auth.user" :href="route('dashboard')" class="font-medium text-sm px-4 py-2 rounded bg-primary text-white">Dashboard</Link>
-                <Link v-else :href="route('login')" class="font-medium text-sm px-4 py-2 rounded bg-primary text-white">Log in</Link>
+                <template v-if="$page.props.auth.user">
+                    <Link
+                        :href="route('dashboard')"
+                        class="font-medium text-sm px-4 py-2 rounded bg-primary text-white"
+                    >
+                        Dashboard
+                    </Link>
+                </template>
+                <template v-else>
+                    <Link
+                        v-if="$page.props.config.login_enabled"
+                        :href="route('login')"
+                        class="font-medium text-sm px-4 py-2 rounded bg-primary text-white"
+                    >
+                        Log in
+                    </Link>
+                    <Link
+                        v-if="$page.props.config.registration_enabled"
+                        :href="route('register')"
+                        class="font-medium text-sm px-4 py-2 rounded bg-secondary text-white"
+                    >
+                        Register
+                    </Link>
+                </template>
             </div>
         </div>
+
 
         <!-- Hero Section -->
         <section class="hero-pattern py-16 flex flex-col items-center justify-center text-center">

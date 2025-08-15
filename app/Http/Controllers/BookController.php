@@ -54,6 +54,7 @@ class BookController extends Controller
             ->when($sortField, function ($query, $sortField) use ($sortDirection) {
                 $query->orderBy($sortField, $sortDirection);
             })
+            ->latest()
             ->paginate(perPage: $perPage);
 
         return Inertia::render('books/Index', [
