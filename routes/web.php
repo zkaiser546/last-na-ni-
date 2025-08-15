@@ -12,6 +12,7 @@ use App\Http\Controllers\LibraryVisitController;
 use App\Http\Controllers\PeriodicalController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RecordController;
+use App\Http\Controllers\ScannerController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\ThesisController;
 use App\Http\Controllers\UserController;
@@ -86,6 +87,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/reports/missing-collection', [MissingCollectionController::class, 'index'])->name('reports.missing-collection');
     Route::get('/reports/core-collection', [CoreCollectionController::class, 'index'])->name('reports.core-collection');
 
+    // Scanner routes
+    Route::get('/scanner', [ScannerController::class, 'index'])->name('scanner.index');
+    Route::post('/scanner/process', [ScannerController::class, 'processScan'])->name('scanner.process');
 });
 
 require __DIR__.'/settings.php';

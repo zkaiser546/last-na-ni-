@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import AuthorsTagsInput from '@/components/AuthorsTagsInput.vue';
 import EditorsTagsInput from '@/components/EditorsTagsInput.vue';
 import SubjectTagsInput from '@/components/SubjectTagsInput.vue';
+import UploadContentsButton from '@/components/UploadContentsButton.vue';
 
 // Props from Inertia
 const props = defineProps<{
@@ -62,6 +63,18 @@ const form = useForm({
 
 const submit = () => {
     form.post(route('books.store'));
+};
+
+// Handle uploaded contents from UploadContentsButton
+const handleContentsUploaded = (contents: string) => {
+    form.table_of_contents = contents;
+};
+
+// Handle upload errors
+const handleUploadError = (error: string) => {
+    // You could show a toast notification here or handle the error as needed
+    console.error('Upload error:', error);
+    alert(error); // Simple alert for now, can be replaced with a proper notification system
 };
 </script>
 
@@ -338,7 +351,13 @@ const submit = () => {
                         <h2 class="text-lg font-semibold">Content Description</h2>
                         <div class="grid gap-6">
                             <div class="grid gap-2">
-                                <Label for="table_of_contents">Table of Contents</Label>
+                                <div class="flex justify-between items-center">
+                                    <Label for="table_of_contents">Table of Contents</Label>
+                                    <UploadContentsButton
+                                        @contents-uploaded="handleContentsUploaded"
+                                        @upload-error="handleUploadError"
+                                    />
+                                </div>
                                 <Textarea id="table_of_contents" rows="4" v-model="form.table_of_contents" />
                                 <InputError :message="form.errors.table_of_contents" />
                             </div>
