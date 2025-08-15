@@ -52,28 +52,16 @@ defineProps({
 </script>
 
 <template>
-    <Head title="Welcome">
-    </Head>
-    <div class="flex flex-col bg-background text-[#1b1b18] lg:justify-center dark:bg-[#0a0a0a]">
-        <Link :href="route('logger.create')" class="fixed top-0 left-0 opacity-0 bg-green-500">hi</Link>
+    <Head title="Welcome" />
+    <div class="min-h-screen flex flex-col bg-background text-[#1b1b18] dark:bg-[#0a0a0a]">
+        <!-- Top Bar: Theme Switcher & Login -->
+        <div class="flex justify-between items-center px-8 py-4 border-b border-gray-200 dark:border-gray-800">
+            <div class="flex items-center gap-3">
+                <img src="/images/usep-logo-small.png" alt="USEP Logo" class="h-10 w-10" />
+                <span class="font-bold text-xl text-gray-900 dark:text-gray-100">USeP Library</span>
+            </div>
+            <div class="flex items-center gap-4">
 
-        <Alert class="absolute top-5 right-5 w-fit pr-8" variant="destructive" v-if="page.props.flash.error && showAlert">
-            <AlertCircle class="w-4 h-4" />
-            <button @click="showAlert = false" class="absolute top-2 right-2 p-1 hover:bg-red-100 rounded-full transition-colors">
-                <X class="w-4 h-4" />
-            </button>
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>
-                {{ page.props.flash.error }}
-            </AlertDescription>
-        </Alert>
-
-        <header class="flex justify-between items-center w-full p-2 px-8 text-sm not-has-[nav]:hidden">
-            <Link :href="route('home')" class="relative z-20 flex items-center text-lg font-medium dark:text-foreground">
-                <AppLogoIcon class="mr-2 size-8 fill-current text-white" />
-                {{ name }}
-            </Link>
-            <nav class="flex items-center justify-end gap-4">
                 <AppearanceTabs />
                 <Link
                     v-if="$page.props.auth.user"
@@ -101,30 +89,34 @@ defineProps({
             </nav>
         </header>
 
-        <!-- The content itself -->
-        <div class="grid w-full opacity-100 transition-opacity duration-750 starting:opacity-0">
-
-            <div class="p-8 h-[360px] bg-[url(/storage/images/eagle.jpg)] bg-cover min-w-full flex justify-center items-center">
-                <div class="grid bg-background rounded-lg">
-                    <WelcomeSearch :search_result="search_result" :search_term="search_term"
-                                   :search_button="search_button"
-                    />
-                </div>
+        <!-- Hero Section -->
+        <section class="hero-pattern py-16 flex flex-col items-center justify-center text-center">
+            <h1 class="text-4xl font-bold mb-2 text-gray-900 dark:text-gray-100">USeP Campus Library Tagum-Mabini</h1>
+            <p class="text-lg text-gray-600 dark:text-gray-300 mb-6">Your gateway to knowledge and resources</p>
+            <div class="w-full max-w-xl">
+                <WelcomeSearch :search_result="search_result" :search_term="search_term" :search_button="search_button" />
             </div>
+        </section>
 
-            <div class="w-full p-16 pb-0 grid grid-cols-3 gap-16">
-                <Card class="p-4 gap-2">
-                    <h4 class="text-6xl">{{ userCount }}</h4>
-                    <div>Patrons</div>
-                </Card>
-                <Card class="p-4 gap-2">
-                    <h4 class="text-6xl">{{ recordCount }}</h4>
-                    <div>Books, Multimedia, Magazine, Periodals Thesis, Dissertations</div>
-                </Card>
-                <Card class="p-4 gap-2">
-                    <h4 class="text-6xl">{{ transactionCount }}</h4>
-                    <div>Transactions</div>
-                </Card>
+        <!-- Collection Cards Section -->
+        <section class="py-16 px-8 grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div class="collection-card bg-white dark:bg-[#181818] rounded-xl shadow-lg p-10 flex flex-col items-center min-h-[220px] hover:scale-105 transition-transform">
+                <div class="text-6xl font-extrabold count-animation text-usepmaroon dark:text-usepgold mb-4">{{ recordCount }}</div>
+                <div class="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100">Browse Collection</div>
+                <div class="text-base text-gray-500 dark:text-gray-300 mb-2">Items available in the library</div>
+                <div class="w-16 h-1 bg-usepgold rounded-full mt-4"></div>
+            </div>
+            <div class="collection-card bg-white dark:bg-[#181818] rounded-xl shadow-lg p-10 flex flex-col items-center min-h-[220px] hover:scale-105 transition-transform">
+                <div class="text-6xl font-extrabold count-animation text-usepmaroon dark:text-usepgold mb-4">1,245</div>
+                <div class="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100">New Arrivals</div>
+                <div class="text-base text-gray-500 dark:text-gray-300 mb-2">Added this month</div>
+                <div class="w-16 h-1 bg-usepgold rounded-full mt-4"></div>
+            </div>
+            <div class="collection-card bg-white dark:bg-[#181818] rounded-xl shadow-lg p-10 flex flex-col items-center min-h-[220px] hover:scale-105 transition-transform">
+                <div class="text-6xl font-extrabold count-animation text-usepmaroon dark:text-usepgold mb-4">892</div>
+                <div class="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100">Top Picks</div>
+                <div class="text-base text-gray-500 dark:text-gray-300 mb-2">Highly recommended by staff</div>
+                <div class="w-16 h-1 bg-usepgold rounded-full mt-4"></div>
             </div>
 
             <div class="w-full p-16" v-if="Object.keys(records?.data).length">
@@ -133,10 +125,36 @@ defineProps({
                     <div v-for="record in records?.data" :key="record.id">
                         <WelcomeBookDialog :record="record" />
                     </div>
+
                 </div>
             </div>
 
-        </div>
-        <div class="hidden h-14.5 lg:block"></div>
+
+        <!-- Footer -->
+        <footer class="bg-usepmaroon text-white py-10 w-full mt-12 shadow-lg">
+            <div class="container mx-auto px-0 md:px-0">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                    <div class="mb-6 md:mb-0 text-left">
+                        <h3 class="text-2xl font-bold tracking-wide mb-1">USEP Library</h3>
+                        <p class="text-usepgold/80 text-lg">Tagum-Mabini Campus</p>
+                    </div>
+                    <div class="flex space-x-6">
+                        <a href="#" class="bg-usepgold/20 hover:bg-usepgold/40 rounded-full p-3 transition flex items-center justify-center">
+                            <i class="fab fa-facebook-f text-xl"></i>
+                        </a>
+                        <a href="#" class="bg-usepgold/20 hover:bg-usepgold/40 rounded-full p-3 transition flex items-center justify-center">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="bg-usepgold/20 hover:bg-usepgold/40 rounded-full p-3 transition flex items-center justify-center">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="border-t border-usepgold/40 mt-10 pt-6 text-sm text-center text-usepgold/80 w-full">
+                    &copy; 2025 USEP Library. All rights reserved.
+                </div>
+            </div>
+        </footer>
+
     </div>
 </template>
