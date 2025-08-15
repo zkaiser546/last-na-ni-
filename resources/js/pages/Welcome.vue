@@ -10,6 +10,23 @@ import { Card } from '@/components/ui/card';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import { ref, watch, onMounted } from 'vue';
 
+interface Flash {
+    success?: string | null;
+    error?: string | null;
+}
+
+interface Config {
+    registration_enabled?: boolean | null;
+    login_enabled?: boolean | null;
+}
+
+declare module '@inertiajs/core' {
+    interface PageProps {
+        flash: Flash;
+        config: Config;
+    }
+}
+
 const props = defineProps({
     records: Object,
     search_result: Object,
@@ -25,14 +42,14 @@ const page = usePage();
 const name = page.props.name;
 const showAlert = ref(true);
 
-
+// Animated counters
 const displayedRecordCount = ref(0);
 const displayedNewArrivalsCount = ref(0);
 const displayedTopPicksCount = ref(0);
 
 function animateCount(target: number, refToUpdate: any) {
     const start = 0;
-    const duration = 1200; // ms
+    const duration = 1200;
     const startTime = performance.now();
 
     function update(now: number) {
@@ -48,23 +65,20 @@ function animateCount(target: number, refToUpdate: any) {
     requestAnimationFrame(update);
 }
 
-// Run on mount
 onMounted(() => {
-    animateCount(props.recordCount, displayedRecordCount); // Browse Collection
-    animateCount(1245, displayedNewArrivalsCount);         // New Arrivals
-    animateCount(892, displayedTopPicksCount);             // Top Picks
-});
+    animateCount(props.recordCount, displayedRecordCount);
+    animateCount(1245, displayedNewArrivalsCount);
+    animateCount(892, displayedTopPicksCount);
 
-watch(() => props.recordCount, (newVal) => {
-    animateCount(Number(newVal));
-});
-
-onMounted(() => {
     if (page.props.flash.error) {
         setTimeout(() => {
             showAlert.value = false;
         }, 5000);
     }
+});
+
+watch(() => props.recordCount, (newVal) => {
+    animateCount(Number(newVal), displayedRecordCount);
 });
 </script>
 
@@ -107,13 +121,12 @@ onMounted(() => {
             </div>
         </header>
 
+        <!-- Hero Section -->
         <section
             class="relative py-16 flex flex-col items-center justify-center text-center bg-cover bg-center"
             style="background-image: url('/storage/images/eagle.jpg');"
         >
-
             <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
-
             <div class="relative z-10 max-w-2xl px-6">
                 <h1 class="text-4xl md:text-5xl font-bold mb-4 text-white drop-shadow-lg">
                     USeP Campus Library Tagum-Mabini
@@ -141,22 +154,18 @@ onMounted(() => {
                 <div class="text-base text-gray-500 dark:text-gray-300 mb-2">Items available in the library</div>
                 <div class="w-16 h-1 bg-usepgold rounded-full mt-4"></div>
             </div>
-
             <div class="collection-card bg-white dark:bg-[#181818] rounded-xl shadow-lg p-10 flex flex-col items-center min-h-[220px] hover:scale-105 transition-transform">
                 <div class="text-6xl font-extrabold count-animation text-usepmaroon dark:text-usepgold mb-4">
                     {{ displayedNewArrivalsCount.toLocaleString() }}
                 </div>
-
                 <div class="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100">New Arrivals</div>
                 <div class="text-base text-gray-500 dark:text-gray-300 mb-2">Added this month</div>
                 <div class="w-16 h-1 bg-usepgold rounded-full mt-4"></div>
             </div>
-
             <div class="collection-card bg-white dark:bg-[#181818] rounded-xl shadow-lg p-10 flex flex-col items-center min-h-[220px] hover:scale-105 transition-transform">
                 <div class="text-6xl font-extrabold count-animation text-usepmaroon dark:text-usepgold mb-4">
                     {{ displayedTopPicksCount.toLocaleString() }}
                 </div>
-
                 <div class="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100">Top Picks</div>
                 <div class="text-base text-gray-500 dark:text-gray-300 mb-2">Highly recommended by staff</div>
                 <div class="w-16 h-1 bg-usepgold rounded-full mt-4"></div>
@@ -200,3 +209,28 @@ onMounted(() => {
         </footer>
     </div>
 </template>
+
+<style>
+.hero-pattern {
+    background-image: radial-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+.collection-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    z-index: 10;
+}
+.collection-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    z-index: 20;
+}
+.count-animation {
+    animation: pulse 1s infinite;
+}
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+</style>
