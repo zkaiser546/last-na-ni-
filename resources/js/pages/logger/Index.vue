@@ -131,6 +131,22 @@ const columns: ColumnDef<RowData>[] = [
         enableHiding: false,
     },
     {
+        accessorKey: 'user',
+        header: 'Name',
+        cell: ({ row }) => {
+            const user = row.original.user;
+            return user ? `${user.first_name} ${user.last_name}` : 'N/A';
+        },
+    },
+    {
+        accessorKey: 'user.program',
+        header: 'Program',
+        cell: ({ row }) => {
+            const user = row.original.user;
+            return user?.program || 'N/A';
+        },
+    },
+    {
         accessorKey: 'entry_time',
         header: ({ column }: { column: Column<RowData, any> }) => {
             return h(Button, {
@@ -145,11 +161,12 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();
                     }
                 },
-            }, () => ['Entry Time', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Login Time', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'max-w-48 whitespace-normal break-words' },
-            row.getValue('entry_time')),
-        enableHiding: false,
+        cell: ({ row }: { row: Row<RowData> }) => {
+            const entry_time = row.original.entry_time;
+            return entry_time ? new Date(entry_time).toLocaleString() : 'N/A';
+        },
     },
     {
         accessorKey: 'exit_time',
@@ -166,33 +183,16 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();
                     }
                 },
-            }, () => ['Exit Time', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Logout Time', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'max-w-48 whitespace-normal break-words' },
             row.getValue('exit_time')),
         enableHiding: false,
     },
     {
-        accessorKey: 'visit_purpose_id',
-        header: 'Purpose',
-        cell: ({ row }: { row: Row<RowData> }) => {
-            const purpose = row.original.visit_purpose;
-            if (purpose) {
-                return h('div', purpose.name || 'Unknown')
-            } else {
-                return h('div', 'not specified')
-            }
-        },
-    },
-    {
         id: 'actions',
-        enableHiding: false,
         cell: ({ row }: { row: Row<RowData> }) => {
-            const payment = row.original
-            return h('div', { class: 'relative' }, h(DropdownAction, {
-                payment,
-                onExpand: row.toggleExpanded,
-            }))
+            return h(DropdownAction, { row: row.original })
         },
     },
 ]
@@ -357,20 +357,8 @@ import Filter from './Filter.vue'
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
 
-// Filter for visit purpose
-const filter_purposes = {
-    title: 'Filter Purpose',
-    column: 'visit_purpose_id',
-    data: props.availablePurposes.map(purpose => ({
-        value: purpose.value,
-        label: purpose.label,
-        icon: h(ListFilter)
-    }))
-}
-
-const filter_toolbar = [
-    filter_purposes,
-];
+// Filter toolbar configuration
+const filter_toolbar = [];
 
 const showDialog = ref(false);
 const showDialogCreate = () => {

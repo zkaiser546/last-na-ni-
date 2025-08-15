@@ -1,32 +1,26 @@
 <script setup lang="ts">
+import { ref, reactive, onMounted, nextTick, watch } from 'vue';
+import { router, useForm, usePage } from '@inertiajs/vue3';
 
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { UserRoundSearch } from 'lucide-vue-next';
-import { router, useForm } from '@inertiajs/vue3';
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue
-} from '@/components/ui/select';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader, DialogTitle,
-    DialogTrigger
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { ref, watch } from 'vue';
+const showAlert = ref(false);
+const alertMessage = ref('');
+const alertType = ref<'success' | 'error'>('success');
+const showStudentInfo = ref(false);
+const studentIdInput = ref('');
+const currentStudent = reactive({
+    initials: '',
+    name: '',
+    id: '',
+    program: ''
+});
+const studentIdInputRef = ref<HTMLInputElement | null>(null);
+const scannerInputRef = ref<HTMLInputElement | null>(null);
+let resetTimer: ReturnType<typeof setTimeout> | null = null;
+let scannerBuffer = '';
+let scannerTimeout: ReturnType<typeof setTimeout>;
 
 const props = defineProps({
     patron: Object,
-    purposes: Object,
     search_button: Boolean,
     is_logout: Boolean,
 });
@@ -34,142 +28,168 @@ const props = defineProps({
 const form = useForm({
     search: '',
     patron_id: null,
-    purpose_id: null,
 });
 
-const search = () => {
-    router.get(route('logger.create'), { search: form.search, search_button: true }, { preserveState: true });
-};
-
-const clearSearch = () => {
-    form.search = '';
-};
-
-const open = ref(false)
-const selectedPurpose = ref('')
-
-// Watch for patron changes and open dialog
-watch(() => props.patron, (newPatron) => {
-    if (newPatron) {
-        form.patron_id = newPatron.id
-        open.value = true
-    }
-}, { immediate: true })
-
-const handlePurposeChange = (value: string) => {
-    selectedPurpose.value = value
-    form.purpose_id = value
+function showAlertMsg(msg: string, type: 'success' | 'error' = 'success') {
+    alertMessage.value = msg;
+    alertType.value = type;
+    showAlert.value = true;
+    setTimeout(() => showAlert.value = false, 2500);
 }
 
-const submitForm = () => {
+function resetDisplay() {
+    showStudentInfo.value = false;
+    form.search = '';
+    nextTick(() => studentIdInputRef.value?.focus());
+}
+
+function submitManualId() {
+    if (!form.search.trim()) {
+        showAlertMsg('Please enter a valid Student ID.', 'error');
+        return;
+    }
+    processStudentId(form.search.trim());
+}
+
+function onScannerInput(e: Event) {
+    const val = (e.target as HTMLInputElement).value;
+    if (val) {
+        processStudentId(val);
+        (e.target as HTMLInputElement).value = '';
+    }
+}
+
+function submitForm() {
+    if (!props.patron) return;
+
     form.post(route('logger.store'), {
-        onSuccess: () => {
-            open.value = false
-            // Reset form or handle success
-            form.reset()
-            selectedPurpose.value = ''
+        onSuccess: (response) => {
+            if (response?.props?.flash?.success) {
+                showAlertMsg(response.props.flash.success);
+            }
+            form.reset();
+            resetDisplay();
+            nextTick(() => {
+                if (studentIdInputRef.value) {
+                    studentIdInputRef.value.focus();
+                }
+            });
         },
         onError: (errors) => {
-            console.error('Form submission errors:', errors)
+            showAlertMsg('An error occurred.', 'error');
+            console.error('Form submission errors:', errors);
         }
-    })
+    });
 }
 
+function processStudentId(id: string) {
+    router.get(route('logger.create'), { search: id, search_button: true }, {
+        preserveState: true,
+        onSuccess: () => {
+            if (props.patron) {
+                showStudentInfo.value = true;
+                submitForm(); // Automatically submit after finding user
+            }
+        },
+        onError: () => {
+            showAlertMsg('Student not found.', 'error');
+            resetDisplay();
+        }
+    });
+}
+
+// Watch for flash messages from the server
+watch(() => usePage().props.flash, (flash) => {
+    if (flash.success) {
+        showAlertMsg(flash.success);
+    } else if (flash.error) {
+        showAlertMsg(flash.error, 'error');
+    }
+}, { immediate: true });
+
+// Watch for patron changes
+watch(() => props.patron, (newPatron) => {
+    if (newPatron) {
+        currentStudent.name = `${newPatron.first_name} ${newPatron.last_name}`;
+        currentStudent.id = newPatron.library_id;
+        currentStudent.program = newPatron.program || 'N/A';
+        currentStudent.initials = newPatron.first_name.charAt(0) + newPatron.last_name.charAt(0);
+        form.patron_id = newPatron.id;
+        showStudentInfo.value = true;
+    }
+}, { immediate: true });
+
+onMounted(() => {
+    nextTick(() => studentIdInputRef.value?.focus());
+    // Barcode scanner support (global keydown)
+    window.addEventListener('keydown', (e) => {
+        if (document.activeElement !== studentIdInputRef.value && e.key.length === 1) {
+            scannerBuffer += e.key;
+            clearTimeout(scannerTimeout);
+            scannerTimeout = setTimeout(() => {
+                if (scannerBuffer.length > 0) {
+                    processStudentId(scannerBuffer);
+                    scannerBuffer = '';
+                }
+            }, 100);
+        }
+    });
+});
 </script>
 
 <template>
-    <div class="relative w-full max-w-sm items-center dark:text-card-foreground">
-        <form @submit.prevent="search">
-            <Input required v-model="form.search" id="search" type="number"
-                   placeholder="Enter Library ID" class="pl-10" autocomplete="off"/>
-        </form>
-        <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
-          <UserRoundSearch class="size-6 text-muted-foreground" />
-        </span>
-    </div>
-    <div class="flex gap-2 dark:text-card-foreground">
-        <Button variant="outline" v-if="form.search" @click="clearSearch">Clear</Button>
-        <Button @click="search">Search</Button>
-    </div>
+    <div class="min-h-screen bg-gray-50 font-sans relative flex items-center justify-center bg-cover bg-center" style="background-image: url('/images/eagle.jpg')">
+        <!-- Alert Message -->
+        <div v-if="showAlert" :class="['fixed top-6 left-1/2 transform -translate-x-1/2 px-8 py-4 rounded-lg shadow-lg z-50 font-bold text-lg min-w-[320px] text-center text-white transition-all duration-300', alertType === 'success' ? 'bg-green-600' : 'bg-red-600']">
+            {{ alertMessage }}
+        </div>
 
-    <div v-if="patron" class="max-w-md">
-
-        <Dialog v-model:open="open">
-            <DialogTrigger as-child class="hidden">
-                <Button
-                    ref="triggerRef"
-                    variant="outline"
-                >
-                    Edit Profile
-                </Button>
-            </DialogTrigger>
-            <DialogContent class="sm:max-w-lg">
-                <DialogHeader>
-                    <DialogTitle>Welcome back {{ patron.first_name }}!</DialogTitle>
-                    <DialogDescription v-if="!is_logout">
-                        What transaction would you do today?
-                    </DialogDescription>
-                    <div v-if="is_logout">Would you like to log-out now?</div>
-                </DialogHeader>
-                <form @submit.prevent="submitForm">
-                    <div v-if="!is_logout" class="grid gap-4 py-4">
-                        <div class="grid grid-cols-4 items-center gap-4">
-                            <Label for="purpose" class="text-right">
-                                Purpose
-                            </Label>
-
-                            <Select v-model="selectedPurpose" @update:modelValue="handlePurposeChange">
-                                <SelectTrigger class="w-[280px]">
-                                    <SelectValue placeholder="Select a purpose" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>Purpose</SelectLabel>
-                                        <SelectItem
-                                            v-for="purpose in purposes"
-                                            :key="purpose.id"
-                                            :value="purpose.id.toString()"
-                                        >
-                                            {{ purpose.name }}
-                                        </SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <!-- Show validation errors if any -->
-                        <div v-if="form.errors.purpose_id" class="text-red-500 text-sm">
-                            {{ form.errors.purpose_id }}
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button
-                            v-if="!is_logout"
-                            type="submit"
-                            :disabled="form.processing || !selectedPurpose"
-                        >
-                            <span v-if="form.processing">Processing...</span>
-                            <span v-else>Save changes</span>
-                        </Button>
-                        <Button
-                            v-else
-                            type="submit"
-                            :disabled="form.processing"
-                        >
-                            <span v-if="form.processing">Processing...</span>
-                            <span v-else>Logout</span>
-                        </Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
-
-    </div>
-    <div v-else-if="!patron && search_button" class="dark:text-card-foreground">
-        No records found
+        <div class="w-full max-w-md mx-4 bg-white rounded-xl shadow-lg p-8 transition-all">
+            <div v-if="showStudentInfo && patron" class="text-center transition-all fade-in">
+                <div class="w-40 h-40 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-5 text-5xl font-bold text-gray-700 shadow-md">
+                    {{ currentStudent.initials }}
+                </div>
+                <h3 class="text-xl font-bold">{{ currentStudent.name }}</h3>
+                <p class="text-gray-600">ID: {{ currentStudent.id }}</p>
+                <p class="text-gray-600">Program: {{ currentStudent.program }}</p>
+            </div>
+            <div v-else>
+                <div class="text-center transition-all fade-in">
+                    <img src="/images/usep-logo-small.png" alt="USEP Logo" class="h-24 mx-auto mb-3">
+                    <h1 class="text-2xl font-bold text-usepmaroon mb-1">USEP CAMPUS LIBRARY</h1>
+                    <p class="text-lg text-gray-600">Tagum-Mabini Campus</p>
+                </div>
+                <div class="mt-5 transition-all">
+                    <p class="text-lg font-medium text-center mb-3">Please enter your Student ID</p>
+                    <input
+                        v-model="form.search"
+                        @keyup.enter="submitManualId"
+                        class="w-full p-4 border-2 border-usepmaroon rounded-lg text-lg my-5"
+                        placeholder="e.g. 2023-12345 or 202312345"
+                        autofocus
+                        ref="studentIdInputRef"
+                    >
+                    <p class="text-sm text-gray-500 mt-2 text-center">Or scan your RFID/Library card Barcode</p>
+                </div>
+            </div>
+        </div>
+        <!-- Hidden input for scanner (for barcode support) -->
+        <input ref="scannerInputRef" class="absolute opacity-0 h-0 w-0" @input="onScannerInput" />
     </div>
 </template>
 
 <style scoped>
-
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.text-usepmaroon {
+    color: #800000;
+}
+.border-usepmaroon {
+    border-color: #800000;
+}
 </style>
