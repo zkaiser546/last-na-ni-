@@ -13,6 +13,7 @@ use App\Http\Controllers\PeriodicalController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\ThesisController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
@@ -63,6 +64,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/multimedia', [DigitalResourceController::class, 'store'])->name('multimedia.store');
         Route::get('/periodicals', [PeriodicalController::class, 'index'])->name('periodicals.index');
         Route::get('/periodicals/create', [PeriodicalController::class, 'create'])->name('periodicals.create');
+        Route::get('/theses', [ThesisController::class, 'index'])->name('theses.index');
     });
     Route::prefix('borrowings')->group(function () {
         Route::get('/', [BorrowingTransactionController::class, 'index'])->name('borrowings.index');

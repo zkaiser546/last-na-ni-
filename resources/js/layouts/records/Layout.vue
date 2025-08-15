@@ -17,6 +17,10 @@ const sidebarNavItems: NavItem[] = [
         title: 'Magazines/Periodicals',
         href: '/records/periodicals',
     },
+    {
+        title: 'Theses/Dissertations',
+        href: '/records/theses',
+    },
 ];
 
 const rightNavItems: NavItem[] = [
