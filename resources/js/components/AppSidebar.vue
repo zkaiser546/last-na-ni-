@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpenCheck, LayoutGrid, Library, Users, BookOpen, FileText, ChevronDown, Folder } from 'lucide-vue-next';
+import { BookOpenCheck, LayoutGrid, Library, Users, BookOpen, FileText, ChevronDown, Folder, EthernetPortIcon, Logs, Boxes } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { FileClock  } from 'lucide-vue-next';
 import { ref } from 'vue';
@@ -17,6 +17,7 @@ const mainNavItems: NavItem[] = [
         href: '/dashboard',
         icon: LayoutGrid,
     },
+
     {
         title: 'Users',
         href: '/users',
@@ -55,9 +56,34 @@ const mainNavItems: NavItem[] = [
         icon: Folder,
     },
     {
-        title: 'Test',
-        href: '/test',
-        icon: FileClock,
+        title: 'Statistical Data',
+        href: '/statistical-data',
+        icon: EthernetPortIcon,
+        hasSubmenu: true,
+        submenuItems: [
+            { title: 'Comparative Report', href: '/reports' },
+            { title: 'General Book Loan', href: '/reports/penalty' },
+            { title: 'Graduate Book Loan', href: '/reports/transaction-profile' },
+
+        ],
+
+    },
+    {
+        title: 'User Logs',
+        href: '/clearance',
+        icon: Logs,
+        hasSubmenu: true,
+        submenuItems: [
+            { title: 'Reports', href: '/reports' },
+            { title: 'Patron Information', href: '/reports/penalty' },
+            { title: 'Violation', href: '/reports/transaction-profile' },
+
+        ],
+    },
+    {
+        title: 'Inventory',
+        href: '/clearance',
+        icon: Boxes,
     },
 
 ];

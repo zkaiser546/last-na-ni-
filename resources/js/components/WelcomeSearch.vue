@@ -92,7 +92,7 @@ onBeforeUnmount(() => {
                     id="search"
                     type="search"
                     placeholder="Search accession, title... "
-                    class="pl-10 w-full text-gray-900 dark:text-gray-100 bg-white dark:bg-[#181818] placeholder-gray-500 dark:placeholder-gray-400"
+                    class="pl-10 w-full text-white white:text-shadow-white-100 bg-white dark:bg-[#181818] placeholder-gray-500 dark:placeholder-gray-400"
                     @focus="searchQuery && (showSuggestions = true)"
                 />
                 <span class="absolute start-0 inset-y-0 flex items-center px-2">
@@ -102,12 +102,12 @@ onBeforeUnmount(() => {
                 <!-- Suggestions dropdown -->
                 <div
                     v-if="showSuggestions && suggestions.length > 0"
-                    class="absolute z-50 mt-1 w-full bg-white border rounded-lg shadow-lg max-h-[60vh] overflow-y-auto"
+                    class="absolute z-50 mt-1 w-full bg-white dark:bg-[#181818] border rounded-lg shadow-lg max-h-[60vh] overflow-y-auto text-white"
                 >
                     <div
                         v-for="result in suggestions"
                         :key="result.id"
-                        class="p-2 hover:bg-gray-50"
+                        class="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-white"
                     >
                         <WelcomeSearchDialog :record="result" />
                     </div>

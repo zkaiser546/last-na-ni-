@@ -2,45 +2,15 @@
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, X } from 'lucide-vue-next';
-import { ref, onMounted } from 'vue';
 import WelcomeBookDialog from '@/components/WelcomeBookDialog.vue';
 import WelcomeSearch from '@/components/WelcomeSearch.vue';
 import AppearanceTabs from '@/components/AppearanceTabs.vue';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
+import { ref, watch, onMounted } from 'vue';
 
-// for alert
-const page = usePage();
-const name = page.props.name;
-const showAlert = ref(true);
-
-onMounted(() => {
-    if (page.props.flash.error) {
-        setTimeout(() => {
-            showAlert.value = false;
-        }, 5000);
-    }
-});
-
-interface Flash {
-    success?: string | null;
-    error?: string | null;
-}
-
-interface Config {
-    registration_enabled?: boolean | null;
-    login_enabled?: boolean | null;
-}
-
-declare module '@inertiajs/core' {
-    interface PageProps {
-        flash: Flash;
-        config: Config;
-    }
-}
-
-defineProps({
+const props = defineProps({
     records: Object,
     search_result: Object,
     search_term: String,
@@ -48,6 +18,53 @@ defineProps({
     userCount: Number,
     recordCount: Number,
     transactionCount: Number,
+});
+
+// for alert
+const page = usePage();
+const name = page.props.name;
+const showAlert = ref(true);
+
+
+const displayedRecordCount = ref(0);
+const displayedNewArrivalsCount = ref(0);
+const displayedTopPicksCount = ref(0);
+
+function animateCount(target: number, refToUpdate: any) {
+    const start = 0;
+    const duration = 1200; // ms
+    const startTime = performance.now();
+
+    function update(now: number) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        refToUpdate.value = Math.floor(start + (target - start) * progress);
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        } else {
+            refToUpdate.value = target;
+        }
+    }
+    requestAnimationFrame(update);
+}
+
+// Run on mount
+onMounted(() => {
+    animateCount(props.recordCount, displayedRecordCount); // Browse Collection
+    animateCount(1245, displayedNewArrivalsCount);         // New Arrivals
+    animateCount(892, displayedTopPicksCount);             // Top Picks
+});
+
+watch(() => props.recordCount, (newVal) => {
+    animateCount(Number(newVal));
+});
+
+onMounted(() => {
+    if (page.props.flash.error) {
+        setTimeout(() => {
+            showAlert.value = false;
+        }, 5000);
+    }
 });
 </script>
 
@@ -58,9 +75,10 @@ defineProps({
         <!-- Top Bar -->
         <header class="flex justify-between items-center px-8 py-4 border-b border-gray-200 dark:border-gray-800">
             <div class="flex items-center gap-3">
-                <img src="/images/usep-logo-small.png" alt="USEP Logo" class="h-10 w-10" />
+                <img src="/storage/images/usep-logo-small.png" alt="USEP Logo" class="h-10 w-10" />
                 <span class="font-bold text-xl text-gray-900 dark:text-gray-100">USeP Library</span>
             </div>
+
             <div class="flex items-center gap-4">
                 <AppearanceTabs />
                 <Link
@@ -89,20 +107,27 @@ defineProps({
             </div>
         </header>
 
-        <!-- Hero Section -->
-        <section class="hero-pattern py-16 flex flex-col items-center justify-center text-center">
-            <h1 class="text-4xl font-bold mb-2 text-gray-900 dark:text-gray-100">
-                USeP Campus Library Tagum-Mabini
-            </h1>
-            <p class="text-lg text-gray-600 dark:text-gray-300 mb-6">
-                Your gateway to knowledge and resources
-            </p>
-            <div class="w-full max-w-xl">
-                <WelcomeSearch
-                    :search_result="search_result"
-                    :search_term="search_term"
-                    :search_button="search_button"
-                />
+        <section
+            class="relative py-16 flex flex-col items-center justify-center text-center bg-cover bg-center"
+            style="background-image: url('/storage/images/eagle.jpg');"
+        >
+
+            <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+            <div class="relative z-10 max-w-2xl px-6">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 text-white drop-shadow-lg">
+                    USeP Campus Library Tagum-Mabini
+                </h1>
+                <p class="text-lg md:text-xl text-gray-200 mb-8">
+                    Your gateway to knowledge and resources
+                </p>
+                <div class="w-full">
+                    <WelcomeSearch
+                        :search_result="search_result"
+                        :search_term="search_term"
+                        :search_button="search_button"
+                    />
+                </div>
             </div>
         </section>
 
@@ -110,7 +135,7 @@ defineProps({
         <section class="py-16 px-8 grid grid-cols-1 md:grid-cols-3 gap-10">
             <div class="collection-card bg-white dark:bg-[#181818] rounded-xl shadow-lg p-10 flex flex-col items-center min-h-[220px] hover:scale-105 transition-transform">
                 <div class="text-6xl font-extrabold count-animation text-usepmaroon dark:text-usepgold mb-4">
-                    {{ recordCount }}
+                    {{ displayedRecordCount.toLocaleString() }}
                 </div>
                 <div class="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100">Browse Collection</div>
                 <div class="text-base text-gray-500 dark:text-gray-300 mb-2">Items available in the library</div>
@@ -119,8 +144,9 @@ defineProps({
 
             <div class="collection-card bg-white dark:bg-[#181818] rounded-xl shadow-lg p-10 flex flex-col items-center min-h-[220px] hover:scale-105 transition-transform">
                 <div class="text-6xl font-extrabold count-animation text-usepmaroon dark:text-usepgold mb-4">
-                    1,245
+                    {{ displayedNewArrivalsCount.toLocaleString() }}
                 </div>
+
                 <div class="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100">New Arrivals</div>
                 <div class="text-base text-gray-500 dark:text-gray-300 mb-2">Added this month</div>
                 <div class="w-16 h-1 bg-usepgold rounded-full mt-4"></div>
@@ -128,8 +154,9 @@ defineProps({
 
             <div class="collection-card bg-white dark:bg-[#181818] rounded-xl shadow-lg p-10 flex flex-col items-center min-h-[220px] hover:scale-105 transition-transform">
                 <div class="text-6xl font-extrabold count-animation text-usepmaroon dark:text-usepgold mb-4">
-                    892
+                    {{ displayedTopPicksCount.toLocaleString() }}
                 </div>
+
                 <div class="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100">Top Picks</div>
                 <div class="text-base text-gray-500 dark:text-gray-300 mb-2">Highly recommended by staff</div>
                 <div class="w-16 h-1 bg-usepgold rounded-full mt-4"></div>
