@@ -36,7 +36,7 @@ if (page.props.auth.permissions.can_view_any_users)
 {
     rightNavItems.unshift( {
         title: 'Import',
-        href: 'records//books/import',
+        href: 'records/books/import',
     })
 }
 
