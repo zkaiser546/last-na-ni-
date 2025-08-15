@@ -18,14 +18,67 @@ class BorrowingTransactionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): \Inertia\Response
+    public function index(Request $request): \Inertia\Response
     {
+        $perPage = $request->input('per_page', 10);
+        $sortField = $request->input('sort_field', null);
+        $sortDirection = $request->input('sort_direction', 'desc'); // Default to desc for latest first
+        $filters = [];
+
+        // Capture search parameters
+        $searchTerm = $request->input('search');
+        if (!empty($searchTerm)) {
+            $filters[] = [
+                'id' => 'search',
+                'value' => $searchTerm
+            ];
+        }
+
+        // Capture transaction type filter
+        $transactionTypes = $request->input('transaction_type');
+        if (!empty($transactionTypes)) {
+            $filters[] = [
+                'id' => 'transaction_type',
+                'value' => is_array($transactionTypes) ? $transactionTypes : [$transactionTypes]
+            ];
+        }
+
         $latest_transactions = BorrowingTransaction::with('user')
             ->with('record')
-            ->latest()->paginate(10);
+            ->when($searchTerm, function ($query, $searchTerm) {
+                $query->where(function ($q) use ($searchTerm) {
+                    // Search by transaction number (assuming you have a transaction_number field)
+                    $q->where('transaction_number', 'like', '%' . $searchTerm . '%')
+                        // Search by user name
+                        ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
+                            $userQuery->where('first_name', 'like', '%' . $searchTerm . '%')
+                                ->orWhere('last_name', 'like', '%' . $searchTerm . '%');
+                        })
+                        // Search by record title
+                        ->orWhereHas('record', function ($recordQuery) use ($searchTerm) {
+                            $recordQuery->where('title', 'like', '%' . $searchTerm . '%')
+                                ->orWhere('accession_number', 'like', '%' . $searchTerm . '%');
+                        });
+                });
+            })
+            ->when($transactionTypes, function ($query, $transactionTypes) {
+                // Handle both single values and arrays
+                $types = is_array($transactionTypes) ? $transactionTypes : [$transactionTypes];
+                $query->whereIn('transaction_type', $types);
+            })
+            ->when($sortField, function ($query, $sortField) use ($sortDirection) {
+                $query->orderBy($sortField, $sortDirection);
+            }, function ($query) {
+                // Default sorting when no sort field is specified
+                $query->latest();
+            })
+            ->paginate(perPage: $perPage);
 
         return Inertia::render('borrowings/Index', [
-            'latest_transactions' => $latest_transactions
+            'data' => $latest_transactions,
+            'filter' => $filters,
+            'currentSortField' => $sortField,
+            'currentSortDirection' => $sortDirection,
         ]);
     }
 

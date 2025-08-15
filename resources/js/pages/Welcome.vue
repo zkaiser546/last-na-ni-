@@ -61,11 +61,33 @@ defineProps({
                 <span class="font-bold text-xl text-gray-900 dark:text-gray-100">USeP Library</span>
             </div>
             <div class="flex items-center gap-4">
+
                 <AppearanceTabs />
-                <Link v-if="$page.props.auth.user" :href="route('dashboard')" class="font-medium text-sm px-4 py-2 rounded bg-primary text-white">Dashboard</Link>
-                <Link v-else :href="route('login')" class="font-medium text-sm px-4 py-2 rounded bg-primary text-white">Log in</Link>
-            </div>
-        </div>
+                <Link
+                    v-if="$page.props.auth.user"
+                    :href="route('dashboard')"
+                    class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+                >
+                    Dashboard
+                </Link>
+                <template v-else>
+                    <Link
+                        v-if="$page.props.config.login_enabled"
+                        :href="route('login')"
+                        class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
+                    >
+                        <Button class="w-[120px]">Log in</Button>
+                    </Link>
+                    <Link
+                        v-if="$page.props.config.registration_enabled"
+                        :href="route('register')"
+                        class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+                    >
+                        <Button class="w-[120px]">Register</Button>
+                    </Link>
+                </template>
+            </nav>
+        </header>
 
         <!-- Hero Section -->
         <section class="hero-pattern py-16 flex flex-col items-center justify-center text-center">
@@ -96,17 +118,17 @@ defineProps({
                 <div class="text-base text-gray-500 dark:text-gray-300 mb-2">Highly recommended by staff</div>
                 <div class="w-16 h-1 bg-usepgold rounded-full mt-4"></div>
             </div>
-        </section>
 
-        <!-- Book Collection Section -->
-        <section class="py-12 px-8">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">Book Collection</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div v-for="record in records?.data" :key="record.id">
-                    <WelcomeBookDialog :record="record" />
+            <div class="w-full p-16" v-if="Object.keys(records?.data).length">
+                <h3 class="text-3xl text-center mb-8">Latest in Book Collections</h3>
+                <div class="grid grid-cols-3 gap-4">
+                    <div v-for="record in records?.data" :key="record.id">
+                        <WelcomeBookDialog :record="record" />
+                    </div>
+
                 </div>
             </div>
-        </section>
+
 
         <!-- Footer -->
         <footer class="bg-usepmaroon text-white py-10 w-full mt-12 shadow-lg">
@@ -133,30 +155,6 @@ defineProps({
                 </div>
             </div>
         </footer>
+
     </div>
 </template>
-
-<style>
-.hero-pattern {
-    background-image: radial-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px);
-    background-size: 20px 20px;
-}
-.collection-card {
-    transition: all 0.3s ease;
-    cursor: pointer;
-    position: relative;
-    z-index: 10;
-}
-.collection-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-    z-index: 20;
-}
-.count-animation {
-    animation: pulse 1s infinite;
-}
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
-</style>

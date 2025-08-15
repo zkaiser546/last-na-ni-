@@ -58,7 +58,7 @@ class DashboardController extends Controller
         }
 
         // Helper for percent change
-        $percentChange = function($current, $previous) {
+        $percentChange = function ($current, $previous) {
             if ($previous == 0) return 0;
             return round((($current - $previous) / $previous) * 100, 1);
         };
@@ -68,23 +68,47 @@ class DashboardController extends Controller
         $borrowedBooksPercentChange = $percentChange($borrowedBooksCount, $borrowedBooksCountLastYear);
         $monthlyUsersBorrowPercentChange = $percentChange($monthlyUsersBorrow ?? 0, $monthlyUsersBorrowLastYear ?? 0);
 
-        // Top programs by borrowings
-        $topProgramsRaw = BorrowingTransaction::query()
-            ->join('users', 'users.id', '=', 'borrowing_transactions.user_id')
-            ->selectRaw('users.program_id, COUNT(*) as borrow_count')
-            ->groupBy('users.program_id')
-            ->orderByDesc('borrow_count')
-            ->limit(5)
-            ->get();
+//        // Top programs by borrowings
+//        $topProgramsRaw = BorrowingTransaction::query()
+//            ->join('users', 'users.id', '=', 'borrowing_transactions.user_id')
+//            ->selectRaw('users.program_id, COUNT(*) as borrow_count')
+//            ->groupBy('users.program_id')
+//            ->orderByDesc('borrow_count')
+//            ->limit(5)
+//            ->get();
+//
+//        $topPrograms = [];
+//        foreach ($topProgramsRaw as $row) {
+//            $programName = \App\Models\Program::find($row->program_id)?->name ?? 'Unknown';
+//            $topPrograms[] = [
+//                'name' => $programName,
+//                'count' => $row->borrow_count,
+//            ];
+//        }
 
-        $topPrograms = [];
-        foreach ($topProgramsRaw as $row) {
-            $programName = \App\Models\Program::find($row->program_id)?->name ?? 'Unknown';
-            $topPrograms[] = [
-                'name' => $programName,
-                'count' => $row->borrow_count,
-            ];
-        }
+        // Instead of querying the database, create dummy data
+        $topPrograms = [
+            [
+                'name'  => 'BSED BSABE',
+                'count' => rand(50, 100),
+            ],
+            [
+                'name'  => 'BSED MATH',
+                'count' => rand(40, 90),
+            ],
+            [
+                'name'  => 'BSED ENG',
+                'count' => rand(30, 80),
+            ],
+            [
+                'name'  => 'BSED FIL',
+                'count' => rand(20, 70),
+            ],
+            [
+                'name'  => 'BSNED',
+                'count' => rand(10, 60),
+            ],
+        ];
 
         // USEP Programs (preset list)
         $usepPrograms = [
@@ -98,20 +122,20 @@ class DashboardController extends Controller
         ];
 
         return Inertia::render('Dashboard', [
-            'userCount' => $userCount,
-            'bookCount' => $bookCount,
-            'borrowedBooksCount' => $borrowedBooksCount,
-            'monthlyUsersBorrow' => $monthlyUsersBorrow,
-            'monthlyTrends' => $monthlyTrends,
-            'yearlyTrends' => $yearlyTrends,
-            'selectedYear' => $year,
-            'selectedMonth' => $month,
-            'bookPercentChange' => $bookPercentChange,
-            'userPercentChange' => $userPercentChange,
-            'borrowedBooksPercentChange' => $borrowedBooksPercentChange,
+            'userCount'                       => $userCount,
+            'bookCount'                       => $bookCount,
+            'borrowedBooksCount'              => $borrowedBooksCount,
+            'monthlyUsersBorrow'              => $monthlyUsersBorrow,
+            'monthlyTrends'                   => $monthlyTrends,
+            'yearlyTrends'                    => $yearlyTrends,
+            'selectedYear'                    => $year,
+            'selectedMonth'                   => $month,
+            'bookPercentChange'               => $bookPercentChange,
+            'userPercentChange'               => $userPercentChange,
+            'borrowedBooksPercentChange'      => $borrowedBooksPercentChange,
             'monthlyUsersBorrowPercentChange' => $monthlyUsersBorrowPercentChange,
-            'topPrograms' => $topPrograms,
-            'usepPrograms' => $usepPrograms,
+            'topPrograms'                     => $topPrograms,
+            'usepPrograms'                    => $usepPrograms,
         ]);
     }
 }

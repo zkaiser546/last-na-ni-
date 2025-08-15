@@ -5,13 +5,13 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, BookOpenCheck, Folder, LayoutGrid, Library, Users, FileText, ChevronDown } from 'lucide-vue-next';
+import { BookOpenCheck, LayoutGrid, Library, Users, BookOpen, FileText, ChevronDown, Folder } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { FileClock  } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { Button } from '@/components/ui/button';
 
-const mainNavItems = [
+const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: '/dashboard',
@@ -28,9 +28,14 @@ const mainNavItems = [
         icon: Library,
     },
     {
-        title: 'Borrowing',
+        title: 'Borrowings',
         href: '/borrowings',
         icon: BookOpenCheck,
+    },
+    {
+        title: 'Visitors',
+        href: '/logger',
+        icon: FileClock,
     },
     {
         title: 'Reports',
@@ -45,15 +50,16 @@ const mainNavItems = [
         ],
     },
     {
-        title: 'Visitors',
-        href: '/logger',
-        icon: FileClock,
-    },
-    {
         title: 'Clearance',
         href: '/clearance',
         icon: Folder,
     },
+    {
+        title: 'Test',
+        href: '/test',
+        icon: FileClock,
+    },
+
 ];
 
 const footerNavItems: NavItem[] = [

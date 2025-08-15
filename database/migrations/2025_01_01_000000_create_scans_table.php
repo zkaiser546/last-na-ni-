@@ -11,9 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('offices', function (Blueprint $table) {
+        Schema::create('scans', function (Blueprint $table) {
             $table->id();
+            $table->string('filename')->index();
+            $table->string('original_filename');
+            $table->string('mime_type');
+            $table->unsignedInteger('file_size');
             $table->timestamps();
+
+            $table->index('created_at');
         });
     }
 
@@ -22,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('offices');
+        Schema::dropIfExists('scans');
     }
 };

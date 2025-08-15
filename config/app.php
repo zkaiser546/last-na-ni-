@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -123,4 +122,16 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | ScanSnap Configuration
+    |--------------------------------------------------------------------------
+    |
+    | This configuration specifies the output folder path where ScanSnap Home
+    | saves scanned files. The import command will monitor this folder and
+    | automatically import new scans into the application.
+    |
+    */
+
+    'scansnap_output_path' => env('SCANSNAP_OUTPUT_PATH'),
 ];

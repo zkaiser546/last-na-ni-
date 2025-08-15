@@ -13,7 +13,7 @@ import {
     getSortedRowModel,
     useVueTable, VisibilityState
 } from '@tanstack/vue-table';
-import { ArrowUpDown, ChevronDown, X } from 'lucide-vue-next'
+import { ArrowUpDown, ChevronDown, ListFilter, X } from 'lucide-vue-next';
 
 import { h, ref } from 'vue'
 import DropdownAction from './DataTableDemoColumn.vue'
@@ -49,7 +49,7 @@ interface Props {
     filter?: any[]
     currentSortField?: string
     currentSortDirection?: string
-    userTypes?: any[] // Add userTypes prop for dynamic filter options
+    ddcClasses?: any[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -57,7 +57,7 @@ const props = withDefaults(defineProps<Props>(), {
     filter: () => [],
     currentSortField: undefined,
     currentSortDirection: 'asc',
-    userTypes: () => []
+    ddcClasses: () => []
 })
 
 import type { Table, Row, Column, SortingState, ColumnFiltersState, ColumnDef } from '@tanstack/vue-table'
@@ -67,7 +67,7 @@ const columns: ColumnDef<RowData>[] = [
     {
         id: 'search',
         // This is a virtual column for searching, not displayed
-        accessorFn: (row) => `${row.first_name} ${row.last_name}`,
+        accessorFn: (row) => `${row.accession_number} ${row.title}`,
         enableSorting: false,
         enableHiding: false,
     },
@@ -104,7 +104,7 @@ const columns: ColumnDef<RowData>[] = [
                         column.clearSorting();       // Clear sorting
                     }
                 },
-            }, () => ['Acc. No.', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
+            }, () => ['Acc.', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'lowercase' }, row.getValue('accession_number')),
         enableHiding: false,
@@ -126,7 +126,8 @@ const columns: ColumnDef<RowData>[] = [
                 },
             }, () => ['Title', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
-        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('title')),
+        cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize truncate max-w-sm' }, row.getValue('title')),
+        enableHiding: false,
     },
     {
         accessorKey: 'authors',
@@ -146,9 +147,9 @@ const columns: ColumnDef<RowData>[] = [
             }, () => ['Authors', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => {
-            return h('div', row.original.book.authors || '')
+            return h('div', { class: 'capitalize truncate max-w-40' }, row.original.book.authors || '')
         },
-        enableHiding: false,
+        enableHiding: true,
     },
     {
         accessorKey: 'date_received',
@@ -168,6 +169,7 @@ const columns: ColumnDef<RowData>[] = [
             }, () => ['Date Received', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => h('div', { class: 'capitalize' }, row.getValue('date_received')),
+        enableHiding: true,
     },
     {
         accessorKey: 'call_number',
@@ -187,23 +189,22 @@ const columns: ColumnDef<RowData>[] = [
             }, () => ['Call Number', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => {
-            return h('div', row.original.book.call_number || '')
+            return h('div', { class: 'truncate max-w-40' }, row.original.book.call_number || '')
         },
-        enableHiding: false,
+        enableHiding: true,
     },
     {
-        accessorKey: 'ddc_class',
+        accessorKey: 'ddc_class_id',
         header: 'DDC Class',
         cell: ({ row }: { row: Row<RowData> }) => {
-            const ddcClass = row.original.user_type;
-
+            const ddcClass = row.original.book.ddc_classification;
             if (ddcClass) {
                 return h('div', h(Badge, ddcClass.name || 'Unknown'))
             } else {
-                return h('div', h(Badge, { variant: 'outline' }, 'No User Type'))
+                return h('div', 'No DDC Class')
             }
         },
-        enableHiding: false,
+        enableHiding: true,
     },
     {
         id: 'actions',
@@ -218,8 +219,6 @@ const columns: ColumnDef<RowData>[] = [
         },
     },
 ]
-
-console.log(data);
 
 const sorting = ref<SortingState>(
     props.currentSortField ? [{
@@ -253,12 +252,27 @@ const table = useVueTable({
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
+    // Replace your onPaginationChange handler with this:
     onPaginationChange: updater => {
         if (typeof updater === 'function') {
             pagination.value = updater(pagination.value);
         } else {
             pagination.value = updater;
         }
+
+        // Build filters object (same logic as in onColumnFiltersChange)
+        let filters: Record<string, any> = {}
+        if (columnFilters.value && columnFilters.value.length > 0) {
+            filters = columnFilters.value.reduce((acc: Record<string, any>, filter) => {
+                if (Array.isArray(filter.value) && filter.value.length > 0) {
+                    acc[filter.id] = filter.value
+                } else if (!Array.isArray(filter.value) && filter.value !== '' && filter.value !== null && filter.value !== undefined) {
+                    acc[filter.id] = filter.value
+                }
+                return acc
+            }, {})
+        }
+
         router.get(
             route('records.index'),
             {
@@ -266,6 +280,7 @@ const table = useVueTable({
                 per_page: pagination.value.pageSize,
                 sort_field: sorting.value[0]?.id,
                 sort_direction: sorting.value.length == 0 ? undefined : (sorting.value[0]?.desc ? "desc" : "asc"),
+                ...filters // Include current filters
             },
             { preserveState: false, preserveScroll: true }
         );
@@ -335,7 +350,13 @@ const table = useVueTable({
             { preserveState: false, preserveScroll: true }
         );
     },
-    onColumnVisibilityChange: updaterOrValue => valueUpdater(updaterOrValue, columnVisibility),
+    onColumnVisibilityChange: updaterOrValue => {
+        if (typeof updaterOrValue === 'function') {
+            columnVisibility.value = updaterOrValue(columnVisibility.value)
+        } else {
+            columnVisibility.value = updaterOrValue
+        }
+    },
     onRowSelectionChange: updaterOrValue => valueUpdater(updaterOrValue, rowSelection),
     onExpandedChange: updaterOrValue => valueUpdater(updaterOrValue, expanded),
     state: {
@@ -359,26 +380,23 @@ const clearFilter = () => {
     table.getColumn('search')?.setFilterValue('')
 }
 
-import {
-    PersonIcon,
-} from "@radix-icons/vue";
 import Filter from './Filter.vue'
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
 
-//Filter - Updated to use User Types
-const filter_user_type = {
-    title: 'Filter User Type',
-    column: 'user_type_id',
-    data: props.userTypes.map(userType => ({
-        value: userType.id.toString(),
-        label: userType.name,
-        icon: h(PersonIcon), // You can customize icons per user type if needed
+//Filter - Updated to use DDC Class
+const filter_ddc_class = {
+    title: 'Filter DDC Classes',
+    column: 'ddc_class_id',
+    data: props.ddcClasses.map(ddcClass => ({
+        value: ddcClass.id.toString(),
+        label: ddcClass.name,
+        icon: h(ListFilter),
     }))
 }
 
 const filter_toolbar = [
-    filter_user_type,
+    filter_ddc_class,
 ];
 
 const showDialog = ref(false);
@@ -406,7 +424,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <div class="relative">
                             <Input
                                 class="w-[320px] pr-8"
-                                placeholder="Search by lib id, first name, or last name ..."
+                                placeholder="Search by acc. no., title ..."
                                 v-model="filterInput"
                                 @keyup.enter="applyFilter"
                                 @blur="applyFilter"
