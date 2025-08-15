@@ -37,7 +37,7 @@ class BookController extends Controller
         $searchTerm = $request->input('search');
         if (!empty($searchTerm)) {
             $filters[] = [
-                'id' => 'search',
+                'id'    => 'search',
                 'value' => $searchTerm
             ];
         }
@@ -58,9 +58,9 @@ class BookController extends Controller
             ->paginate(perPage: $perPage);
 
         return Inertia::render('books/Index', [
-            'data' => $records,
-            'filter' => $filters,
-            'currentSortField' => $sortField,
+            'data'                 => $records,
+            'filter'               => $filters,
+            'currentSortField'     => $sortField,
             'currentSortDirection' => $sortDirection,
         ]);
     }
@@ -88,7 +88,7 @@ class BookController extends Controller
             'lcClassifications'  => $lcClassifications,
             'physicalLocations'  => $physicalLocations,
             'coverTypes'         => $coverTypes,
-            'sources'         => $sources,
+            'sources'            => $sources,
         ]);
     }
 
@@ -101,45 +101,45 @@ class BookController extends Controller
         try {
             $request->validate([
                 // Basic Information
-                'accession_number'      => 'required|string|max:50|unique:records,accession_number',
-                'title'                 => 'required|string|max:255',
-                'authors'               => 'required|array|min:1',
-                'authors.*'             => 'string|max:255',
-                'editors'               => 'nullable|array',
-                'editors.*'             => 'string|max:255',
-                'publication_year'      => 'required|integer|min:1000|max:' . date('Y'),
-                'publisher'             => 'required|string|max:255',
-                'publication_place'     => 'required|string|max:255',
-                'isbn'                  => 'required|string|max:20|unique:books,isbn',
+                'accession_number'     => 'required|string|max:50|unique:records,accession_number',
+                'title'                => 'required|string|max:255',
+                'authors'              => 'required|array|min:1',
+                'authors.*'            => 'string|max:255',
+                'editors'              => 'nullable|array',
+                'editors.*'            => 'string|max:255',
+                'publication_year'     => 'required|integer|min:1000|max:' . date('Y'),
+                'publisher'            => 'required|string|max:255',
+                'publication_place'    => 'required|string|max:255',
+                'isbn'                 => 'required|string|max:20|unique:books,isbn',
 
                 // Classification & Location
-                'call_number'           => 'nullable|string|max:50',
-                'ddc_class_id'          => 'nullable|exists:ddc_classifications,id|required_without:lc_class_id',
-                'lc_class_id'           => 'nullable|exists:lc_classifications,id|required_without:ddc_class_id',
-                'physical_location_id'  => 'required|exists:physical_locations,id',
+                'call_number'          => 'nullable|string|max:50',
+                'ddc_class_id'         => 'nullable|exists:ddc_classifications,id|required_without:lc_class_id',
+                'lc_class_id'          => 'nullable|exists:lc_classifications,id|required_without:ddc_class_id',
+                'physical_location_id' => 'required|exists:physical_locations,id',
 
                 // Physical Description
-                'cover_image'           => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
-                'status'                => 'required|in:available,damaged,missing,borrowed,discarded', // Added status validation
+                'cover_image'          => 'nullable|file|mimes:jpg,jpeg,png,webp|max:2048',
+                'status'               => 'required|in:available,damaged,missing,borrowed,discarded', // Added status validation
 
                 // Administrative Information
-                'ics_number'            => 'nullable|max:50',
-                'ics_date'              => 'nullable|date',
-                'pr_number'             => 'nullable|max:50',
-                'pr_date'               => 'nullable|date',
-                'po_number'             => 'nullable|max:50',
-                'po_date'               => 'nullable|date',
-                'source_id'                => 'required|exists:sources,id',
-                'purchase_amount'       => 'nullable|numeric|min:0',
-                'lot_cost'              => 'nullable|numeric|min:0',
-                'supplier'              => 'nullable|string|max:255',
-                'donated_by'            => 'nullable|string|max:255',
-                'cover_type_id'           => 'nullable|exists:cover_types,id',
+                'ics_number'           => 'nullable|max:50',
+                'ics_date'             => 'nullable|date',
+                'pr_number'            => 'nullable|max:50',
+                'pr_date'              => 'nullable|date',
+                'po_number'            => 'nullable|max:50',
+                'po_date'              => 'nullable|date',
+                'source_id'            => 'required|exists:sources,id',
+                'purchase_amount'      => 'nullable|numeric|min:0',
+                'lot_cost'             => 'nullable|numeric|min:0',
+                'supplier'             => 'nullable|string|max:255',
+                'donated_by'           => 'nullable|string|max:255',
+                'cover_type_id'        => 'nullable|exists:cover_types,id',
 
                 // Content Description
-                'table_of_contents'     => 'nullable|string',
-                'subject_headings'      => 'nullable|array',
-                'subject_headings.*'    => 'string|max:255',
+                'table_of_contents'    => 'nullable|string',
+                'subject_headings'     => 'nullable|array',
+                'subject_headings.*'   => 'string|max:255',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             session()->flash('error', 'Please fix the validation errors below.');
@@ -151,9 +151,11 @@ class BookController extends Controller
             DB::beginTransaction();
 
             // Handle file upload
-            $coverImagePath = null;
+            $coverImageName = null;
             if ($request->hasFile('cover_image')) {
-                $coverImagePath = $request->file('cover_image')->store('uploads/covers', 'public');
+                $coverImagePath = $request->file('cover_image')->store('uploads/book-covers', 'public');
+                // Extract just the filename
+                $coverImageName = basename($coverImagePath);
             }
 
             // Create main record
@@ -162,7 +164,7 @@ class BookController extends Controller
                 'title'            => $request->title,
                 'subject_headings' => $request->subject_headings,
                 'status'           => $request->status, // Added status field
-                'date_received'   => now(),
+                'date_received'    => now(),
                 'added_by'         => auth()->id(),
             ]);
 
@@ -178,15 +180,15 @@ class BookController extends Controller
                 'ddc_class_id'         => $request->ddc_class_id,
                 'lc_class_id'          => $request->lc_class_id,
                 'physical_location_id' => $request->physical_location_id,
-                'cover_type_id'           => $request->cover_type_id,
-                'cover_image'          => $coverImagePath,
+                'cover_type_id'        => $request->cover_type_id,
+                'cover_image'          => $coverImageName,
                 'ics_number'           => $request->ics_number,
                 'ics_date'             => $request->ics_date,
                 'pr_number'            => $request->pr_number,
                 'pr_date'              => $request->pr_date,
                 'po_number'            => $request->po_number,
                 'po_date'              => $request->po_date,
-                'source_id'               => $request->source_id,
+                'source_id'            => $request->source_id,
                 'purchase_amount'      => $request->purchase_amount,
                 'lot_cost'             => $request->lot_cost,
                 'supplier'             => $request->supplier,
@@ -309,10 +311,10 @@ class BookController extends Controller
 
                         $record_data = [
                             'accession_number' => $row[1] ?? null,
-                            'date_received' => $date_received,
-                            'title' => $row[5] ?? null,
-                            'status' => Status::where('key', 'available')->first()->name,
-                            'imported_by' => Auth::user()->id,
+                            'date_received'    => $date_received,
+                            'title'            => $row[5] ?? null,
+                            'status'           => Status::where('key', 'available')->first()->name,
+                            'imported_by'      => Auth::user()->id,
                             'subject_headings' => $subject_headings,
                         ];
 
@@ -403,7 +405,7 @@ class BookController extends Controller
                                 }
 
                                 $physical_location_id = PhysicalLocation::create([
-                                    'name' => $physical_location_name,
+                                    'name'   => $physical_location_name,
                                     'symbol' => $symbol
                                 ])->id;
                             }
@@ -417,7 +419,7 @@ class BookController extends Controller
                                 $cover_type_id = $cover_type->id;
                             } else {
                                 $cover_type_id = CoverType::create([
-                                    'key' => strtolower($cover_type_name),
+                                    'key'  => strtolower($cover_type_name),
                                     'name' => $cover_type_name
                                 ])->id;
                             }
@@ -441,14 +443,14 @@ class BookController extends Controller
                         }
 
                         $source_id = null;
-                        if ($source){
+                        if ($source) {
                             $source_name = ucwords(strtolower($source));
                             $source_from_db = Source::where('name', $source_name)->first();
                             if ($source_from_db) {
                                 $source_id = $source_from_db->id;
                             } else {
                                 $source_id = Source::create([
-                                    'key' => strtolower($source_name),
+                                    'key'  => strtolower($source_name),
                                     'name' => $source_name
                                 ])->id;
                             }
@@ -461,7 +463,7 @@ class BookController extends Controller
                                     $source_id = $source_from_db->id;
                                 } else {
                                     $source_id = Source::create([
-                                        'key' => strtolower($source_name),
+                                        'key'  => strtolower($source_name),
                                         'name' => $source_name
                                     ])->id;
                                 }
@@ -491,25 +493,25 @@ class BookController extends Controller
                         }
 
                         $book_data = [
-                            'volume' => $volume,
-                            'authors' => $authors,
-                            'edition' => $edition,
-                            'publication_year' => $publication_year,
-                            'publisher' => $publisher,
+                            'volume'            => $volume,
+                            'authors'           => $authors,
+                            'edition'           => $edition,
+                            'publication_year'  => $publication_year,
+                            'publisher'         => $publisher,
                             'publication_place' => $publication_place,
-                            'isbn' => $isbn,
+                            'isbn'              => $isbn,
 
-                            'call_number' => $call_number,
-                            'ddc_class_id' => $ddc_class_id,
+                            'call_number'          => $call_number,
+                            'ddc_class_id'         => $ddc_class_id,
                             'physical_location_id' => $physical_location_id,
 
                             'cover_type_id' => $cover_type_id,
-                            'cover_image' => $cover_image,
+                            'cover_image'   => $cover_image,
 
-                            'source_id' => $source_id,
+                            'source_id'       => $source_id,
                             'purchase_amount' => $purchaseAmount,
-                            'supplier' => $supplier,
-                            'donated_by' => $donated_by,
+                            'supplier'        => $supplier,
+                            'donated_by'      => $donated_by,
 
                             'table_of_contents' => $table_of_contents,
                         ];
@@ -527,7 +529,7 @@ class BookController extends Controller
                             $remark_data[] = [
                                 'academic_period_id' => AcademicPeriod::where('academic_year', '2007-2008')
                                     ->where('semester', 'Whole Year')->first()->id,
-                                'content' => $content,
+                                'content'            => $content,
                             ];
                         }
 
@@ -536,7 +538,7 @@ class BookController extends Controller
                             $remark_data[] = [
                                 'academic_period_id' => AcademicPeriod::where('academic_year', '2008-2009')
                                     ->where('semester', 'Whole Year')->first()->id,
-                                'content' => $content,
+                                'content'            => $content,
                             ];
                         }
                         if (!empty($row[22])) {
@@ -544,7 +546,7 @@ class BookController extends Controller
                             $remark_data[] = [
                                 'academic_period_id' => AcademicPeriod::where('academic_year', '2009-2010')
                                     ->where('semester', 'Whole Year')->first()->id,
-                                'content' => $content,
+                                'content'            => $content,
                             ];
                         }
                         if (!empty($row[23])) {
@@ -552,7 +554,7 @@ class BookController extends Controller
                             $remark_data[] = [
                                 'academic_period_id' => AcademicPeriod::where('academic_year', '2010-2011')
                                     ->where('semester', 'Whole Year')->first()->id,
-                                'content' => $content,
+                                'content'            => $content,
                             ];
                         }
                         if (!empty($row[24])) {
@@ -560,7 +562,7 @@ class BookController extends Controller
                             $remark_data[] = [
                                 'academic_period_id' => AcademicPeriod::where('academic_year', '2011-2012')
                                     ->where('semester', 'Whole Year')->first()->id,
-                                'content' => $content,
+                                'content'            => $content,
                             ];
                         }
                         if (!empty($row[25])) {
@@ -568,7 +570,7 @@ class BookController extends Controller
                             $remark_data[] = [
                                 'academic_period_id' => AcademicPeriod::where('academic_year', '2017-2018')
                                     ->where('semester', 'Whole Year')->first()->id,
-                                'content' => $content,
+                                'content'            => $content,
                             ];
                         }
                         if (!empty($row[26])) {
@@ -576,7 +578,7 @@ class BookController extends Controller
                             $remark_data[] = [
                                 'academic_period_id' => AcademicPeriod::where('academic_year', '2018-2019')
                                     ->where('semester', 'Whole Year')->first()->id,
-                                'content' => $content,
+                                'content'            => $content,
                             ];
                         }
                         if (!empty($row[27])) {
@@ -584,7 +586,7 @@ class BookController extends Controller
                             $remark_data[] = [
                                 'academic_period_id' => AcademicPeriod::where('academic_year', '2019-2020')
                                     ->where('semester', 'Whole Year')->first()->id,
-                                'content' => $content,
+                                'content'            => $content,
                             ];
                         }
                         if (!empty($row[28])) {
@@ -592,7 +594,7 @@ class BookController extends Controller
                             $remark_data[] = [
                                 'academic_period_id' => AcademicPeriod::where('academic_year', '2020-2021')
                                     ->where('semester', 'Whole Year')->first()->id,
-                                'content' => $content,
+                                'content'            => $content,
                             ];
                         }
                         if (!empty($row[29])) {
@@ -600,7 +602,7 @@ class BookController extends Controller
                             $remark_data[] = [
                                 'academic_period_id' => AcademicPeriod::where('academic_year', '2021-2022')
                                     ->where('semester', 'Whole Year')->first()->id,
-                                'content' => $content,
+                                'content'            => $content,
                             ];
                         }
                         if (!empty($row[30])) {
@@ -608,7 +610,7 @@ class BookController extends Controller
                             $remark_data[] = [
                                 'academic_period_id' => AcademicPeriod::where('academic_year', '2022-2023')
                                     ->where('semester', 'Whole Year')->first()->id,
-                                'content' => $content,
+                                'content'            => $content,
                             ];
                         }
                         if (!empty($row[31])) {
@@ -616,7 +618,7 @@ class BookController extends Controller
                             $remark_data[] = [
                                 'academic_period_id' => AcademicPeriod::where('academic_year', '2023-2024')
                                     ->where('semester', '1st Semester')->first()->id,
-                                'content' => $content,
+                                'content'            => $content,
                             ];
                         }
                         if (!empty($row[32])) {
@@ -624,7 +626,7 @@ class BookController extends Controller
                             $remark_data[] = [
                                 'academic_period_id' => AcademicPeriod::where('academic_year', '2023-2024')
                                     ->where('semester', '2nd Semester')->first()->id,
-                                'content' => $content,
+                                'content'            => $content,
                             ];
                         }
                         if (!empty($row[33])) {
@@ -632,7 +634,7 @@ class BookController extends Controller
                             $remark_data[] = [
                                 'academic_period_id' => AcademicPeriod::where('academic_year', '2023-2024')
                                     ->where('semester', 'Whole Year')->first()->id,
-                                'content' => $content,
+                                'content'            => $content,
                             ];
                         }
 
@@ -672,8 +674,7 @@ class BookController extends Controller
                             } else {
                                 session()->flash('success', $success_message);
                             }
-                        }
-                        else {
+                        } else {
                             session()->flash('error', 'No file uploaded.');
                         }
 
