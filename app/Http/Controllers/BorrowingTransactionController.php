@@ -89,36 +89,46 @@ class BorrowingTransactionController extends Controller
     {
         $search_result = null;
         $accession_number = $request->searchAcc ?? $request->scannedAcc;
+        $patron = null;
+        $searchPatron = $request->searchPatron;
 
         if ($accession_number) {
             $search_result = Record::where('accession_number', $accession_number)->first();
-
             if (!$search_result) {
                 session()->flash('error', 'Sorry there is no record found');
             }
         }
 
+        if ($searchPatron) {
+            $patron = User::where('library_id', 'LIKE', "%{$searchPatron}%")
+                ->orWhere('first_name', 'LIKE', "%{$searchPatron}%")
+                ->orWhere('last_name', 'LIKE', "%{$searchPatron}%")
+                ->select('id', 'first_name', 'last_name', 'library_id', 'email')
+                ->first();
+        }
+
         return Inertia::render('borrowings/Create', [
             'search_ac_result' => $search_result,
+            'patron' => $patron,
         ]);
     }
 
     public function searchUser(Request $request)
     {
-        $query = $request->get('q', '');
+        $query = $request->get('q');
 
-        $users = User::select('id', 'first_name', 'last_name', 'email')
-            ->where(function ($q) use ($query) {
-                $q->where('first_name', 'LIKE', "%{$query}%")
-                    ->orWhere('last_name', 'LIKE', "%{$query}%")
-                    ->orWhere('email', 'LIKE', "%{$query}%");
-            })
-            ->limit(8)
+        \Log::info('Searching for user with query: ' . $query);
+
+        $users = User::where('library_id', 'LIKE', "%{$query}%")
+            ->orWhere('first_name', 'LIKE', "%{$query}%")
+            ->orWhere('last_name', 'LIKE', "%{$query}%")
+            ->with(['student', 'faculty']) // Load related data
+            ->select('id', 'first_name', 'last_name', 'email', 'library_id', 'user_type_id')
             ->get();
 
-        return inertia()->render('borrowings/Create', [
-            'users' => $users
-        ]);
+        \Log::info('Search results:', ['count' => $users->count(), 'users' => $users->toArray()]);
+
+        return response()->json($users);
     }
 
     /**
@@ -127,51 +137,67 @@ class BorrowingTransactionController extends Controller
     public function store(Request $request)
     {
         try {
-
             $request->validate([
                 'accession_number' => 'required|exists:records,accession_number',
                 'borrow_type' => 'required|in:inside,take-home',
+                'user_id' => 'required|exists:users,id',
             ]);
 
             $transaction = null;
+            $record = Record::where('accession_number', $request->accession_number)->first();
+            if (!$record) {
+                session()->flash('error', 'Book not found');
+                return to_route('borrowings.index');
+            }
+            if ($record->status === 'borrowed') {
+                session()->flash('error', 'Book already borrowed');
+                return to_route('borrowings.index');
+            }
 
             if ($request->borrow_type === 'inside') {
-                // Get the inside borrowing policy ID
                 $insideBorrowingPolicy = BorrowingPolicy::where('name', 'Borrow Inside Policy')->first();
-
                 if (!$insideBorrowingPolicy) {
                     Log::warning('Inside borrowing policy not found', [
-                        'record_id' => $request->record_id,
+                        'record_id' => $record->id,
                         'user_id' => Auth::id()
                     ]);
                     session()->flash('error', 'Inside borrowing policy not found');
                     return to_route('borrowings.index');
                 }
-
-                // Generate unique transaction number
                 $transactionNumber = 'BRW-IN-' . date('YmdHis') . '-' . str_pad(random_int(1, 99999), 5, '0', STR_PAD_LEFT);
-                $record_id = Record::where('accession_number', $request->accession_number)->first()->id;
-
-                if (!$record_id) {
-                    session()->flash('error', 'Book not found');
-                    return to_route('borrowings.index');
-                }
-
-                // Create the borrowing transaction
                 $transaction = BorrowingTransaction::create([
                     'transaction_number' => $transactionNumber,
-                    'record_id' => $record_id,
+                    'record_id' => $record->id,
                     'borrowing_policy_id' => $insideBorrowingPolicy->id,
                     'transaction_type' => 'borrow-inside',
                     'status' => 'borrowed-inside',
                     'checkout_date' => now(),
                     'checked_out_by' => Auth::id(),
+                    'user_id' => $request->user_id,
+                ]);
+            } else if ($request->borrow_type === 'take-home') {
+                $user = User::find($request->user_id);
+                $policy = BorrowingPolicy::where('user_type_id', $user->user_type_id)->first();
+                if (!$policy) {
+                    session()->flash('error', 'Borrowing policy not found for user type');
+                    return to_route('borrowings.index');
+                }
+                $transactionNumber = 'BRW-OUT-' . date('YmdHis') . '-' . str_pad(random_int(1, 99999), 5, '0', STR_PAD_LEFT);
+                $transaction = BorrowingTransaction::create([
+                    'transaction_number' => $transactionNumber,
+                    'user_id' => $user->id,
+                    'record_id' => $record->id,
+                    'borrowing_policy_id' => $policy->id,
+                    'transaction_type' => 'checkout',
+                    'status' => 'active',
+                    'checkout_date' => now(),
+                    'due_date' => now()->addDays($policy->loan_period_days),
+                    'checked_out_by' => Auth::id(),
                 ]);
             }
-
+            $record->update(['status' => 'borrowed']);
             return to_route('borrowings.index')
                 ->with('success', 'Borrowing transaction ' . $transaction->transaction_number . ' added successfully');
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Validation failed in BorrowingController@store', [
                 'errors' => $e->errors(),

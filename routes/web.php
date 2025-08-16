@@ -1,3 +1,4 @@
+
 <?php
 
 use App\Http\Controllers\AdminController;
@@ -38,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('users.index');
+        Route::get('/search', [UserController::class, 'search'])->name('users.search');
         Route::group(['middleware' => ['can:viewAny, App\Models\User']], function () {
             Route::get('/import', [UserController::class, 'import'])->name('users.import');
             Route::post('/import', [UserController::class, 'importStore'])->name('users.import.store');
