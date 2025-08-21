@@ -235,4 +235,22 @@ class UserController extends Controller
         return to_route('users.import')->with('success', $success_message);
 
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('q');
+
+        if (!$query) {
+            return response()->json([]);
+        }
+
+        $users = User::where('library_id', 'LIKE', "%{$query}%")
+            ->orWhere('first_name', 'LIKE', "%{$query}%")
+            ->orWhere('last_name', 'LIKE', "%{$query}%")
+            ->select('id', 'first_name', 'last_name', 'library_id', 'email')
+            ->limit(10)
+            ->get();
+
+        return response()->json($users);
+    }
 }

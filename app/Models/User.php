@@ -22,6 +22,15 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $guarded = [];
 
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'email',
+        'password',
+        'library_id',
+        'user_type_id'
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -74,5 +83,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function libraryVisits()
     {
         return $this->hasMany(LibraryVisit::class);
+    }
+
+    public function scopeSearchByLibraryId($query, $libraryId)
+    {
+        return $query->where('library_id', $libraryId);
+    }
+
+    public function getFullNameAttribute()
+    {
+        return "{$this->first_name} {$this->last_name}";
     }
 }
