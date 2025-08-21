@@ -5,12 +5,11 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpenCheck, LayoutGrid, Library, Users, BookOpen, FileText, ChevronDown, Folder, EthernetPortIcon, Logs, Boxes, Scan } from 'lucide-vue-next';
+import { BookOpenCheck, LayoutGrid, Library, Users, FileText, Folder, EthernetPortIcon, Logs, Boxes, Scan } from 'lucide-vue-next';
 
 import AppLogo from './AppLogo.vue';
 import { FileClock  } from 'lucide-vue-next';
 import { ref } from 'vue';
-import { Button } from '@/components/ui/button';
 
 const mainNavItems: NavItem[] = [
     {
@@ -86,7 +85,8 @@ const mainNavItems: NavItem[] = [
         title: 'Inventory',
         href: '/clearance',
         icon: Boxes,
-
+    },
+    {
         title: 'Scanner',
         href: '/scanner',
         icon: Scan,

@@ -155,7 +155,7 @@ onMounted(() => {
             </div>
             <div v-else>
                 <div class="text-center transition-all fade-in">
-                    <img src="/images/usep-logo-small.png" alt="USEP Logo" class="h-24 mx-auto mb-3">
+                    <img src="/storage/images/usepLogo.svg" alt="USEP Logo" class="h-24 mx-auto mb-3">
                     <h1 class="text-2xl font-bold text-usepmaroon mb-1">USEP CAMPUS LIBRARY</h1>
                     <p class="text-lg text-gray-600">Tagum-Mabini Campus</p>
                 </div>
