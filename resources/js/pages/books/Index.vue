@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, router } from '@inertiajs/vue3'
+import { Head, router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,11 +11,9 @@ import {
     getSortedRowModel,
     useVueTable, VisibilityState
 } from '@tanstack/vue-table';
-import { ArrowUpDown, ChevronDown, X } from 'lucide-vue-next'
+import { ArrowUpDown, ChevronDown, X, QrCode } from 'lucide-vue-next'
 
-import { h, ref } from 'vue'
-import DropdownAction from '../users/DataTableDemoColumn.vue'
-import { Checkbox } from '@/components/ui/checkbox'
+import { h, ref, onMounted } from 'vue'
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -24,6 +22,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import {
+    Table,
     TableBody,
     TableCell,
     TableHead,
@@ -36,6 +35,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 import { Plus } from 'lucide-vue-next'
 
+import AppLayout from '@/layouts/AppLayout.vue';
+import type { BreadcrumbItem } from '@/types';
+import RecordsLayout from '@/layouts/records/Layout.vue';
+import DeleteDialog from '@/components/DeleteDialog.vue';
+import QRCodeModal from '@/components/QRCodeModal.vue';
+
 interface Props {
     data?: {
         data: any[]
@@ -46,6 +51,10 @@ interface Props {
     filter?: any[]
     currentSortField?: string
     currentSortDirection?: string
+    newBookData?: {
+        title: string
+        accession_number: string
+    } | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -55,7 +64,23 @@ const props = withDefaults(defineProps<Props>(), {
     currentSortDirection: 'asc'
 })
 
-import type { Table, Row, Column, SortingState, ColumnFiltersState, ColumnDef } from '@tanstack/vue-table'
+// Access flash messages from Inertia
+const page = usePage()
+const showQRModal = ref(false)
+const newBookData = ref({
+    title: '',
+    accession_number: ''
+})
+
+// Check for new book data from props (passed from controller)
+onMounted(() => {
+    if (props.newBookData) {
+        newBookData.value = props.newBookData
+        showQRModal.value = true
+    }
+})
+
+import type { Row, Column, SortingState, ColumnFiltersState, ColumnDef } from '@tanstack/vue-table'
 type RowData = any
 const data = props.data.data; // Now safe to access directly
 const columns: ColumnDef<RowData>[] = [
@@ -117,9 +142,26 @@ const columns: ColumnDef<RowData>[] = [
             }, () => ['Date Received', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => {
-            const date = row.getValue('date_received');
+            const date = row.getValue('date_received') as string;
             return h('div', date ? new Date(date).toLocaleDateString() : '');
         },
+    },
+    {
+        id: 'actions',
+        header: () => h('div', 'Actions'),
+        cell: ({ row }: { row: Row<RowData> }) => {
+            return h('div', { class: 'flex items-center gap-2' }, [
+                h(Button, {
+                    variant: 'outline',
+                    size: 'sm',
+                    onClick: () => showQRForBook(row.original),
+                    class: 'h-8 w-8 p-0',
+                    title: 'Show QR Code'
+                }, () => h(QrCode, { class: 'h-4 w-4' }))
+            ])
+        },
+        enableSorting: false,
+        enableHiding: false,
     },
 ];
 
@@ -262,11 +304,6 @@ const clearFilter = () => {
     table.getColumn('search')?.setFilterValue('')
 }
 
-import AppLayout from '@/layouts/AppLayout.vue';
-import type { BreadcrumbItem } from '@/types';
-import RecordsLayout from '@/layouts/records/Layout.vue';
-import DeleteDialog from '@/components/DeleteDialog.vue';
-
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Records',
@@ -282,10 +319,19 @@ const createNewBook = () => {
     router.get(route('books.create'));
 }
 
+// Function to show QR modal for any book
+const showQRForBook = (book: any) => {
+    newBookData.value = {
+        title: book.title,
+        accession_number: book.accession_number
+    }
+    showQRModal.value = true
+}
+
 const showDeleteAlert = ref(false);
 const selectedUserId = ref(null);
 
-const handleDelete = (id) => {
+const handleDelete = (id: any) => {
     console.log('Deleting user with ID:', id);
 
     router.delete(route('faculties.destroy', id), {
@@ -433,6 +479,10 @@ const handleDelete = (id) => {
                 v-model:open="showDeleteAlert"
                 :userId="selectedUserId"
                 @confirm-delete="handleDelete"
+            />
+            <QRCodeModal
+                v-model:open="showQRModal"
+                :data="newBookData"
             />
         </RecordsLayout>
     </AppLayout>

@@ -89,13 +89,8 @@ watch(() => props.recordCount, (newVal) => {
         <!-- Top Bar -->
         <header class="flex justify-between items-center px-8 py-4 border-b border-gray-200 dark:border-gray-800">
             <div class="flex items-center gap-3">
-                <img src="/storage/images/usep-logo-small.png" alt="USEP Logo" class="h-10 w-10" />
-                <Link
-                    :href="route('logger.create')"
-                    class="font-bold text-xl text-gray-900 dark:text-gray-100 hover:text-usepmaroon dark:hover:text-usepgold transition-colors cursor-pointer"
-                >
-                    USeP Library
-                </Link>
+                <img src="/storage/images/usepLogo.svg" alt="USEP Logo" class="h-10 w-10" />
+                <span class="font-bold text-xl text-gray-900 dark:text-gray-100">USeP Library</span>
             </div>
 
             <div class="flex items-center gap-4">
@@ -129,7 +124,7 @@ watch(() => props.recordCount, (newVal) => {
         <!-- Hero Section -->
         <section
             class="relative py-16 flex flex-col items-center justify-center text-center bg-cover bg-center"
-            style="background-image: url('/storage/images/eagle.jpg');"
+            style="background-image: url('/storage/images/usepBG.svg');"
         >
             <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
             <div class="relative z-10 max-w-2xl px-6">

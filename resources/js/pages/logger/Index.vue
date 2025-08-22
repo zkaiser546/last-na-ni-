@@ -383,7 +383,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 </script>
 
 <template>
-    <Head title="Borrowings" />
+    <Head title="Visitors" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-4">
             <div class="w-full">
