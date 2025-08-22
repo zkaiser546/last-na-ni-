@@ -13,12 +13,14 @@
           <QRCodeVue3
             ref="qrCodeRef"
             :value="qrValue"
-            :width="200"
-            :height="200"
+            :width="1000"
+            :height="1000"
             :corners-square-color="'#000000'"
             :corners-dot-color="'#000000'"
             :color="'#000000'"
             :bg-color="'#ffffff'"
+            :margin="1"
+            :quality-level="'H'"
           />
         </div>
 

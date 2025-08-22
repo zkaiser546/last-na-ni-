@@ -11,7 +11,7 @@ import {
     getSortedRowModel,
     useVueTable, VisibilityState
 } from '@tanstack/vue-table';
-import { ArrowUpDown, ChevronDown, X } from 'lucide-vue-next'
+import { ArrowUpDown, ChevronDown, X, QrCode } from 'lucide-vue-next'
 
 import { h, ref, onMounted } from 'vue'
 import {
@@ -145,6 +145,23 @@ const columns: ColumnDef<RowData>[] = [
             const date = row.getValue('date_received') as string;
             return h('div', date ? new Date(date).toLocaleDateString() : '');
         },
+    },
+    {
+        id: 'actions',
+        header: () => h('div', 'Actions'),
+        cell: ({ row }: { row: Row<RowData> }) => {
+            return h('div', { class: 'flex items-center gap-2' }, [
+                h(Button, {
+                    variant: 'outline',
+                    size: 'sm',
+                    onClick: () => showQRForBook(row.original),
+                    class: 'h-8 w-8 p-0',
+                    title: 'Show QR Code'
+                }, () => h(QrCode, { class: 'h-4 w-4' }))
+            ])
+        },
+        enableSorting: false,
+        enableHiding: false,
     },
 ];
 
@@ -300,6 +317,15 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const createNewBook = () => {
     router.get(route('books.create'));
+}
+
+// Function to show QR modal for any book
+const showQRForBook = (book: any) => {
+    newBookData.value = {
+        title: book.title,
+        accession_number: book.accession_number
+    }
+    showQRModal.value = true
 }
 
 const showDeleteAlert = ref(false);
