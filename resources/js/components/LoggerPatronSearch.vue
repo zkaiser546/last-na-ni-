@@ -83,6 +83,10 @@ function submitForm() {
 }
 
 function processStudentId(id: string) {
+    // Clear the input immediately to avoid duplicate scans
+    form.search = '';
+    scannerBuffer = '';
+
     router.get(route('logger.create'), { search: id, search_button: true }, {
         preserveState: true,
         onSuccess: () => {
