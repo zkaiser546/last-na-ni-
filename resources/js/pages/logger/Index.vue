@@ -12,7 +12,7 @@ import {
     useVueTable, VisibilityState
 } from '@tanstack/vue-table';
 import { ArrowUpDown, ChevronDown, ListFilter, X } from 'lucide-vue-next';
-import { h, ref } from 'vue'
+import { h, ref, computed } from 'vue'
 import DropdownAction from './DataTableDemoColumn.vue'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -345,8 +345,17 @@ const table = useVueTable({
 })
 
 const filterInput = ref<string>((table.getColumn('search')?.getFilterValue() as string) ?? '')
+const isFiltering = ref(false)
 const applyFilter = () => {
+    if (isFiltering.value) return
+
+    isFiltering.value = true
     table.getColumn('search')?.setFilterValue(filterInput.value)
+
+    // Reset the filtering flag after a short delay
+    setTimeout(() => {
+        isFiltering.value = false
+    }, 300) // 300ms debounce
 }
 const clearFilter = () => {
     filterInput.value = ''
@@ -386,7 +395,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 placeholder="Search by ID or Client..."
                                 v-model="filterInput"
                                 @keyup.enter="applyFilter"
-                                @blur="applyFilter"
+                                autofocus
                             />
                             <Button
                                 v-if="filterInput"
