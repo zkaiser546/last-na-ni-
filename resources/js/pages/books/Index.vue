@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, router } from '@inertiajs/vue3'
+import { Head, router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import { Button } from '@/components/ui/button'
 import {
@@ -13,9 +13,7 @@ import {
 } from '@tanstack/vue-table';
 import { ArrowUpDown, ChevronDown, X } from 'lucide-vue-next'
 
-import { h, ref } from 'vue'
-import DropdownAction from '../users/DataTableDemoColumn.vue'
-import { Checkbox } from '@/components/ui/checkbox'
+import { h, ref, onMounted } from 'vue'
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -24,6 +22,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import {
+    Table,
     TableBody,
     TableCell,
     TableHead,
@@ -36,6 +35,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 import { Plus } from 'lucide-vue-next'
 
+import AppLayout from '@/layouts/AppLayout.vue';
+import type { BreadcrumbItem } from '@/types';
+import RecordsLayout from '@/layouts/records/Layout.vue';
+import DeleteDialog from '@/components/DeleteDialog.vue';
+import QRCodeModal from '@/components/QRCodeModal.vue';
+
 interface Props {
     data?: {
         data: any[]
@@ -46,6 +51,10 @@ interface Props {
     filter?: any[]
     currentSortField?: string
     currentSortDirection?: string
+    newBookData?: {
+        title: string
+        accession_number: string
+    } | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -55,7 +64,40 @@ const props = withDefaults(defineProps<Props>(), {
     currentSortDirection: 'asc'
 })
 
-import type { Table, Row, Column, SortingState, ColumnFiltersState, ColumnDef } from '@tanstack/vue-table'
+// Access flash messages from Inertia
+const page = usePage()
+const showQRModal = ref(false)
+const newBookData = ref({
+    title: '',
+    accession_number: ''
+})
+
+// Check for new book data from props (passed from controller)
+onMounted(() => {
+    console.log('Index.vue onMounted - checking for book data')
+    console.log('props.newBookData:', props.newBookData)
+    console.log('page.props.flash:', page.props.flash)
+
+    if (props.newBookData) {
+        console.log('Setting newBookData from props and showing modal')
+        newBookData.value = props.newBookData
+        showQRModal.value = true
+    } else {
+        console.log('No new book data found in props')
+    }
+})
+
+// Test function to manually trigger modal
+const testModal = () => {
+    console.log('Test modal triggered')
+    newBookData.value = {
+        title: 'Test Book Title',
+        accession_number: 'TEST123'
+    }
+    showQRModal.value = true
+}
+
+import type { Row, Column, SortingState, ColumnFiltersState, ColumnDef } from '@tanstack/vue-table'
 type RowData = any
 const data = props.data.data; // Now safe to access directly
 const columns: ColumnDef<RowData>[] = [
@@ -117,7 +159,7 @@ const columns: ColumnDef<RowData>[] = [
             }, () => ['Date Received', h(ArrowUpDown, { class: 'ml-2 h-4 w-4' })])
         },
         cell: ({ row }: { row: Row<RowData> }) => {
-            const date = row.getValue('date_received');
+            const date = row.getValue('date_received') as string;
             return h('div', date ? new Date(date).toLocaleDateString() : '');
         },
     },
@@ -262,11 +304,6 @@ const clearFilter = () => {
     table.getColumn('search')?.setFilterValue('')
 }
 
-import AppLayout from '@/layouts/AppLayout.vue';
-import type { BreadcrumbItem } from '@/types';
-import RecordsLayout from '@/layouts/records/Layout.vue';
-import DeleteDialog from '@/components/DeleteDialog.vue';
-
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Records',
@@ -285,7 +322,7 @@ const createNewBook = () => {
 const showDeleteAlert = ref(false);
 const selectedUserId = ref(null);
 
-const handleDelete = (id) => {
+const handleDelete = (id: any) => {
     console.log('Deleting user with ID:', id);
 
     router.delete(route('faculties.destroy', id), {
@@ -337,6 +374,9 @@ const handleDelete = (id) => {
                         <Button variant="outline" @click="createNewBook">
                             <Plus class="h-4"></Plus>
                             Create New
+                        </Button>
+                        <Button variant="outline" @click="testModal">
+                            Test Modal
                         </Button>
                         <DropdownMenu>
                             <DropdownMenuTrigger as-child>
@@ -433,6 +473,10 @@ const handleDelete = (id) => {
                 v-model:open="showDeleteAlert"
                 :userId="selectedUserId"
                 @confirm-delete="handleDelete"
+            />
+            <QRCodeModal
+                v-model:open="showQRModal"
+                :data="newBookData"
             />
         </RecordsLayout>
     </AppLayout>

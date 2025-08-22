@@ -62,6 +62,7 @@ class BookController extends Controller
             'filter'               => $filters,
             'currentSortField'     => $sortField,
             'currentSortDirection' => $sortDirection,
+            'newBookData'          => session()->get('new_book_data'), // Pass flash data explicitly
         ]);
     }
 
@@ -199,7 +200,11 @@ class BookController extends Controller
             DB::commit();
 
             return to_route('books.index')
-                ->with('success', 'Book record created successfully.');
+                ->with('success', 'Book record created successfully.')
+                ->with('new_book_data', [
+                    'title' => $request->title,
+                    'accession_number' => $request->accession_number
+                ]);
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             Log::error('Database error creating Book: ' . $e->getMessage(), [
