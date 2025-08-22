@@ -71,7 +71,7 @@ const emit = defineEmits<{
 const qrCodeRef = ref()
 
 const qrValue = computed(() => {
-  return `Title: ${props.data.title}, Accession: ${props.data.accession_number}`
+  return props.data.accession_number
 })
 
 const downloadQRCode = () => {
