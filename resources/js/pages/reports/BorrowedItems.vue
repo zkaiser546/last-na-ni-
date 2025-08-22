@@ -1,3 +1,13 @@
+<template>
+    <Head title="Borrowed Items Report" />
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="p-8">
+            <!-- Filters -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Start Date</label>
+                        <Input type="date" class="w-full" />
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">End Date</label>
@@ -34,31 +44,31 @@
                     <Button variant="secondary">Download</Button>
                 </div>
             </div>
-<script setup lang="ts">
+
             <!-- Table -->
             <div class="overflow-x-auto rounded-lg border">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Accession Number</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date Borrowed</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date Returned</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Staff Incharge</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Borrower's Name</th>
-                        </tr>
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Accession Number</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date Borrowed</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date Returned</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Staff Incharge</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Borrower's Name</th>
+                    </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        <tr>
-                            <td class="px-6 py-4">ACC-001</td>
-                            <td class="px-6 py-4">Introduction to Computer Science</td>
-                            <td class="px-6 py-4">Book</td>
-                            <td class="px-6 py-4">2023-05-15</td>
-                            <td class="px-6 py-4">2023-06-01</td>
-                            <td class="px-6 py-4">Ms. Rodriguez</td>
-                            <td class="px-6 py-4">Juan Dela Cruz</td>
-                        </tr>
+                    <tr>
+                        <td class="px-6 py-4">ACC-001</td>
+                        <td class="px-6 py-4">Introduction to Computer Science</td>
+                        <td class="px-6 py-4">Book</td>
+                        <td class="px-6 py-4">2023-05-15</td>
+                        <td class="px-6 py-4">2023-06-01</td>
+                        <td class="px-6 py-4">Ms. Rodriguez</td>
+                        <td class="px-6 py-4">Juan Dela Cruz</td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -79,6 +89,8 @@
         </div>
     </AppLayout>
 </template>
+
+<script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Button } from '@/components/ui/button';
@@ -90,15 +102,3 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Borrowed Items', href: '/reports/borrowed-items' },
 ];
 </script>
-
-<template>
-    <Head title="Borrowed Items Report" />
-    <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="p-8">
-            <!-- Filters -->
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Start Date</label>
-                        <Input type="date" class="w-full" />
-
