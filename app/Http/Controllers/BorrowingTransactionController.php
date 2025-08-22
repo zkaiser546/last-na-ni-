@@ -93,9 +93,17 @@ class BorrowingTransactionController extends Controller
         $searchPatron = $request->searchPatron;
 
         if ($accession_number) {
-            $search_result = Record::where('accession_number', $accession_number)->first();
+            $search_result = Record::with('book') // Load the book relationship
+            ->where('accession_number', $accession_number)
+                ->first();
+
             if (!$search_result) {
                 session()->flash('error', 'Sorry there is no record found');
+            } else {
+                // Add cover_url to the result if cover_image exists
+                if ($search_result->book && $search_result->book->cover_image) {
+                    $search_result->cover_url = asset('storage/uploads/book-covers/' . $search_result->book->cover_image);
+                }
             }
         }
 
