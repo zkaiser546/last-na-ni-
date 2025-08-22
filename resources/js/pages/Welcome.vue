@@ -90,7 +90,12 @@ watch(() => props.recordCount, (newVal) => {
         <header class="flex justify-between items-center px-8 py-4 border-b border-gray-200 dark:border-gray-800">
             <div class="flex items-center gap-3">
                 <img src="/storage/images/usep-logo-small.png" alt="USEP Logo" class="h-10 w-10" />
-                <span class="font-bold text-xl text-gray-900 dark:text-gray-100">USeP Library</span>
+                <Link
+                    :href="route('logger.create')"
+                    class="font-bold text-xl text-gray-900 dark:text-gray-100 hover:text-usepmaroon dark:hover:text-usepgold transition-colors cursor-pointer"
+                >
+                    USeP Library
+                </Link>
             </div>
 
             <div class="flex items-center gap-4">
