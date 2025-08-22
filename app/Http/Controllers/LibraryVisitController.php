@@ -105,11 +105,25 @@ class LibraryVisitController extends Controller
                 ->whereNull('exit_time')
                 ->first();
 
+            // Get entry method and format it appropriately
+            $entry_method = strtolower($request->input('entry_method', 'manual'));
+
+            // Standardize entry method format
+            if (stripos($entry_method, 'barcode') !== false) {
+                $entry_method = 'barCode';
+            } elseif (stripos($entry_method, 'rfid') !== false) {
+                $entry_method = 'Rfid';
+            } elseif (stripos($entry_method, 'card') !== false) {
+                $entry_method = 'barCode'; // Card scan is treated as barCode
+            } else {
+                $entry_method = 'manual';
+            }
+
             if ($user_entry) {
                 // User is logging out
                 $user_entry->update([
                     'exit_time' => now(),
-                    'entry_method' => 'card_scan'
+                    'entry_method' => $entry_method
                 ]);
                 $message = 'Goodbye ' . $user->first_name . '! Thank you for visiting USeP Library!';
             } else {
@@ -117,7 +131,7 @@ class LibraryVisitController extends Controller
                 LibraryVisit::create([
                     'user_id' => $user->id,
                     'entry_time' => now(),
-                    'entry_method' => 'card_scan'
+                    'entry_method' => $entry_method
                 ]);
                 $message = 'Welcome to USeP Library, ' . $user->first_name . '!';
             }
