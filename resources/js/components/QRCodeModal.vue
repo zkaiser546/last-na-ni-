@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, nextTick } from 'vue'
 import QRCodeVue3 from 'qrcode.vue'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
@@ -74,28 +74,54 @@ const qrValue = computed(() => {
   return props.data.accession_number
 })
 
-const downloadQRCode = () => {
+const downloadQRCode = async () => {
   if (!qrCodeRef.value) return
 
   try {
-    // Get the canvas element from the QR code component
-    const canvas = qrCodeRef.value.$el.querySelector('canvas')
-    if (!canvas) return
+    // Wait for the next tick to ensure the component is fully rendered
+    await nextTick()
+
+    // Get the modal content element to search within
+    const modalContent = document.querySelector('[role="dialog"]')
+    if (!modalContent) {
+      console.error('Modal content not found')
+      alert('Unable to access QR code for download. Please try again.')
+      return
+    }
+
+    // Find canvas element within the modal
+    const canvas = modalContent.querySelector('canvas')
+
+    if (!canvas) {
+      console.error('Canvas element not found in modal')
+      alert('Unable to access QR code for download. Please try again.')
+      return
+    }
 
     // Convert canvas to data URL
     const dataURL = canvas.toDataURL('image/png')
 
+    if (!dataURL || dataURL === 'data:,') {
+      console.error('Failed to generate image data')
+      alert('Failed to generate QR code image. Please try again.')
+      return
+    }
+
     // Create download link
     const link = document.createElement('a')
-    link.download = `QR_${props.data.accession_number}_${props.data.title.replace(/[^a-zA-Z0-9]/g, '_')}.png`
+    const sanitizedTitle = props.data.title.replace(/[^a-zA-Z0-9]/g, '_')
+    link.download = `QR_${props.data.accession_number}_${sanitizedTitle}.png`
     link.href = dataURL
 
     // Trigger download
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
+
+    console.log('QR code download successful')
   } catch (error) {
     console.error('Error downloading QR code:', error)
+    alert('An error occurred while downloading the QR code. Please try again.')
   }
 }
 </script>

@@ -74,28 +74,11 @@ const newBookData = ref({
 
 // Check for new book data from props (passed from controller)
 onMounted(() => {
-    console.log('Index.vue onMounted - checking for book data')
-    console.log('props.newBookData:', props.newBookData)
-    console.log('page.props.flash:', page.props.flash)
-
     if (props.newBookData) {
-        console.log('Setting newBookData from props and showing modal')
         newBookData.value = props.newBookData
         showQRModal.value = true
-    } else {
-        console.log('No new book data found in props')
     }
 })
-
-// Test function to manually trigger modal
-const testModal = () => {
-    console.log('Test modal triggered')
-    newBookData.value = {
-        title: 'Test Book Title',
-        accession_number: 'TEST123'
-    }
-    showQRModal.value = true
-}
 
 import type { Row, Column, SortingState, ColumnFiltersState, ColumnDef } from '@tanstack/vue-table'
 type RowData = any
@@ -374,9 +357,6 @@ const handleDelete = (id: any) => {
                         <Button variant="outline" @click="createNewBook">
                             <Plus class="h-4"></Plus>
                             Create New
-                        </Button>
-                        <Button variant="outline" @click="testModal">
-                            Test Modal
                         </Button>
                         <DropdownMenu>
                             <DropdownMenuTrigger as-child>
