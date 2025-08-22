@@ -6,7 +6,6 @@ const showAlert = ref(false);
 const alertMessage = ref('');
 const alertType = ref<'success' | 'error'>('success');
 const showStudentInfo = ref(false);
-const studentIdInput = ref('');
 const currentStudent = reactive({
     initials: '',
     name: '',
@@ -15,7 +14,6 @@ const currentStudent = reactive({
 });
 const studentIdInputRef = ref<HTMLInputElement | null>(null);
 const scannerInputRef = ref<HTMLInputElement | null>(null);
-let resetTimer: ReturnType<typeof setTimeout> | null = null;
 let scannerBuffer = '';
 let scannerTimeout: ReturnType<typeof setTimeout>;
 
@@ -40,6 +38,14 @@ function showAlertMsg(msg: string, type: 'success' | 'error' = 'success') {
 function resetDisplay() {
     showStudentInfo.value = false;
     form.search = '';
+    form.patron_id = null;
+    // Reset student data immediately
+    Object.assign(currentStudent, {
+        initials: '',
+        name: '',
+        id: '',
+        program: ''
+    });
     nextTick(() => studentIdInputRef.value?.focus());
 }
 
@@ -68,12 +74,8 @@ function submitForm() {
                 showAlertMsg(response.props.flash.success);
             }
             form.reset();
+            // Instant reset without delay
             resetDisplay();
-            nextTick(() => {
-                if (studentIdInputRef.value) {
-                    studentIdInputRef.value.focus();
-                }
-            });
         },
         onError: (errors) => {
             showAlertMsg('An error occurred.', 'error');
@@ -91,8 +93,9 @@ function processStudentId(id: string) {
         preserveState: true,
         onSuccess: () => {
             if (props.patron) {
+                // Show info instantly, then submit immediately
                 showStudentInfo.value = true;
-                submitForm(); // Automatically submit after finding user
+                submitForm(); // Remove timeout - submit instantly
             }
         },
         onError: () => {
@@ -111,15 +114,21 @@ watch(() => usePage().props.flash, (flash) => {
     }
 }, { immediate: true });
 
-// Watch for patron changes
+// Watch for patron changes - optimize for instant updates
 watch(() => props.patron, (newPatron) => {
     if (newPatron) {
-        currentStudent.name = `${newPatron.first_name} ${newPatron.last_name}`;
-        currentStudent.id = newPatron.library_id;
-        currentStudent.program = newPatron.program || 'N/A';
-        currentStudent.initials = newPatron.first_name.charAt(0) + newPatron.last_name.charAt(0);
+        // Update all data in one batch
+        Object.assign(currentStudent, {
+            name: `${newPatron.first_name} ${newPatron.last_name}`,
+            id: newPatron.library_id,
+            program: newPatron.program || 'N/A',
+            initials: newPatron.first_name.charAt(0) + newPatron.last_name.charAt(0)
+        });
         form.patron_id = newPatron.id;
         showStudentInfo.value = true;
+    } else {
+        // Reset immediately when patron is cleared
+        showStudentInfo.value = false;
     }
 }, { immediate: true });
 
@@ -148,8 +157,8 @@ onMounted(() => {
             {{ alertMessage }}
         </div>
 
-        <div class="w-full max-w-md mx-4 bg-white rounded-xl shadow-lg p-8 transition-all">
-            <div v-if="showStudentInfo && patron" class="text-center transition-all fade-in">
+        <div class="w-full max-w-md mx-4 bg-white rounded-xl shadow-lg p-8">
+            <div v-if="showStudentInfo && patron" class="text-center">
                 <div class="w-40 h-40 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-5 text-5xl font-bold text-gray-700 shadow-md">
                     {{ currentStudent.initials }}
                 </div>
@@ -158,12 +167,12 @@ onMounted(() => {
                 <p class="text-gray-600">Program: {{ currentStudent.program }}</p>
             </div>
             <div v-else>
-                <div class="text-center transition-all fade-in">
+                <div class="text-center">
                     <img src="/images/usep-logo-small.png" alt="USEP Logo" class="h-24 mx-auto mb-3">
                     <h1 class="text-2xl font-bold text-usepmaroon mb-1">USEP CAMPUS LIBRARY</h1>
                     <p class="text-lg text-gray-600">Tagum-Mabini Campus</p>
                 </div>
-                <div class="mt-5 transition-all">
+                <div class="mt-5">
                     <p class="text-lg font-medium text-center mb-3">Please enter your Student ID</p>
                     <input
                         v-model="form.search"
@@ -183,13 +192,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.fade-in {
-    animation: fadeIn 0.5s ease-in;
-}
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
 .text-usepmaroon {
     color: #800000;
 }
